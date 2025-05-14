@@ -1,0 +1,7 @@
+packages:
+  # All packages in direct subdirectories of packages/
+  - 'packages/*'
+  # Scripts that use the SDKs
+  - 'scripts/*'
+  # Shared configurations and utilities
+  - 'tools/*'

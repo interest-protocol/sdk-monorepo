@@ -1,0 +1,13 @@
+{
+  "eslint.debug": true,
+  "eslint.trace.server": "verbose",
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "editor.codeActionsOnSave": ["source.fixAll.eslint"],
+  "editor.formatOnSave": true,
+  "eslint.useFlatConfig": true,
+  "eslint.nodePath": "./node_modules/eslint",
+  "eslint.useESLintClass": true,
+  "eslint.options": {
+    "cwd": "${workspaceFolder}"
+  }
+}

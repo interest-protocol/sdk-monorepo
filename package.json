@@ -1,0 +1,48 @@
+{
+  "name": "@interest-protocol/sdk-monorepo",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Interest Protocol SDK monorepo",
+  "main": "index.js",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r dev",
+    "test": "pnpm -r test",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "clean": "pnpm -r clean"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "scripts/*",
+      "tools/*"
+    ]
+  },
+  "keywords": [
+    "sdk",
+    "interest-protocol",
+    "monorepo"
+  ],
+  "author": "Interest Protocol",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.26.0",
+    "eslint": "^9.26.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.32.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/interest-protocol/sdk-monorepo.git"
+  },
+  "type": "module",
+  "packageManager": "pnpm@10.11.0",
+  "engines": {
+    "node": ">=16.13.0"
+  }
+}

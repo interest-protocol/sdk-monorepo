@@ -1,0 +1,67 @@
+# IDE
+.idea
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# OSX
+.DS_Store
+
+# Rust build directory
+**/target
+.pre-commit*
+
+# Move build directory
+build
+storage/
+!narwhal/storage 
+
+# Environment Variables 
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*
+
+# Thumbnails
+._*
+
+# Emacs
+\#*\#
+.\#*
+
+# Python
+.pyc
+
+# Node.js
+node_modules
+.pnpm-store
+
+# logs
+wallet.log.*
+sui.log.*
+.vercel
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Sui
+build
+
+# Movement
+.movement
+
+# build
+dist
+*.tsbuildinfo
+build
+.next
+tsconfig.tsbuildinfo
+
+# Testing
+coverage
+EOF
