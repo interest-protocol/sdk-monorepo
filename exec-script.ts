@@ -26,7 +26,9 @@ invariant(process.env.KEY, 'Private key missing');
 
   invariant(path, 'Path is required');
 
-  const command = `tsx ./scripts/${path}.ts --network ${network}`;
+  process.env.WEB_3_NETWORK = network;
+
+  const command = `tsx ./scripts/${path}.ts`;
 
   console.log(command);
 

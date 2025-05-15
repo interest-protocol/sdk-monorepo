@@ -3,14 +3,36 @@ import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { Transaction } from '@mysten/sui/transactions';
 import chalk from 'chalk';
 import invariant from 'tiny-invariant';
+import util from 'util';
 
 // Define your log levels
-export const logInfo = (msg: any) => console.log(chalk.blue(`ℹ️ INFO: ${msg}`));
+export const logInfo = (msg: any) =>
+  console.log(
+    chalk.blue(`ℹ️ INFO: 
+      
+      ${util.inspect(msg, false, null, true)}`)
+  );
+
 export const logSuccess = (msg: any) =>
-  console.log(chalk.green(`✅ SUCCESS: ${msg}`));
+  console.log(
+    chalk.green(`✅ SUCCESS: 
+      
+      ${util.inspect(msg, false, null, true)}`)
+  );
+
 export const logWarning = (msg: any) =>
-  console.log(chalk.yellow(`⚠️ WARNING: ${msg}`));
-const logError = (msg: any) => console.log(chalk.red(`❌ ERROR: ${msg}`));
+  console.log(
+    chalk.yellow(`⚠️ WARNING: 
+      
+      ${util.inspect(msg, false, null, true)}`)
+  );
+
+export const logError = (msg: any) =>
+  console.log(
+    chalk.red(`❌ ERROR: 
+    
+    ${util.inspect(msg, false, null, true)}`)
+  );
 
 export const executeTx = async (tx: Transaction, client = suiClient) => {
   const result = await client.signAndExecuteTransaction({

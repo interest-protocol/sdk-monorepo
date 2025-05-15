@@ -11,7 +11,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "clean": "pnpm -r clean",
-    "build:all": "pnpm --filter @interest-protocol/sui-core-sdk build && pnpm --filter @interest-protocol/blizzard-sdk build && pnpm --filter @interest-protocol/utils build",
+    "build:all": "pnpm --filter @interest-protocol/sui-core-sdk build && pnpm --filter @interest-protocol/memez-sdk build && pnpm --filter @interest-protocol/memez-fun-sdk build && pnpm --filter @interest-protocol/utils build",
     "exec-script": "tsx ./exec-script.ts"
   },
   "workspaces": {

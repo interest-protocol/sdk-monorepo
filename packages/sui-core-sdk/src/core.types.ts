@@ -18,6 +18,13 @@ export interface SharedObjectRef {
   initialSharedVersion: number | string;
 }
 
+export type StructTag = {
+  address: string;
+  module: string;
+  name: string;
+  typeParams: (string | StructTag)[];
+};
+
 export interface MaybeTx {
   tx?: Transaction;
 }
