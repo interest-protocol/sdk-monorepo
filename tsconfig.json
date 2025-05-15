@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/sui-core-sdk" },
+    { "path": "./packages/blizzard-sdk" },
+    { "path": "./packages/utils" }
+  ]
+}

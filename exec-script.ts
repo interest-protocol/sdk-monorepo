@@ -1,0 +1,40 @@
+import { exec } from 'child_process';
+import dotenv from 'dotenv';
+import invariant from 'tiny-invariant';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+
+dotenv.config();
+
+invariant(process.env.KEY, 'Private key missing');
+
+(async () => {
+  const argv = await yargs(hideBin(process.argv))
+    .option('network', {
+      alias: 'n',
+      type: 'string',
+      description: 'Specify the network',
+    })
+    .option('path', {
+      alias: 'p',
+      type: 'string',
+      description: 'Specify the path to the script to run',
+    })
+    .parse();
+
+  const { network, path } = argv;
+
+  invariant(path, 'Path is required');
+
+  const command = `tsx ./scripts/${path}.ts --network ${network}`;
+
+  console.log(command);
+
+  exec(command, (error, stdout) => {
+    if (error) {
+      console.error(`Error executing command: ${error}`);
+      return;
+    }
+    console.warn(stdout);
+  });
+})();

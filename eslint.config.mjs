@@ -13,6 +13,10 @@ export default [
       'coverage/**',
       'tools/**',
       '.prettierrc.js',
+      '**/dist/**',
+      '**/dist',
+      'packages/*/dist',
+      'packages/*/dist/**',
     ],
   },
 ];

@@ -10,7 +10,7 @@ export default [
     },
     rules: {
       // Basic JavaScript rules
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-console': ['warn', { allow: ['warn', 'error', 'log'] }],
       semi: ['error', 'always'],
       quotes: ['error', 'single', { avoidEscape: true }],
 

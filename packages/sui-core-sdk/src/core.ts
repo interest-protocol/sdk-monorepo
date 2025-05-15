@@ -1,5 +1,9 @@
 import { Transaction } from '@mysten/sui/transactions';
-import { SUI_FRAMEWORK_ADDRESS, SUI_TYPE_ARG } from '@mysten/sui/utils';
+import {
+  MOVE_STDLIB_ADDRESS,
+  SUI_FRAMEWORK_ADDRESS,
+  SUI_TYPE_ARG,
+} from '@mysten/sui/utils';
 import { isValidSuiObjectId, normalizeSuiAddress } from '@mysten/sui/utils';
 import { has } from 'ramda';
 import invariant from 'tiny-invariant';
@@ -7,6 +11,13 @@ import invariant from 'tiny-invariant';
 import { ObjectInput, OwnedObject, SharedObject } from './core.types';
 
 export class SuiCoreSDK {
+  static readonly SUI_TYPE_ARG = SUI_TYPE_ARG;
+  static readonly MOVE_STDLIB_ADDRESS = MOVE_STDLIB_ADDRESS;
+  static readonly SUI_FRAMEWORK_ADDRESS = SUI_FRAMEWORK_ADDRESS;
+
+  static readonly POW_10_9 = 1_000_000_000n;
+  static readonly POW_10_18 = 1_000_000_000_000_000_000n;
+
   ownedObject(tx: Transaction, obj: ObjectInput) {
     if (has('objectId', obj) && has('version', obj) && has('digest', obj)) {
       return tx.objectRef(obj);
