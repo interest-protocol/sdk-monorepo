@@ -1,4 +1,4 @@
-import { hasValueOrThrow } from '@interest-protocol/sui-core-sdk';
+import { returnIfDefinedOrThrow } from '@interest-protocol/lib';
 import { bcs } from '@mysten/sui/bcs';
 import { Transaction } from '@mysten/sui/transactions';
 import { normalizeStructTag, normalizeSuiObjectId } from '@mysten/sui/utils';
@@ -110,7 +110,7 @@ export class InterestStableSwapSDK extends SDK {
         function: 'add',
         arguments: [coinDecimalsPotato, tx.object(decimals.id)],
         typeArguments: [
-          hasValueOrThrow(coinTypes[index], 'Coin type not found'),
+          returnIfDefinedOrThrow(coinTypes[index], 'Coin type not found'),
         ],
       });
     });
@@ -121,7 +121,7 @@ export class InterestStableSwapSDK extends SDK {
       returnValues: tx.moveCall({
         package: this.packages.STABLE_SWAP_DEX.latest,
         module: Modules.Pool,
-        function: hasValueOrThrow(
+        function: returnIfDefinedOrThrow(
           NEW_POOL_FN_MAP[coinTypes.length - 1],
           'Pool function not found'
         ),
@@ -206,7 +206,7 @@ export class InterestStableSwapSDK extends SDK {
       returnValues: tx.moveCall({
         package: this.packages.STABLE_SWAP_DEX.latest,
         module: Modules.Pool,
-        function: hasValueOrThrow(
+        function: returnIfDefinedOrThrow(
           ADD_LIQUIDITY_FN_MAP[pool.coins.length],
           'Add liquidity function not found'
         ),
@@ -244,7 +244,7 @@ export class InterestStableSwapSDK extends SDK {
       returnValues: tx.moveCall({
         package: this.packages.STABLE_SWAP_DEX.latest,
         module: Modules.Pool,
-        function: hasValueOrThrow(
+        function: returnIfDefinedOrThrow(
           REMOVE_LIQUIDITY_FN_MAP[pool.coins.length],
           'Remove liquidity function not found'
         ),

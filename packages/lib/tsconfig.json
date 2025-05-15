@@ -1,0 +1,25 @@
+{
+  "extends": "@interest-protocol/typescript-config/base.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["esnext"],
+    "module": "esnext",
+    // output .d.ts declaration files for consumers
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "allowJs": true,
+    // output .js.map sourcemap files for consumers
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    // match output dir to input dir. e.g. dist/index instead of dist/src/index
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "moduleResolution": "node",
+    "declarationMap": true,
+    "composite": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "."
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+}

@@ -1,0 +1,39 @@
+{
+  "name": "@interest-protocol/lib",
+  "version": "0.0.1",
+  "description": "Interest Protocol Library",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "build:types": "tsc --project tsconfig.json",
+    "build:tsup": "tsup './src/index.ts' --format esm,cjs --sourcemap",
+    "build": "pnpm run clean && pnpm run build:tsup && pnpm run build:types",
+    "dev": "tsc --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "devDependencies": {
+    "@interest-protocol/prettier-config": "workspace:*",
+    "@interest-protocol/typescript-config": "workspace:*"
+  },
+  "dependencies": {
+    "ramda": "^0.30.1",
+    "tiny-invariant": "^1.3.3"
+  }
+}

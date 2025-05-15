@@ -1,4 +1,4 @@
-import { hasValueOrThrow } from '@interest-protocol/sui-core-sdk';
+import { returnIfDefinedOrThrow } from '@interest-protocol/lib';
 import { getFullnodeUrl } from '@mysten/sui/client';
 import { SuiObjectResponse } from '@mysten/sui/client';
 import { normalizeStructTag } from '@mysten/sui/utils';
@@ -18,7 +18,7 @@ export const parsePoolObject = (poolObj: SuiObjectResponse) => {
   invariant(poolObj.data, 'Pool object data not found');
   invariant(poolObj.data.type, 'Pool object type not found');
 
-  const lpCoinType = hasValueOrThrow(
+  const lpCoinType = returnIfDefinedOrThrow(
     poolObj.data.type.split('<')[1]?.slice(0, -1).trim(),
     'Pool lp coin type not found'
   );

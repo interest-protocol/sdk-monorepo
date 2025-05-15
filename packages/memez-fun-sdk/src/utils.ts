@@ -1,4 +1,5 @@
-import { hasValueOrThrow, Network } from '@interest-protocol/sui-core-sdk';
+import { returnIfDefinedOrThrow } from '@interest-protocol/lib';
+import { Network } from '@interest-protocol/sui-core-sdk';
 import {
   getFullnodeUrl,
   SuiClient,
@@ -58,19 +59,19 @@ export const parsePoolType = (x: string) => {
   return {
     poolType: x,
     curveType: normalizeStructTag(
-      hasValueOrThrow(
+      returnIfDefinedOrThrow(
         x.split('<')?.[1]?.split(',')?.[0],
         'Curve Type Not Found when parsing pool'
       )
     ),
     memeCoinType: normalizeStructTag(
-      hasValueOrThrow(
+      returnIfDefinedOrThrow(
         x.split('<')?.[1]?.split(',')?.[1]?.trim(),
         'Meme Coin Type Not Found when parsing pool'
       )
     ),
     quoteCoinType: normalizeStructTag(
-      hasValueOrThrow(
+      returnIfDefinedOrThrow(
         x.split('<')?.[1]?.split(',')?.[2]?.trim()?.slice(0, -1),
         'Quote Coin Type Not Found when parsing pool'
       )
