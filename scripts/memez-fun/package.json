@@ -22,7 +22,7 @@
     "@interest-protocol/acl-sdk": "workspace:*",
     "@interest-protocol/memez-fun-sdk": "workspace:*",
     "@interest-protocol/sui-core-sdk": "workspace:*",
-    "@interest-protocol/utils": "workspace:*",
+    "@interest-protocol/sui-utils": "workspace:*",
     "@mysten/sui": "^1.29.1",
     "bn.js": "^5.2.2",
     "decimal.js": "^10.5.0",

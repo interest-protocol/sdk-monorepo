@@ -13,7 +13,7 @@ import {
   TYPES,
 } from '@interest-protocol/memez-fun-sdk';
 import { Network } from '@interest-protocol/sui-core-sdk';
-import { executeTx, keypair, suiClient } from '@interest-protocol/utils';
+import { executeTx, keypair, suiClient } from '@interest-protocol/sui-utils';
 import { getFullnodeUrl } from '@mysten/sui/client';
 
 const TEST_POOL_ID =

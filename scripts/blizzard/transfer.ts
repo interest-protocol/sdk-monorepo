@@ -1,4 +1,4 @@
-import { executeTx } from '@interest-protocol/utils';
+import { executeTx } from '@interest-protocol/sui-utils';
 import { Transaction } from '@mysten/sui/transactions';
 import invariant from 'tiny-invariant';
 

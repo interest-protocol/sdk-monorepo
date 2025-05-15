@@ -65,6 +65,10 @@ export const suiClient = new SuiClient({
   url: getFullnodeUrl('mainnet'),
 });
 
+export const testnetSuiClient = new SuiClient({
+  url: getFullnodeUrl('testnet'),
+});
+
 invariant(process.env.KEY, 'Private key missing');
 
 export const keypair = Ed25519Keypair.fromSecretKey(

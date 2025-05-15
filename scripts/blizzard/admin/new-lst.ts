@@ -1,5 +1,5 @@
 import { OWNED_OBJECTS } from '@interest-protocol/blizzard-sdk';
-import { executeTx } from '@interest-protocol/utils';
+import { executeTx } from '@interest-protocol/sui-utils';
 import invariant from 'tiny-invariant';
 
 import { blizzardAcl, blizzardSDK } from '../utils.script';

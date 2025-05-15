@@ -5,7 +5,7 @@
     { "path": "./packages/memez-fun-sdk" },
     { "path": "./packages/interest-stable-swap-sdk" },
     { "path": "./packages/acl-sdk" },
-    { "path": "./packages/utils" },
+    { "path": "./packages/sui-utils" },
     { "path": "./packages/blizzard-sdk" }
   ]
 }

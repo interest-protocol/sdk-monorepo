@@ -2,7 +2,7 @@ import {
   OWNED_OBJECTS,
   POOLS,
 } from '@interest-protocol/interest-stable-swap-sdk';
-import { executeTx } from '@interest-protocol/utils';
+import { executeTx } from '@interest-protocol/sui-utils';
 
 import { acl, stableSwapSDK } from '../utils.script';
 

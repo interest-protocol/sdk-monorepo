@@ -239,7 +239,7 @@ importers:
         specifier: ^0.34.4
         version: 0.34.6
 
-  packages/utils:
+  packages/sui-utils:
     dependencies:
       '@mysten/sui':
         specifier: ^1.29.1
@@ -272,9 +272,9 @@ importers:
       '@interest-protocol/blizzard-sdk':
         specifier: workspace:*
         version: link:../../packages/blizzard-sdk
-      '@interest-protocol/utils':
+      '@interest-protocol/sui-utils':
         specifier: workspace:*
-        version: link:../../packages/utils
+        version: link:../../packages/sui-utils
       '@mysten/sui':
         specifier: ^1.29.1
         version: 1.29.1(typescript@5.8.3)
@@ -318,9 +318,9 @@ importers:
       '@interest-protocol/sui-core-sdk':
         specifier: workspace:*
         version: link:../../packages/sui-core-sdk
-      '@interest-protocol/utils':
+      '@interest-protocol/sui-utils':
         specifier: workspace:*
-        version: link:../../packages/utils
+        version: link:../../packages/sui-utils
       '@mysten/sui':
         specifier: ^1.29.1
         version: 1.29.1(typescript@5.8.3)
@@ -352,9 +352,9 @@ importers:
       '@interest-protocol/sui-core-sdk':
         specifier: workspace:*
         version: link:../../packages/sui-core-sdk
-      '@interest-protocol/utils':
+      '@interest-protocol/sui-utils':
         specifier: workspace:*
-        version: link:../../packages/utils
+        version: link:../../packages/sui-utils
       '@mysten/sui':
         specifier: ^1.29.1
         version: 1.29.1(typescript@5.8.3)

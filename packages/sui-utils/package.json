@@ -1,5 +1,5 @@
 {
-  "name": "@interest-protocol/utils",
+  "name": "@interest-protocol/sui-utils",
   "version": "0.0.1",
   "description": "Utility functions",
   "main": "dist/index.js",

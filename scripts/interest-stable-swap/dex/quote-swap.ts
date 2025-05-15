@@ -1,5 +1,5 @@
 import { COIN_TYPES, POOLS } from '@interest-protocol/interest-stable-swap-sdk';
-import { logSuccess } from '@interest-protocol/utils';
+import { logSuccess } from '@interest-protocol/sui-utils';
 
 import { stableSwapSDK } from '../utils.script';
 

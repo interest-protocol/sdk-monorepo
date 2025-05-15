@@ -1,5 +1,5 @@
 import { PACKAGES } from '@interest-protocol/blizzard-sdk';
-import { logSuccess, suiClient } from '@interest-protocol/utils';
+import { logSuccess, suiClient } from '@interest-protocol/sui-utils';
 
 const EVENT = `${PACKAGES.BLIZZARD.original}::blizzard_event_wrapper::BlizzardEvent<${PACKAGES.BLIZZARD.original}::blizzard_events::SyncExchangeRate>`;
 

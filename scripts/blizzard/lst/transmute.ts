@@ -1,5 +1,5 @@
 import { SHARED_OBJECTS, TYPES } from '@interest-protocol/blizzard-sdk';
-import { executeTx, keypair } from '@interest-protocol/utils';
+import { executeTx, keypair } from '@interest-protocol/sui-utils';
 import { coinWithBalance } from '@mysten/sui/transactions';
 import { Transaction } from '@mysten/sui/transactions';
 

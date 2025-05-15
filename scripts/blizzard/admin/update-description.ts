@@ -1,5 +1,5 @@
 import { OWNED_OBJECTS, SHARED_OBJECTS } from '@interest-protocol/blizzard-sdk';
-import { executeTx } from '@interest-protocol/utils';
+import { executeTx } from '@interest-protocol/sui-utils';
 
 import { blizzardSDK, wwalAcl } from '../utils.script';
 

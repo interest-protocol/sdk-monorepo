@@ -1,5 +1,5 @@
 import { COIN_TYPES, POOLS } from '@interest-protocol/interest-stable-swap-sdk';
-import { executeTx, keypair } from '@interest-protocol/utils';
+import { executeTx, keypair } from '@interest-protocol/sui-utils';
 import { coinWithBalance } from '@mysten/sui/transactions';
 
 import { stableSwapSDK } from '../utils.script';

@@ -1,5 +1,5 @@
 import { SHARED_OBJECTS } from '@interest-protocol/blizzard-sdk';
-import { executeTx } from '@interest-protocol/utils';
+import { executeTx } from '@interest-protocol/sui-utils';
 
 import { blizzardSDK } from '../utils.script';
 

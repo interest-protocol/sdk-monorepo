@@ -1,4 +1,4 @@
-import { logSuccess } from '@interest-protocol/utils';
+import { logSuccess } from '@interest-protocol/sui-utils';
 
 import { blizzardSDK } from '../utils.script';
 

@@ -1,4 +1,4 @@
-import { executeTx, keypair } from '@interest-protocol/utils';
+import { executeTx, keypair } from '@interest-protocol/sui-utils';
 
 import { OWNED_OBJECTS } from '../../../packages/interest-stable-swap-sdk/src';
 import { acl } from '../utils.script';
