@@ -30,8 +30,6 @@ invariant(process.env.KEY, 'Private key missing');
 
   const command = `tsx ./scripts/${path}.ts`;
 
-  console.log(command);
-
   exec(command, (error, stdout) => {
     if (error) {
       console.error(`Error executing command: ${error}`);
