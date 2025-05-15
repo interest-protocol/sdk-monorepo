@@ -9,5 +9,5 @@ import { getEnv } from '../utils.script';
     configurationKey: configKeys.MEMEZ,
   });
 
-  logSuccess(fees);
+  logSuccess('get-fees', fees);
 })();

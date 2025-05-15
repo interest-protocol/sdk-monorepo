@@ -7,5 +7,5 @@ import { getEnv } from '../utils.script';
 
   const r = await stableSdk.getStablePool(testnetStablePoolId);
 
-  logSuccess(r);
+  logSuccess('get-stable-pool', r);
 })();

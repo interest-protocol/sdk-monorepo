@@ -11,5 +11,5 @@ import { blizzardSDK, POW_9 } from '../utils.script';
     }).objectId,
   });
 
-  logSuccess(`FCFS: ${fcfs}`);
+  logSuccess('view-fcfs', fcfs);
 })();

@@ -7,5 +7,5 @@ import { blizzardAcl } from '../utils.script';
     admin: OWNED_OBJECTS.BLIZZARD_ADMIN,
   });
 
-  logSuccess(`Is admin: ${isAdmin}`);
+  logSuccess('is-admin', isAdmin);
 })();

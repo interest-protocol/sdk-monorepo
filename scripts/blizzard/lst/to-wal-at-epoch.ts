@@ -12,5 +12,5 @@ import { blizzardSDK } from '../utils.script';
     value: 1_000_000_000n,
   });
 
-  logSuccess(`WAL: ${wal}`);
+  logSuccess('to-wal-at-epoch', wal);
 })();

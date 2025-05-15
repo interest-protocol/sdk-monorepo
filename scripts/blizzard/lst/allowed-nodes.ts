@@ -8,5 +8,5 @@ import { blizzardSDK } from '../utils.script';
     SHARED_OBJECTS.WWAL_STAKING({ mutable: true })
   );
 
-  logSuccess(`Allowed nodes: ${allowedNodes}`);
+  logSuccess('allowed-nodes', allowedNodes);
 })();

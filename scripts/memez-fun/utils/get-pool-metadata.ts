@@ -14,5 +14,5 @@ import { getEnv } from '../utils.script';
     curveType: pool.curveType,
   });
 
-  logSuccess(`Pool Metadata: ${JSON.stringify(r, null, 2)}`);
+  logSuccess('get-pool-metadata', r);
 })();

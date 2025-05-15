@@ -1,5 +1,6 @@
 import { OWNED_OBJECTS, SHARED_OBJECTS } from '@interest-protocol/blizzard-sdk';
 import { executeTx, keypair } from '@interest-protocol/sui-utils';
+import invariant from 'tiny-invariant';
 
 import { blizzardSDK, wwalAcl } from '../utils.script';
 
@@ -17,6 +18,9 @@ import { blizzardSDK, wwalAcl } from '../utils.script';
       mutable: true,
     }).objectId,
   });
+
+  invariant(lst, 'lst is required');
+  invariant(wal, 'wal is required');
 
   tx.transferObjects([lst, wal], keypair.toSuiAddress());
 

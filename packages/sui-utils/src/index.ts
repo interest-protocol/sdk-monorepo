@@ -13,11 +13,11 @@ export const executeTx = async (tx: Transaction, client = suiClient) => {
 
   // return if the tx hasn't succeed
   if (result.effects?.status?.status !== 'success') {
-    logError('\n\nTX failed');
+    logError('tx-failed', result.errors);
     return;
   }
 
-  logSuccess(`Success with digest: ${result.digest}`);
+  logSuccess('tx-success', result.digest);
 
   if (result.effects.created) {
     logInfo(result.effects.created);

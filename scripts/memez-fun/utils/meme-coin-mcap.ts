@@ -14,5 +14,5 @@ import { getEnv } from '../utils.script';
     quoteUSDPrice: 5,
   });
 
-  logSuccess(`Market Cap: ${marketCap}`);
+  logSuccess('meme-coin-mcap', marketCap);
 })();

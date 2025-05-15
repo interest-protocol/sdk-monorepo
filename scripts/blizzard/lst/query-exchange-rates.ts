@@ -1,5 +1,6 @@
 import { PACKAGES } from '@interest-protocol/blizzard-sdk';
-import { logSuccess, suiClient } from '@interest-protocol/sui-utils';
+import { logSuccess } from '@interest-protocol/logger';
+import { suiClient } from '@interest-protocol/sui-utils';
 
 const EVENT = `${PACKAGES.BLIZZARD.original}::blizzard_event_wrapper::BlizzardEvent<${PACKAGES.BLIZZARD.original}::blizzard_events::SyncExchangeRate>`;
 
@@ -11,6 +12,7 @@ const EVENT = `${PACKAGES.BLIZZARD.original}::blizzard_event_wrapper::BlizzardEv
   });
 
   logSuccess(
+    'query-exchange-rates',
     events.data.filter((event) =>
       (event.parsedJson as any).pos0.lst.name.includes('MWAL')
     )

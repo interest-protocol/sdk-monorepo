@@ -10,5 +10,5 @@ import { getEnv } from '../utils.script';
     amount: 15n * POW_10_9,
   });
 
-  logSuccess(x);
+  logSuccess('quote-pump', x);
 })();

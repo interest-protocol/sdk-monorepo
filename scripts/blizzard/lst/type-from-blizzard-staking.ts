@@ -10,5 +10,5 @@ import { blizzardSDK } from '../utils.script';
     }).objectId
   );
 
-  logSuccess(`Type: ${type}`);
+  logSuccess('type-from-blizzard-staking', type);
 })();

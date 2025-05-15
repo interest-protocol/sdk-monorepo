@@ -12,5 +12,5 @@ import { blizzardSDK } from '../utils.script';
     value: 1_000_000_000n * 1000n,
   });
 
-  logSuccess(`LST: ${lst}`);
+  logSuccess('to-lst-at-epoch', lst);
 })();

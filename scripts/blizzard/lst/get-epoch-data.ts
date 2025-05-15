@@ -5,5 +5,5 @@ import { blizzardSDK } from '../utils.script';
 (async () => {
   const epochData = await blizzardSDK.getEpochData();
 
-  logSuccess(`Epoch data: ${epochData}`);
+  logSuccess('get-epoch-data', epochData);
 })();

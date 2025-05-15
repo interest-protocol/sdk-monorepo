@@ -26,7 +26,10 @@ const memePriceInSui = memePriceInUsd.div(SUI_PRICE_USD);
 */
 
 logSuccess([
+  'meme-price-in-usd',
   memePriceInUsd.toString(),
+  'meme-price-in-sui',
   memePriceInSui.toString(),
+  'price-in-sqrt-x64',
   TickMath.priceToSqrtPriceX64(memePriceInSui, 9, 9).toString(),
 ]);

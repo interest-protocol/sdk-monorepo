@@ -8,5 +8,5 @@ import { blizzardAcl } from '../utils.script';
     SHARED_OBJECTS.BLIZZARD_ACL({ mutable: false }).objectId
   );
 
-  logSuccess(`ACL Type: ${type}`);
+  logSuccess('type-from-blizzard-acl', type);
 })();

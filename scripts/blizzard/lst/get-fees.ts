@@ -8,5 +8,5 @@ import { blizzardSDK } from '../utils.script';
     SHARED_OBJECTS.TR_WAL_STAKING({ mutable: false }).objectId
   );
 
-  logSuccess(`Fees: ${fees}`);
+  logSuccess('get-fees', fees);
 })();

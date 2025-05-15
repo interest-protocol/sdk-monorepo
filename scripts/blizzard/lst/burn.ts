@@ -2,6 +2,7 @@ import { SHARED_OBJECTS, TYPES } from '@interest-protocol/blizzard-sdk';
 import { executeTx, keypair } from '@interest-protocol/sui-utils';
 import { coinWithBalance } from '@mysten/sui/transactions';
 import { Transaction } from '@mysten/sui/transactions';
+import invariant from 'tiny-invariant';
 
 import { blizzardSDK, MAX_BPS, POW_9 } from '../utils.script';
 
@@ -30,6 +31,8 @@ import { blizzardSDK, MAX_BPS, POW_9 } from '../utils.script';
     }).objectId,
   });
 
+  invariant(withdrawIXs, 'withdrawIXs is required');
+
   const {
     returnValues: [extraLst, stakedWalVector],
   } = await blizzardSDK.burnLst({
@@ -41,7 +44,11 @@ import { blizzardSDK, MAX_BPS, POW_9 } from '../utils.script';
     }).objectId,
   });
 
+  invariant(extraLst, 'extraLst is required');
+
   tx.transferObjects([extraLst], keypair.toSuiAddress());
+
+  invariant(stakedWalVector, 'stakedWalVector is required');
 
   blizzardSDK.vectorTransferStakedWal({
     tx,

@@ -1,5 +1,6 @@
 import { PACKAGES } from '@interest-protocol/blizzard-sdk';
-import { logSuccess, suiClient } from '@interest-protocol/sui-utils';
+import { logSuccess } from '@interest-protocol/logger';
+import { suiClient } from '@interest-protocol/sui-utils';
 
 (async () => {
   const lst = await suiClient.queryEvents({
@@ -19,6 +20,9 @@ import { logSuccess, suiClient } from '@interest-protocol/sui-utils';
     },
   });
 
-  logSuccess(objects.map((x) => x.data?.content));
-  logSuccess(objects.map((x) => x.data?.content).length);
+  logSuccess(
+    'query-lsts',
+    objects.map((x) => x.data?.content)
+  );
+  logSuccess('query-lsts-length', objects.map((x) => x.data?.content).length);
 })();

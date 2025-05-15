@@ -9,5 +9,5 @@ import { getEnv } from '../utils.script';
     admin: ownedObjects.ADMIN,
   });
 
-  logSuccess(`isAdmin: ${result}`);
+  logSuccess('is-admin', result);
 })();
