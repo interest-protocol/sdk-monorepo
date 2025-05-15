@@ -18,6 +18,7 @@
     "vitest": "^0.34.4"
   },
   "dependencies": {
+    "@interest-protocol/logger": "workspace:*",
     "@interest-protocol/blizzard-sdk": "workspace:*",
     "@interest-protocol/sui-utils": "workspace:*",
     "@mysten/sui": "^1.29.1",

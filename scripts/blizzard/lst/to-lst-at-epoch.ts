@@ -1,5 +1,5 @@
 import { SHARED_OBJECTS } from '@interest-protocol/blizzard-sdk';
-import { logSuccess } from '@interest-protocol/sui-utils';
+import { logSuccess } from '@interest-protocol/logger';
 
 import { blizzardSDK } from '../utils.script';
 

@@ -159,6 +159,25 @@ importers:
         specifier: ^8.3.6
         version: 8.4.0(postcss@8.5.3)(tsx@4.19.4)(typescript@5.8.3)(yaml@2.7.1)
 
+  packages/logger:
+    dependencies:
+      chalk:
+        specifier: ^5.4.1
+        version: 5.4.1
+    devDependencies:
+      '@interest-protocol/prettier-config':
+        specifier: workspace:*
+        version: link:../../tools/prettier-config
+      '@interest-protocol/typescript-config':
+        specifier: workspace:*
+        version: link:../../tools/typescript-config
+      rimraf:
+        specifier: ^5.0.1
+        version: 5.0.10
+      tsup:
+        specifier: ^7.2.0
+        version: 7.3.0(postcss@8.5.3)(typescript@5.8.3)
+
   packages/memez-fun-sdk:
     dependencies:
       '@cetusprotocol/cetus-sui-clmm-sdk':
@@ -241,12 +260,12 @@ importers:
 
   packages/sui-utils:
     dependencies:
+      '@interest-protocol/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@mysten/sui':
         specifier: ^1.29.1
         version: 1.29.1(typescript@5.8.3)
-      chalk:
-        specifier: ^5.4.1
-        version: 5.4.1
     devDependencies:
       '@interest-protocol/prettier-config':
         specifier: workspace:*
@@ -272,6 +291,9 @@ importers:
       '@interest-protocol/blizzard-sdk':
         specifier: workspace:*
         version: link:../../packages/blizzard-sdk
+      '@interest-protocol/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
       '@interest-protocol/sui-utils':
         specifier: workspace:*
         version: link:../../packages/sui-utils
@@ -315,6 +337,9 @@ importers:
       '@interest-protocol/interest-stable-swap-sdk':
         specifier: workspace:*
         version: link:../../packages/interest-stable-swap-sdk
+      '@interest-protocol/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
       '@interest-protocol/sui-core-sdk':
         specifier: workspace:*
         version: link:../../packages/sui-core-sdk
@@ -346,6 +371,9 @@ importers:
       '@interest-protocol/acl-sdk':
         specifier: workspace:*
         version: link:../../packages/acl-sdk
+      '@interest-protocol/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
       '@interest-protocol/memez-fun-sdk':
         specifier: workspace:*
         version: link:../../packages/memez-fun-sdk

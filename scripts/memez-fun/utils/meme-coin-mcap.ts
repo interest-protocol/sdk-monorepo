@@ -1,5 +1,5 @@
+import { logSuccess } from '@interest-protocol/logger';
 import { getMemeCoinMarketCap } from '@interest-protocol/memez-fun-sdk';
-import { logSuccess } from '@interest-protocol/sui-utils';
 
 import { getEnv } from '../utils.script';
 (async () => {

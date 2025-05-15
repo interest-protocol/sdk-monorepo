@@ -11,7 +11,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "clean": "pnpm -r clean",
-    "build:all": "pnpm --filter @interest-protocol/sui-core-sdk build && pnpm --filter @interest-protocol/acl-sdk build && pnpm --filter @interest-protocol/interest-stable-swap-sdk build && pnpm --filter @interest-protocol/memez-fun-sdk build && pnpm --filter @interest-protocol/sui-utils build && pnpm --filter @interest-protocol/blizzard-sdk build",
+    "build:all": "pnpm --filter \"@interest-protocol/*\" --stream build",
     "exec-script": "tsx ./exec-script.ts"
   },
   "workspaces": {

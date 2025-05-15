@@ -14,6 +14,7 @@
     "vitest": "^0.34.4"
   },
   "dependencies": {
+    "@interest-protocol/logger": "workspace:*",
     "@interest-protocol/interest-stable-swap-sdk": "workspace:*",
     "@interest-protocol/sui-core-sdk": "workspace:*",
     "@interest-protocol/sui-utils": "workspace:*",

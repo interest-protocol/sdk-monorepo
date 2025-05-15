@@ -1,5 +1,5 @@
 import { TickMath } from '@cetusprotocol/cetus-sui-clmm-sdk';
-import { logSuccess } from '@interest-protocol/sui-utils';
+import { logSuccess } from '@interest-protocol/logger';
 import Decimal from 'decimal.js';
 
 Decimal.config({

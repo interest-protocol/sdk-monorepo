@@ -1,7 +1,7 @@
 {
-  "name": "@interest-protocol/sui-utils",
+  "name": "@interest-protocol/logger",
   "version": "0.0.1",
-  "description": "Utility functions",
+  "description": "Logger",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -31,13 +31,10 @@
   "devDependencies": {
     "@interest-protocol/prettier-config": "workspace:*",
     "@interest-protocol/typescript-config": "workspace:*",
-    "@types/ramda": "^0.30.2",
     "rimraf": "^5.0.1",
-    "tsup": "^7.2.0",
-    "vitest": "^0.34.4"
+    "tsup": "^7.2.0"
   },
   "dependencies": {
-    "@interest-protocol/logger": "workspace:*",
-    "@mysten/sui": "^1.29.1"
+    "chalk": "^5.4.1"
   }
 }

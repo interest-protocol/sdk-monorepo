@@ -6,6 +6,7 @@
     { "path": "./packages/interest-stable-swap-sdk" },
     { "path": "./packages/acl-sdk" },
     { "path": "./packages/sui-utils" },
-    { "path": "./packages/blizzard-sdk" }
+    { "path": "./packages/blizzard-sdk" },
+    { "path": "./packages/logger" }
   ]
 }

@@ -1,5 +1,5 @@
 import { POOLS } from '@interest-protocol/interest-stable-swap-sdk';
-import { logSuccess } from '@interest-protocol/sui-utils';
+import { logSuccess } from '@interest-protocol/logger';
 
 import { stableSwapSDK } from '../utils.script';
 

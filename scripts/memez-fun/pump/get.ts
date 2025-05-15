@@ -1,4 +1,4 @@
-import { logSuccess } from '@interest-protocol/sui-utils';
+import { logSuccess } from '@interest-protocol/logger';
 
 import { getEnv } from '../utils.script';
 

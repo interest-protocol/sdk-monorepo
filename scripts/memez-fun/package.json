@@ -19,6 +19,7 @@
     "vitest": "^0.34.4"
   },
   "dependencies": {
+    "@interest-protocol/logger": "workspace:*",
     "@interest-protocol/acl-sdk": "workspace:*",
     "@interest-protocol/memez-fun-sdk": "workspace:*",
     "@interest-protocol/sui-core-sdk": "workspace:*",
