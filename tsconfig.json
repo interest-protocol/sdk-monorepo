@@ -2,9 +2,10 @@
   "files": [],
   "references": [
     { "path": "./packages/sui-core-sdk" },
-    { "path": "./packages/memez-sdk" },
     { "path": "./packages/memez-fun-sdk" },
+    { "path": "./packages/interest-stable-swap-sdk" },
     { "path": "./packages/acl-sdk" },
-    { "path": "./packages/utils" }
+    { "path": "./packages/utils" },
+    { "path": "./packages/blizzard-sdk" }
   ]
 }

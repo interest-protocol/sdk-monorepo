@@ -1,0 +1,51 @@
+{
+  "name": "@interest-protocol/interest-stable-swap-sdk",
+  "author": "jose cerqueira",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "version": "1.0.1",
+  "description": "interest stable swap sdk",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "build:types": "tsc --project tsconfig.json",
+    "build:tsup": "tsup './src/index.ts' --format esm,cjs --sourcemap",
+    "build": "pnpm run clean && pnpm run build:tsup && pnpm run build:types",
+    "dev": "tsc --watch"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "devDependencies": {
+    "@interest-protocol/prettier-config": "workspace:*",
+    "@interest-protocol/typescript-config": "workspace:*",
+    "@types/bn.js": "^5.1.6",
+    "@types/node": "^20.17.19",
+    "@types/ramda": "^0.30.2",
+    "bn.js": "^5.2.1",
+    "decimal.js": "^10.5.0",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.3.6"
+  },
+  "dependencies": {
+    "@interest-protocol/sui-core-sdk": "workspace:*",
+    "@mysten/sui": "^1.21.2",
+    "@polymedia/suitcase-core": "^0.0.36",
+    "ramda": "^0.30.1",
+    "tiny-invariant": "^1.3.3"
+  }
+}
