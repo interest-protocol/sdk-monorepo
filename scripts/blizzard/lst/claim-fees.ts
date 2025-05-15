@@ -1,6 +1,7 @@
 import { OWNED_OBJECTS, SHARED_OBJECTS } from '@interest-protocol/blizzard-sdk';
+import { executeTx, keypair } from '@interest-protocol/utils';
 
-import { blizzardSDK, executeTx, keypair, wwalAcl } from '../utils.script';
+import { blizzardSDK, wwalAcl } from '../utils.script';
 
 (async () => {
   const { tx, returnValues } = await wwalAcl.signIn({

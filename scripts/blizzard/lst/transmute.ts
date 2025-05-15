@@ -1,14 +1,9 @@
 import { SHARED_OBJECTS, TYPES } from '@interest-protocol/blizzard-sdk';
+import { executeTx, keypair } from '@interest-protocol/utils';
 import { coinWithBalance } from '@mysten/sui/transactions';
 import { Transaction } from '@mysten/sui/transactions';
 
-import {
-  blizzardSDK,
-  executeTx,
-  keypair,
-  MAX_BPS,
-  POW_9,
-} from '../utils.script';
+import { blizzardSDK, MAX_BPS, POW_9 } from '../utils.script';
 
 (async () => {
   const txb = new Transaction();

@@ -118,6 +118,9 @@ importers:
 
   packages/utils:
     dependencies:
+      '@mysten/sui':
+        specifier: ^1.29.1
+        version: 1.29.1(typescript@5.8.3)
       chalk:
         specifier: ^5.4.1
         version: 5.4.1

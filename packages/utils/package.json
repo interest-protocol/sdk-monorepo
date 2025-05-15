@@ -37,6 +37,7 @@
     "vitest": "^0.34.4"
   },
   "dependencies": {
+    "@mysten/sui": "^1.29.1",
     "chalk": "^5.4.1"
   }
 }

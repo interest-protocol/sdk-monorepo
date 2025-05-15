@@ -1,6 +1,7 @@
 import { SHARED_OBJECTS } from '@interest-protocol/blizzard-sdk';
+import { executeTx } from '@interest-protocol/utils';
 
-import { blizzardSDK, executeTx } from '../utils.script';
+import { blizzardSDK } from '../utils.script';
 
 (async () => {
   const { tx } = await blizzardSDK.syncExchangeRate({

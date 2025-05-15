@@ -1,7 +1,5 @@
 import { PACKAGES } from '@interest-protocol/blizzard-sdk';
-import { logSuccess } from '@interest-protocol/utils';
-
-import { suiClient } from '../utils.script';
+import { logSuccess, suiClient } from '@interest-protocol/utils';
 
 (async () => {
   const lst = await suiClient.queryEvents({

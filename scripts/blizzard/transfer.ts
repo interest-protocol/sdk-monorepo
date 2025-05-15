@@ -1,7 +1,6 @@
+import { executeTx } from '@interest-protocol/utils';
 import { Transaction } from '@mysten/sui/transactions';
 import invariant from 'tiny-invariant';
-
-import { executeTx } from './utils.script';
 
 (async () => {
   const superAdminRecipient = '';

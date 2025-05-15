@@ -1,6 +1,7 @@
 import { OWNED_OBJECTS, SHARED_OBJECTS } from '@interest-protocol/blizzard-sdk';
+import { executeTx } from '@interest-protocol/utils';
 
-import { blizzardSDK, executeTx, wwalAcl } from '../utils.script';
+import { blizzardSDK, wwalAcl } from '../utils.script';
 
 const allowedNodes = [
   // MIRAI

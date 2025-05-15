@@ -1,11 +1,11 @@
-import { TYPES } from '../blizzard/constants';
-import { log, suiClient } from './utils.script';
+import { TYPES } from '@interest-protocol/blizzard-sdk';
+import { logSuccess, suiClient } from '@interest-protocol/utils';
 
 (async () => {
   const metadata = await suiClient.getCoinMetadata({
     coinType: TYPES.WWAL,
   });
 
-  log(metadata);
-  log(TYPES.WWAL);
+  logSuccess(metadata);
+  logSuccess(TYPES.WWAL);
 })();

@@ -1,8 +1,7 @@
 import { OWNED_OBJECTS, TYPES } from '@interest-protocol/blizzard-sdk';
+import { executeTx } from '@interest-protocol/utils';
 import { Transaction } from '@mysten/sui/transactions';
 import { SUI_FRAMEWORK_ADDRESS } from '@mysten/sui/utils';
-
-import { executeTx } from '../utils.script';
 
 (async () => {
   const tx = new Transaction();

@@ -1,7 +1,8 @@
 import { OWNED_OBJECTS } from '@interest-protocol/blizzard-sdk';
+import { executeTx } from '@interest-protocol/utils';
 import invariant from 'tiny-invariant';
 
-import { executeTx, wwalAcl } from '../utils.script';
+import { wwalAcl } from '../utils.script';
 
 const recipient = '';
 

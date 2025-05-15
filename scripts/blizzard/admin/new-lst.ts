@@ -1,7 +1,8 @@
 import { OWNED_OBJECTS } from '@interest-protocol/blizzard-sdk';
+import { executeTx } from '@interest-protocol/utils';
 import invariant from 'tiny-invariant';
 
-import { blizzardAcl, blizzardSDK, executeTx } from '../utils.script';
+import { blizzardAcl, blizzardSDK } from '../utils.script';
 
 const LST_TREASURY_CAP =
   '0x390082df42428e33c5c4a3a9ec9a33567f8748e2cb5a6c4953c7a884f032e2b5';
