@@ -51,7 +51,5 @@ const VIDEO_CREATOR = '0x2';
 
   tx.transferObjects([metadataCap], tx.pure.address(recipient));
 
-  const result = await executeTx(tx2);
-
-  console.log(result);
+  await executeTx(tx2);
 })();

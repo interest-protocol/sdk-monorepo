@@ -3,7 +3,7 @@ import {
   ObjectInput,
   StructTag,
   U64,
-} from '@interest-protocol/acl-sdk';
+} from '@interest-protocol/sui-core-sdk';
 import { ObjectRef } from '@mysten/sui/transactions';
 
 import {

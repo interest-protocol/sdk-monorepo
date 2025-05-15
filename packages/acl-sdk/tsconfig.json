@@ -20,7 +20,7 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": "."
   },
-  "references": [{ "path": "../sui-core-sdk" }, { "path": "../acl-sdk" }],
+  "references": [{ "path": "../sui-core-sdk" }],
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

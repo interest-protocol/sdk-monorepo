@@ -1,3 +1,5 @@
+import { logSuccess } from '@interest-protocol/utils';
+
 import { getEnv } from '../utils.script';
 
 (async () => {
@@ -8,5 +10,5 @@ import { getEnv } from '../utils.script';
     amount: 1_500_000n * POW_10_9,
   });
 
-  console.log(x);
+  logSuccess(x);
 })();

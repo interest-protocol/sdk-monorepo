@@ -4,6 +4,7 @@
     { "path": "./packages/sui-core-sdk" },
     { "path": "./packages/memez-sdk" },
     { "path": "./packages/memez-fun-sdk" },
+    { "path": "./packages/acl-sdk" },
     { "path": "./packages/utils" }
   ]
 }

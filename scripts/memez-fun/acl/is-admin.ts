@@ -1,3 +1,5 @@
+import { logSuccess } from '@interest-protocol/utils';
+
 import { getEnv } from '../utils.script';
 
 (async () => {
@@ -7,5 +9,5 @@ import { getEnv } from '../utils.script';
     admin: ownedObjects.ADMIN,
   });
 
-  console.log(result);
+  logSuccess(`isAdmin: ${result}`);
 })();

@@ -42,7 +42,5 @@ const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
 
   tx.transferObjects([metadataCap], tx.pure.address(recipient));
 
-  const result = await executeTx(tx2);
-
-  console.log(result);
+  await executeTx(tx2);
 })();

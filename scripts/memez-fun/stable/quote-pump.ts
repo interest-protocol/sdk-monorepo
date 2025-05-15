@@ -1,3 +1,5 @@
+import { logSuccess } from '@interest-protocol/utils';
+
 import { getEnv } from '../utils.script';
 
 (async () => {
@@ -7,5 +9,6 @@ import { getEnv } from '../utils.script';
     pool: testnetStablePoolId,
     amount: 20n * POW_10_9,
   });
-  console.log(x);
+
+  logSuccess(x);
 })();
