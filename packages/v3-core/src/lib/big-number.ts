@@ -18,4 +18,13 @@ export const sort = (x: BigNumber, y: BigNumber) => (x.gt(y) ? [y, x] : [x, y]);
 
 export const min = (x: BigNumber, y: BigNumber) => (x.lt(y) ? x : y);
 
+export const bitwiseOr = (a: BigNumber, b: BigNumber) => {
+  // Convert BigNumber to BigInt, perform OR, then back to BigNumber
+  const aBigInt = BigInt(a.toString());
+  const bBigInt = BigInt(b.toString());
+  const resultBigInt = aBigInt | bBigInt;
+
+  return new BigNumber(resultBigInt.toString());
+};
+
 export default BigNumber;
