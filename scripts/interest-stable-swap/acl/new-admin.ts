@@ -1,6 +1,6 @@
+import { OWNED_OBJECTS } from '@interest-protocol/interest-stable-swap-sdk';
 import { executeTx, keypair } from '@interest-protocol/sui-utils';
 
-import { OWNED_OBJECTS } from '../../../packages/interest-stable-swap-sdk/src';
 import { acl } from '../utils.script';
 
 const recipient = keypair.toSuiAddress();
