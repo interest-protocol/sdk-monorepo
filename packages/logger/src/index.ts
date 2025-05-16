@@ -6,10 +6,11 @@ chalk.level = 3; // Level 3 = 16m colors (TrueColor)
 
 // Configurable options
 const inspectOptions = {
-  depth: null,
+  depth: 5,
   colors: true,
-  maxArrayLength: null,
-  maxStringLength: null,
+  maxArrayLength: 10,
+  maxStringLength: 100,
+  compact: false,
 };
 
 // Helper to ensure all args are properly formatted

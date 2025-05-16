@@ -1,3 +1,4 @@
+import { Network } from '@interest-protocol/sui-core-sdk';
 import { Transaction } from '@mysten/sui/transactions';
 import { isValidSuiAddress } from '@mysten/sui/utils';
 import invariant from 'tiny-invariant';
@@ -64,6 +65,11 @@ export class RecrdMigratorSDK extends MemezBaseSDK {
 
   constructor(args: SdkConstructorArgs | undefined | null = null) {
     super(args);
+
+    invariant(
+      this.network === Network.MAINNET,
+      'Recrd migrator is only available on mainnet'
+    );
   }
 
   public setRewardValue({

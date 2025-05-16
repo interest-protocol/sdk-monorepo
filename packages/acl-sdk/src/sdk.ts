@@ -23,8 +23,14 @@ export class SDK extends SuiCoreSDK {
     this.package = data.package;
   }
 
-  public rpcUrl() {
-    return this.#rpcUrl;
+  public env() {
+    return {
+      rpcUrl: this.#rpcUrl,
+      otw: this.otw,
+      aclObjectId: this.aclObjectId,
+      aclInitialSharedVersion: this.aclInitialSharedVersion,
+      package: this.package,
+    };
   }
 
   signIn({ tx = new Transaction(), admin }: SignInArgs) {
