@@ -649,7 +649,7 @@ export class InterestCurve {
     const data = await this.#client.view({ payload });
 
     return {
-      amountsOut: data[0],
+      amountsOut: data[0] as string[],
     };
   }
 
