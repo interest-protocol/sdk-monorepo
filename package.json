@@ -13,8 +13,7 @@
     "clean": "pnpm -r clean",
     "build:all": "pnpm --filter \"@interest-protocol/*\" --stream build",
     "exec:script": "tsx ./scripts/set-up/exec-script.ts",
-    "create:package": "tsx ./scripts/set-up/create-package.ts",
-    "setup-pkg": "node tools/rollup/setup-package.js"
+    "create:package": "tsx ./scripts/set-up/create-package.ts"
   },
   "workspaces": {
     "packages": [
