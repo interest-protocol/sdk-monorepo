@@ -19,7 +19,7 @@ export default [
       'packages/*/dist/**',
       'packages/*/jest.config.js',
       'packages/*/rollup.config.js',
-      'packages/*/check-build.js',
+      'packages/*/check-bundle.js',
     ],
   },
 ];

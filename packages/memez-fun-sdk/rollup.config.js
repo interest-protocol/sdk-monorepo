@@ -4,22 +4,23 @@ const typescript = require('@rollup/plugin-typescript');
 const pkg = require('./package.json');
 
 // Get workspace dependencies from dependencies
-const workspaceDeps = Object.keys(pkg.dependencies || {})
-  .filter(dep => pkg.dependencies[dep].startsWith('workspace:'));
+const workspaceDeps = Object.keys(pkg.dependencies || {}).filter((dep) =>
+  pkg.dependencies[dep].startsWith('workspace:')
+);
 
 // Filter out published workspace dependencies
-const publishedWorkspaceDeps = pkg.publishConfig?.dependencies 
-  ? Object.keys(pkg.publishConfig.dependencies) 
+const publishedWorkspaceDeps = pkg.publishConfig?.dependencies
+  ? Object.keys(pkg.publishConfig.dependencies)
   : [];
 
 // Create a list of external dependencies
 const external = [
   // Regular dependencies
   ...Object.keys(pkg.dependencies || {}).filter(
-    dep => !workspaceDeps.includes(dep)
+    (dep) => !workspaceDeps.includes(dep)
   ),
   // Published workspace dependencies
-  ...publishedWorkspaceDeps
+  ...publishedWorkspaceDeps,
 ];
 
 module.exports = {
@@ -28,18 +29,24 @@ module.exports = {
     {
       file: 'dist/index.js',
       format: 'cjs',
-      sourcemap: true
+      sourcemap: true,
     },
     {
       file: 'dist/index.mjs',
       format: 'esm',
-      sourcemap: true
-    }
+      sourcemap: true,
+    },
   ],
   external,
   plugins: [
-    resolve(),
+    resolve({
+      extensions: ['.ts', '.tsx', '.js', '.jsx'],
+      preserveSymlinks: false,
+    }),
     commonjs(),
-    typescript()
-  ]
+    typescript({
+      tsconfig: './tsconfig.json',
+      declaration: true,
+    }),
+  ],
 };

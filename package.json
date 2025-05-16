@@ -13,7 +13,8 @@
     "clean": "pnpm -r clean",
     "build:all": "pnpm --filter \"@interest-protocol/*\" --stream build",
     "exec:script": "tsx ./scripts/set-up/exec-script.ts",
-    "create:package": "tsx ./scripts/set-up/create-package.ts"
+    "create:package": "tsx ./scripts/set-up/create-package.ts",
+    "publish:pkg": "./publish-package.sh"
   },
   "workspaces": {
     "packages": [
@@ -30,7 +31,6 @@
   "author": "Interest Protocol",
   "license": "ISC",
   "devDependencies": {
-    "@changesets/cli": "^2.29.4",
     "@eslint/js": "^9.26.0",
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-node-resolve": "^16.0.1",
