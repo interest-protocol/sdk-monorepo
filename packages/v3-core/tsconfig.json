@@ -15,7 +15,13 @@
     "declarationMap": true,
     "composite": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@/lib": ["./src/lib/index.ts"],
+      "@/constants": ["./src/constants.ts"],
+      "@/math": ["./src/math/index.ts"],
+      "@/types": ["./src/types.ts"]
+    }
   },
   "include": ["src/**/*.ts", "types/**/*.d.ts"],
   "exclude": ["node_modules", "dist"]

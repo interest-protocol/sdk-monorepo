@@ -1,4 +1,4 @@
-import { Numberish } from '../types';
+import { Numberish } from '@/types';
 
 export interface EncodeSqrtPriceX64Args {
   amount0: Numberish;
