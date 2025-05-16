@@ -1,6 +1,11 @@
 import { Numberish } from '@/types';
 
-export interface EncodeSqrtPriceX64Args {
+export interface EncodeAmountsSqrtPriceX64Args {
+  amount0: string;
+  amount1: string;
+}
+
+export interface PriceFromAmountsArgs {
   amount0: Numberish;
   amount1: Numberish;
 }
