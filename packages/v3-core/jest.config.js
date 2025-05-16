@@ -7,7 +7,11 @@ const config = {
     '^.+\.tsx?$': [
       'ts-jest',
       {
+<<<<<<< HEAD
         tsconfig: '<rootDir>/tsconfig.json',
+=======
+        tsconfig: '<rootDir>/tsconfig.spec.json',
+>>>>>>> main
       },
     ],
   },

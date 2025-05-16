@@ -18,7 +18,7 @@ import { stableSwapSDK } from '../utils.script';
   });
 
   tx.transferObjects(
-    pool.coins.map((_, i) => coins[i]),
+    pool.coins.map((_, i) => coins[i]!),
     keypair.toSuiAddress()
   );
 
