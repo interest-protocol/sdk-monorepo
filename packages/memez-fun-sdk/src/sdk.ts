@@ -43,7 +43,8 @@ export class MemezBaseSDK extends SuiCoreSDK {
 
   MAX_U64 = 18446744073709551615n;
 
-  #rpcUrl: string;
+  rpcUrl: string;
+  network: Network;
 
   client: SuiClient;
 
@@ -67,15 +68,22 @@ export class MemezBaseSDK extends SuiCoreSDK {
       'You must provide network for this specific network'
     );
 
-    this.#rpcUrl = data.fullNodeUrl;
+    this.rpcUrl = data.fullNodeUrl;
+    this.network = data.network;
     this.packages = PACKAGES[data.network];
     this.sharedObjects = SHARED_OBJECTS[data.network];
     this.client = new SuiClient({ url: data.fullNodeUrl });
     this.memezOTW = `${PACKAGES[data.network].MEMEZ.original}::memez::MEMEZ`;
   }
 
-  public rpcUrl() {
-    return this.#rpcUrl;
+  public env() {
+    return {
+      network: this.network,
+      rpcUrl: this.rpcUrl,
+      packages: this.packages,
+      sharedObjects: this.sharedObjects,
+      memezOTW: this.memezOTW,
+    };
   }
 
   /**
