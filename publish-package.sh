@@ -81,61 +81,65 @@ echo -e "${BLUE}=== Publishing Package: ${CYAN}$FULL_PACKAGE_NAME@$PACKAGE_VERSI
 TEMP_DIR=$(mktemp -d)
 TEMP_PKG_JSON="$TEMP_DIR/package.json"
 BACKUP_PKG_JSON="$PACKAGE_DIR/package.json.bak"
-DEPS_FILE="$TEMP_DIR/deps.txt"
-BUNDLE_DEPS_FILE="$TEMP_DIR/bundle_deps.txt"
 
 # Create a backup of the original package.json
 cp "$PACKAGE_JSON" "$BACKUP_PKG_JSON"
 echo -e "${GREEN}Created backup of package.json${NC}"
 
-# Extract workspace dependencies
-jq -r '.dependencies | to_entries[] | select(.value | type=="string" and startswith("workspace:")) | .key' "$PACKAGE_JSON" > "$DEPS_FILE"
+# Find workspace dependencies (those with "workspace:" prefix)
+WORKSPACE_DEPS=$(jq -r '.dependencies | to_entries[] | select(.value | tostring | startswith("workspace:")) | .key' "$PACKAGE_JSON")
 
-# Extract dependencies from publishConfig if it exists
+# Find which ones are in publishConfig.dependencies
 if jq -e '.publishConfig.dependencies' "$PACKAGE_JSON" > /dev/null; then
-    jq -r '.publishConfig.dependencies | keys[]' "$PACKAGE_JSON" > "$TEMP_DIR/published_deps.txt"
+    PUBLISHED_DEPS=$(jq -r '.publishConfig.dependencies | keys[]' "$PACKAGE_JSON")
 else
-    touch "$TEMP_DIR/published_deps.txt"
+    PUBLISHED_DEPS=""
 fi
 
-# Find dependencies to bundle (in deps but not in publishConfig)
-grep -v -f "$TEMP_DIR/published_deps.txt" "$DEPS_FILE" > "$BUNDLE_DEPS_FILE" || true
+# Calculate which workspace deps should be bundled (not in publishConfig)
+BUNDLED_DEPS=()
+for dep in $WORKSPACE_DEPS; do
+    if ! echo "$PUBLISHED_DEPS" | grep -qFx "$dep"; then
+        BUNDLED_DEPS+=("$dep")
+    fi
+done
 
-# Display workspace dependencies
 echo -e "${YELLOW}Workspace dependencies:${NC}"
-if [ ! -s "$DEPS_FILE" ]; then
+if [ -z "$WORKSPACE_DEPS" ]; then
     echo -e "  ${YELLOW}None${NC}"
 else
-    while read -r dep; do
-        if grep -q "^$dep$" "$BUNDLE_DEPS_FILE"; then
+    for dep in $WORKSPACE_DEPS; do
+        if [[ " ${BUNDLED_DEPS[@]} " =~ " ${dep} " ]]; then
             echo -e "  - ${CYAN}$dep${NC} (will be bundled)"
         else
             echo -e "  - ${CYAN}$dep${NC} (external dependency)"
         fi
-    done < "$DEPS_FILE"
+    done
 fi
 
-# Create a modified package.json for publishing
-if [ ! -s "$BUNDLE_DEPS_FILE" ]; then
+# Create a clean version of package.json for publishing
+if [ ${#BUNDLED_DEPS[@]} -eq 0 ]; then
     echo -e "${YELLOW}No dependencies to bundle. Using original package.json${NC}"
     cp "$PACKAGE_JSON" "$TEMP_PKG_JSON"
 else
     echo -e "${YELLOW}Creating modified package.json without bundled dependencies${NC}"
     
-    # Build a temporary jq filter
-    FILTER=".dependencies"
-    while read -r dep; do
-        FILTER="$FILTER | del(.\"$dep\")"
-    done < "$BUNDLE_DEPS_FILE"
+    # Create a temporary package.json without the bundled dependencies
+    jq -r '.dependencies' "$PACKAGE_JSON" > "$TEMP_DIR/all_deps.json"
     
-    # Apply the filter to create the new package.json
-    jq "$FILTER" "$PACKAGE_JSON" > "$TEMP_DIR/temp1.json"
-    jq -s '.[0] * {"dependencies": .[1]}' "$PACKAGE_JSON" "$TEMP_DIR/temp1.json" > "$TEMP_PKG_JSON"
+    # Remove the bundled dependencies
+    for dep in "${BUNDLED_DEPS[@]}"; do
+        jq "del(.\"$dep\")" "$TEMP_DIR/all_deps.json" > "$TEMP_DIR/temp.json"
+        mv "$TEMP_DIR/temp.json" "$TEMP_DIR/all_deps.json"
+    done
+    
+    # Create a new package.json with the modified dependencies
+    jq --argjson deps "$(cat $TEMP_DIR/all_deps.json)" '.dependencies = $deps' "$PACKAGE_JSON" > "$TEMP_PKG_JSON"
     
     echo -e "${GREEN}Removed these dependencies (they'll be bundled):${NC}"
-    while read -r dep; do
+    for dep in "${BUNDLED_DEPS[@]}"; do
         echo -e "  - ${CYAN}$dep${NC}"
-    done < "$BUNDLE_DEPS_FILE"
+    done
 fi
 
 # Apply the modified package.json
@@ -154,6 +158,38 @@ if [ "$SKIP_BUILD" = false ]; then
 else
     echo -e "\n${YELLOW}Skipping build as requested${NC}"
 fi
+
+# Verify the build
+cd "$PACKAGE_DIR"
+echo -e "\n${BLUE}Verifying build...${NC}"
+if [ -d "dist" ]; then
+    echo -e "${GREEN}✓ dist directory exists${NC}"
+    
+    # Check for specific bundled dependencies in the output
+    for dep in "${BUNDLED_DEPS[@]}"; do
+        if grep -q "require('$dep')" dist/index.js || grep -q "from '$dep'" dist/index.mjs; then
+            echo -e "${RED}✗ Found direct import of $dep in build output!${NC}"
+            echo -e "${RED}The dependency is not properly bundled. Build again with the updated rollup config.${NC}"
+            
+            # Restore the original package.json
+            cp "$BACKUP_PKG_JSON" "$PACKAGE_JSON"
+            rm -f "$BACKUP_PKG_JSON"
+            rm -rf "$TEMP_DIR"
+            exit 1
+        else
+            echo -e "${GREEN}✓ No direct imports of $dep found in build output${NC}"
+        fi
+    done
+else
+    echo -e "${RED}✗ dist directory not found! Build seems to have failed.${NC}"
+    
+    # Restore the original package.json
+    cp "$BACKUP_PKG_JSON" "$PACKAGE_JSON"
+    rm -f "$BACKUP_PKG_JSON"
+    rm -rf "$TEMP_DIR"
+    exit 1
+fi
+cd "$MONOREPO_ROOT"
 
 # Publish the package
 if [ "$DRY_RUN" = true ]; then

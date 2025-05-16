@@ -3,25 +3,25 @@ const commonjs = require('@rollup/plugin-commonjs');
 const typescript = require('@rollup/plugin-typescript');
 const pkg = require('./package.json');
 
-// Get workspace dependencies from dependencies
-const workspaceDeps = Object.keys(pkg.dependencies || {}).filter((dep) =>
-  pkg.dependencies[dep].startsWith('workspace:')
-);
+// Get workspace dependencies
+const workspaceDeps = Object.keys(pkg.dependencies || {})
+  .filter(dep => pkg.dependencies[dep].startsWith('workspace:'));
 
-// Filter out published workspace dependencies
-const publishedWorkspaceDeps = pkg.publishConfig?.dependencies
-  ? Object.keys(pkg.publishConfig.dependencies)
+// Get publishConfig dependencies (which will remain external)
+const publishConfigDeps = pkg.publishConfig?.dependencies 
+  ? Object.keys(pkg.publishConfig.dependencies) 
   : [];
 
-// Create a list of external dependencies
-const external = [
-  // Regular dependencies
-  ...Object.keys(pkg.dependencies || {}).filter(
-    (dep) => !workspaceDeps.includes(dep)
-  ),
-  // Published workspace dependencies
-  ...publishedWorkspaceDeps,
+// Workspace dependencies to bundle (not in publishConfig)
+const depsToBundled = workspaceDeps.filter(dep => !publishConfigDeps.includes(dep));
+
+// All external dependencies
+const allExternalDeps = [
+  ...Object.keys(pkg.dependencies || {}).filter(dep => !depsToBundled.includes(dep))
 ];
+
+console.log('Workspace dependencies to bundle:', depsToBundled);
+console.log('External dependencies:', allExternalDeps);
 
 module.exports = {
   input: 'src/index.ts',
@@ -29,24 +29,25 @@ module.exports = {
     {
       file: 'dist/index.js',
       format: 'cjs',
-      sourcemap: true,
+      sourcemap: true
     },
     {
       file: 'dist/index.mjs',
       format: 'esm',
-      sourcemap: true,
-    },
+      sourcemap: true
+    }
   ],
-  external,
+  external: allExternalDeps,
   plugins: [
     resolve({
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
-      preserveSymlinks: false,
+      // Critical for bundling workspace dependencies
+      preserveSymlinks: false
     }),
     commonjs(),
     typescript({
       tsconfig: './tsconfig.json',
-      declaration: true,
-    }),
-  ],
+      declaration: true
+    })
+  ]
 };
