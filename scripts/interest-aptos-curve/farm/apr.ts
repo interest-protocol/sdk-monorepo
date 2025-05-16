@@ -5,9 +5,10 @@ import invariant from 'tiny-invariant';
 import { curveMainnetSDK } from '../utils';
 
 const USDC_PRICE = 1;
-const MOVE_PRICE = 0.198;
+const MOVE_PRICE = 0.1941;
 const ONE_LP = 1_000_000_000n;
 
+const PRICE_SCALAR = 1_000_000_000;
 const MOVE_DECIMALS_SCALAR = 100_000_000;
 const USDC_DECIMALS_SCALAR = 1_000_000;
 
@@ -39,12 +40,14 @@ const USDC_DECIMALS_SCALAR = 1_000_000;
     (+moveAmount * MOVE_PRICE) / MOVE_DECIMALS_SCALAR;
 
   const rewardsPerYearInUSD =
-    (rewardsInOneYear * BigInt(MOVE_PRICE * 1_000)) / 1_000n / 100_000_000n;
+    (rewardsInOneYear * BigInt(MOVE_PRICE * PRICE_SCALAR)) /
+    BigInt(PRICE_SCALAR) /
+    BigInt(MOVE_DECIMALS_SCALAR);
 
   const currentStakedInFarmInUSD =
-    (farm.stakedBalance * BigInt(Math.floor(valueOfOneLpCoin * 1_000))) /
-    1_000n /
-    1_000_000_000n;
+    (farm.stakedBalance * BigInt(Math.floor(valueOfOneLpCoin * PRICE_SCALAR))) /
+    BigInt(PRICE_SCALAR) /
+    BigInt(ONE_LP);
 
   const apr =
     (Number(rewardsPerYearInUSD) / Number(currentStakedInFarmInUSD)) * 100;
