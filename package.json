@@ -30,6 +30,7 @@
   "author": "Interest Protocol",
   "license": "ISC",
   "devDependencies": {
+    "@changesets/cli": "^2.29.4",
     "@eslint/js": "^9.26.0",
     "@types/node": "^22.15.18",
     "dotenv": "^16.5.0",

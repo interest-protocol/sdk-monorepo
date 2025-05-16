@@ -4,7 +4,18 @@ import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { Transaction } from '@mysten/sui/transactions';
 import invariant from 'tiny-invariant';
 
-export const executeTx = async (tx: Transaction, client = suiClient) => {
+export const suiClient = new SuiClient({
+  url: getFullnodeUrl('mainnet'),
+});
+
+export const testnetSuiClient = new SuiClient({
+  url: getFullnodeUrl('testnet'),
+});
+
+const executeClient =
+  process.env.WEB_3_NETWORK === 'mainnet' ? suiClient : testnetSuiClient;
+
+export const executeTx = async (tx: Transaction, client = executeClient) => {
   const result = await client.signAndExecuteTransaction({
     signer: keypair,
     transaction: tx,
@@ -30,14 +41,6 @@ export const sleep = async (ms = 0) =>
 export function removeLeadingZeros(address: string): string {
   return (address as any).replaceAll(/0x0+/g, '0x');
 }
-
-export const suiClient = new SuiClient({
-  url: getFullnodeUrl('mainnet'),
-});
-
-export const testnetSuiClient = new SuiClient({
-  url: getFullnodeUrl('testnet'),
-});
 
 invariant(process.env.KEY, 'Private key missing');
 

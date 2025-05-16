@@ -1,6 +1,7 @@
 {
   "name": "@interest-protocol/lib",
   "version": "0.0.1",
+  "private": true,
   "description": "Interest Protocol Library",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

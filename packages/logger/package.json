@@ -1,6 +1,7 @@
 {
   "name": "@interest-protocol/logger",
   "version": "0.0.1",
+  "private": true,
   "description": "Logger",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
