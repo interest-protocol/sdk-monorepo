@@ -10,4 +10,9 @@ declare global {
   }
 }
 
-export {};
+declare module 'bignumber.js' {
+  interface BigNumber {
+    shiftLeft(n: number): BigNumber;
+    shiftRight(n: number): BigNumber;
+  }
+}
