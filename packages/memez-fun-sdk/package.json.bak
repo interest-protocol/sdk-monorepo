@@ -22,8 +22,8 @@
     "build": "rollup -c rollup.config.js",
     "build:types": "tsc --emitDeclarationOnly",
     "check-bundle": "node check-bundle.js",
-    "check-build": "node check-bundle.js",
-    "build:check": "pnpm run build && pnpm run check-bundle",
+    "check-build": "node check-build.js",
+    "build:check": "pnpm run build && pnpm run check-build",
     "prepublishOnly": "pnpm run build:check"
   },
   "keywords": [],
