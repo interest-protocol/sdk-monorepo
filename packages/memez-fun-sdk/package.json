@@ -18,13 +18,13 @@
   "version": "6.2.0",
   "description": "",
   "scripts": {
-    "prebuild": "rm -rf dist",
-    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
-    "build:types": "tsc --project tsconfig.json",
-    "build:tsup": "tsup './src/index.ts' --format esm,cjs --sourcemap",
-    "build": "pnpm run clean && pnpm run build:tsup && pnpm run build:types",
-    "prepublishOnly": "pnpm run build",
-    "dev": "tsc --watch"
+    "prebuild": "rimraf dist",
+    "build": "rollup -c rollup.config.js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "check-bundle": "node check-bundle.js",
+    "check-build": "node check-build.js",
+    "build:check": "pnpm run build && pnpm run check-build",
+    "prepublishOnly": "pnpm run build:check"
   },
   "keywords": [],
   "license": "ISC",
