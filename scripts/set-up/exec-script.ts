@@ -1,10 +1,10 @@
 import { exec } from 'child_process';
-import dotenv from 'dotenv';
+import { config } from 'dotenv';
 import invariant from 'tiny-invariant';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-dotenv.config();
+config();
 
 invariant(process.env.KEY, 'Private key missing');
 

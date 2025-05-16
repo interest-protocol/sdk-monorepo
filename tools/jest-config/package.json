@@ -1,0 +1,27 @@
+{
+  "name": "@interest-protocol/jest-config",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "@types/jest": "^29.5.5"
+  },
+  "devDependencies": {
+    "@interest-protocol/typescript-config": "workspace:*",
+    "typescript": "^5.0.0",
+    "rimraf": "^5.0.1"
+  },
+  "peerDependencies": {
+    "typescript": ">=4.0.0"
+  }
+}

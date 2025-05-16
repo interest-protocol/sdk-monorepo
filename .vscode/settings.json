@@ -1,7 +1,6 @@
 {
   "eslint.debug": true,
   "eslint.trace.server": "verbose",
-  "eslint.workingDirectories": [{ "mode": "auto" }],
   "editor.codeActionsOnSave": ["source.fixAll.eslint"],
   "editor.formatOnSave": true,
   "eslint.useFlatConfig": true,
@@ -9,5 +8,13 @@
   "eslint.useESLintClass": true,
   "eslint.options": {
     "cwd": "${workspaceFolder}"
-  }
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+  "eslint.workingDirectories": [
+    { "directory": "packages/*", "changeProcessCWD": true },
+    { "directory": "tools/*", "changeProcessCWD": true }
+  ]
 }

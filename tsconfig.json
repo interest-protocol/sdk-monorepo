@@ -11,6 +11,7 @@
     { "path": "./packages/acl-sdk" },
     { "path": "./packages/sui-utils" },
     { "path": "./packages/blizzard-sdk" },
-    { "path": "./packages/logger" }
+    { "path": "./packages/logger" },
+    { "path": "./packages/v3-core" }
   ]
 }
