@@ -34,36 +34,11 @@ if (!fs.existsSync(jestConfigDir)) {
 
 // Check for templates directory in jest-config
 const jestTemplatesDir = path.join(jestConfigDir, 'templates');
-const tsConfigSpecTemplate = path.join(jestTemplatesDir, 'tsconfig.spec.json');
 
 // Create it if it doesn't exist
 if (!fs.existsSync(jestTemplatesDir)) {
   fs.mkdirSync(jestTemplatesDir, { recursive: true });
   console.log('✅ Created templates directory in jest-config');
-}
-
-// Create tsconfig.spec.json template if it doesn't exist
-if (!fs.existsSync(tsConfigSpecTemplate)) {
-  // Create a more comprehensive tsconfig.spec.json
-  const tsConfigSpecContent = {
-    extends: './tsconfig.json',
-    compilerOptions: {
-      types: ['jest', 'node'],
-      esModuleInterop: true,
-      rootDir: './src', // Changed from '.' to './src'
-      noEmit: true, // No need to emit files for tests
-    },
-    include: ['src/**/*.ts', 'src/**/*.test.ts'], // Only include src directory
-    exclude: ['node_modules', 'dist'],
-  };
-
-  fs.writeFileSync(
-    tsConfigSpecTemplate,
-    JSON.stringify(tsConfigSpecContent, null, 2) + '\n'
-  );
-  console.log(
-    '✅ Created tsconfig.spec.json template in jest-config/templates'
-  );
 }
 
 // Check if package already exists
@@ -154,8 +129,7 @@ const tsConfig = {
     baseUrl: '.',
   },
   include: ['src/**/*.ts'],
-  exclude: ['node_modules', 'dist', '**/*.test.ts'],
-  references: [{ path: './tsconfig.spec.json' }],
+  exclude: ['node_modules', 'dist'],
 };
 
 // REMOVED: Create __tests__/tsconfig.json
@@ -173,13 +147,6 @@ fs.writeFileSync(
 );
 console.log('✅ Created tsconfig.json');
 
-// Copy tsconfig.spec.json from template
-fs.copyFileSync(
-  tsConfigSpecTemplate,
-  path.join(packageDir, 'tsconfig.spec.json')
-);
-console.log('✅ Copied tsconfig.spec.json from template');
-
 // Create jest.config.js with proper test paths
 const jestConfig = `/** @type {import('jest').Config} */
 const config = {
@@ -188,7 +155,7 @@ const config = {
   testMatch: ['<rootDir>/src/**/*.test.(ts|tsx)'],
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
-      tsconfig: '<rootDir>/tsconfig.spec.json',
+      tsconfig: '<rootDir>/tsconfig.json',
     }],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],

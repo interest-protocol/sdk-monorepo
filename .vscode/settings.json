@@ -16,5 +16,6 @@
   "eslint.workingDirectories": [
     { "directory": "packages/*", "changeProcessCWD": true },
     { "directory": "tools/*", "changeProcessCWD": true }
-  ]
+  ],
+  "cSpell.ignoreWords": ["numberish"]
 }

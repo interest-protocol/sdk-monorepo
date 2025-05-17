@@ -2,12 +2,12 @@
 const config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testMatch: ['<rootDir>/src/**/*.test.(ts|tsx)'],
+  testMatch: ['<rootDir>/src/**/*.(test|spec).(ts|tsx)'],
   transform: {
     '^.+\.tsx?$': [
       'ts-jest',
       {
-        tsconfig: '<rootDir>/tsconfig.spec.json',
+        tsconfig: '<rootDir>/tsconfig.json',
       },
     ],
   },
