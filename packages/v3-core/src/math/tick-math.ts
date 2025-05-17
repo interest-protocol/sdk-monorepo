@@ -30,7 +30,7 @@ export abstract class TickMath {
         Number.isInteger(tick),
       'TICK'
     );
-    const absTick: number = tick < 0 ? tick * -1 : tick;
+    const absTick: number = tick < 0 ? Math.abs(tick) : tick;
 
     let ratio: BigNumber =
       (absTick & 0x1) !== 0

@@ -20,7 +20,8 @@
       "@/lib": ["./src/lib/index.ts"],
       "@/constants": ["./src/constants.ts"],
       "@/math": ["./src/math/index.ts"],
-      "@/types": ["./src/types.ts"]
+      "@/types": ["./src/types.ts"],
+      "@/entities": ["./src/entities/index.ts"]
     }
   },
   "include": ["src/**/*.ts", "types/**/*.d.ts"],
