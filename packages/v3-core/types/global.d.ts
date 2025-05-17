@@ -9,3 +9,17 @@ declare global {
     }
   }
 }
+
+declare module 'toformat' {
+  import { Big } from 'big.js';
+  import { Decimal } from 'decimal.js-light';
+
+  interface Formatable {
+    toFormat(decimalPlaces: number, format?: object): string;
+  }
+
+  const toFormat: <T extends typeof Decimal | typeof Big>(
+    constructor: T
+  ) => T & { new (...args: any[]): Formatable };
+  export default toFormat;
+}

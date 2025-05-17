@@ -1,13 +1,13 @@
 import { Numberish } from '@/types';
 
 export interface EncodeAmountsSqrtPriceX64Args {
-  amount0: Numberish;
-  amount1: Numberish;
+  amount0: bigint;
+  amount1: bigint;
 }
 
 export interface PriceFromAmountsArgs {
-  amount0: Numberish;
-  amount1: Numberish;
+  amount0: bigint;
+  amount1: bigint;
 }
 
 export interface GetLiquidityForAmount0Args {

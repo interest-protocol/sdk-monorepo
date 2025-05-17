@@ -21,7 +21,8 @@
       "@/constants": ["./src/constants.ts"],
       "@/math": ["./src/math/index.ts"],
       "@/types": ["./src/types.ts"],
-      "@/entities": ["./src/entities/index.ts"]
+      "@/entities": ["./src/entities/index.ts"],
+      "@/utils": ["./src/utils.ts"]
     }
   },
   "include": ["src/**/*.ts", "types/**/*.d.ts"],

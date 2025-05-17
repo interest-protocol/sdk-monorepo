@@ -15,3 +15,9 @@ export const One = new BigNumber(1);
 export const Two = new BigNumber(2);
 
 export const Zero = new BigNumber(0);
+
+export const Rounding = {
+  ROUND_DOWN: 0,
+  ROUND_HALF_UP: 1,
+  ROUND_UP: 2,
+};

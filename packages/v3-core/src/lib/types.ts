@@ -1,5 +1,7 @@
+import { Token } from '@/entities';
+
 export interface FromTickArgs {
   tick: number;
-  tokenA: string;
-  tokenB: string;
+  baseToken: Token;
+  quoteToken: Token;
 }
