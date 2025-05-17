@@ -16,8 +16,12 @@ const cjsHasDirectImport = cjsContent.includes(cjsImport);
 const esmHasDirectImport = esmContent.includes(esmImport);
 
 console.log('Checking for direct imports:');
-console.log(`- CJS has direct import: ${cjsHasDirectImport ? 'YES (BAD)' : 'NO (GOOD)'}`);
-console.log(`- ESM has direct import: ${esmHasDirectImport ? 'YES (BAD)' : 'NO (GOOD)'}`);
+console.log(
+  `- CJS has direct import: ${cjsHasDirectImport ? 'YES (BAD)' : 'NO (GOOD)'}`
+);
+console.log(
+  `- ESM has direct import: ${esmHasDirectImport ? 'YES (BAD)' : 'NO (GOOD)'}`
+);
 
 // Check for lib code being bundled
 // Look for some unique strings that would be in the lib code
@@ -41,17 +45,21 @@ for (const signature of libCodeSignatures) {
 }
 
 if (!foundLibCode) {
-  console.log('- No lib code signatures found. This might indicate the code is not bundled.');
-  
+  console.log(
+    '- No lib code signatures found. This might indicate the code is not bundled.'
+  );
+
   // If we can't find specific signatures, check if the content is large enough to include bundled code
   const cjsSize = cjsContent.length;
   const esmSize = esmContent.length;
   console.log(`\nFile sizes:`);
   console.log(`- CJS size: ${(cjsSize / 1024).toFixed(2)} KB`);
   console.log(`- ESM size: ${(esmSize / 1024).toFixed(2)} KB`);
-  
+
   if (cjsSize > 10000 || esmSize > 10000) {
-    console.log('Files are reasonably large, which suggests some code is bundled.');
+    console.log(
+      'Files are reasonably large, which suggests some code is bundled.'
+    );
   } else {
     console.log('Files seem small, which might indicate minimal bundling.');
   }
@@ -60,8 +68,12 @@ if (!foundLibCode) {
 console.log('\nOverall assessment:');
 if (!cjsHasDirectImport && !esmHasDirectImport) {
   console.log('✅ No direct imports found - this is good!');
-  console.log('You should be able to publish without @interest-protocol/lib in your dependencies.');
+  console.log(
+    'You should be able to publish without @interest-protocol/lib in your dependencies.'
+  );
 } else {
   console.log('❌ Direct imports found - the library is not properly bundled.');
-  console.log('You need to fix your rollup configuration to properly bundle this dependency.');
+  console.log(
+    'You need to fix your rollup configuration to properly bundle this dependency.'
+  );
 }

@@ -1,8 +1,8 @@
 import { Numberish } from '@/types';
 
 export interface EncodeAmountsSqrtPriceX64Args {
-  amount0: string;
-  amount1: string;
+  amount0: Numberish;
+  amount1: Numberish;
 }
 
 export interface PriceFromAmountsArgs {
@@ -47,4 +47,25 @@ export interface GetAmountsForLiquidityArgs {
   sqrtPriceAX64: Numberish;
   sqrtPriceBX64: Numberish;
   liquidity: Numberish;
+}
+
+export interface GetNextSqrtPriceFromAmountArgs {
+  sqrtPriceX64: Numberish;
+  liquidity: Numberish;
+  amount: Numberish;
+  add: boolean;
+}
+
+export interface GetAmountDeltaArgs {
+  sqrtPriceAX64: Numberish;
+  sqrtPriceBX64: Numberish;
+  liquidity: Numberish;
+  roundUp: boolean;
+}
+
+export interface GetNextSqrtPriceFromInputArgs {
+  sqrtPriceX64: Numberish;
+  liquidity: Numberish;
+  amountIn: Numberish;
+  zeroForOne: boolean;
 }

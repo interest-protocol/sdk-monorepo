@@ -1,5 +1,3 @@
-import invariant from 'tiny-invariant';
-
 import { Q64, Zero } from '@/constants';
 import { BigNumber, BigNumberUtils } from '@/lib';
 
@@ -23,11 +21,9 @@ export abstract class LiquidityAmounts {
     const amount0BN = new BigNumber(amount0);
 
     const [sqrtPriceAX64Bn, sqrtPriceBX64Bn] = BigNumberUtils.sort(
-      new BigNumber(sqrtPriceAX64),
-      new BigNumber(sqrtPriceBX64)
+      sqrtPriceAX64,
+      sqrtPriceBX64
     );
-
-    invariant(sqrtPriceAX64Bn && sqrtPriceBX64Bn);
 
     const intermediate = sqrtPriceAX64Bn.multipliedBy(sqrtPriceBX64Bn).div(Q64);
 
@@ -44,11 +40,9 @@ export abstract class LiquidityAmounts {
     const amount1BN = new BigNumber(amount1);
 
     const [sqrtPriceAX64Bn, sqrtPriceBX64Bn] = BigNumberUtils.sort(
-      new BigNumber(sqrtPriceAX64),
-      new BigNumber(sqrtPriceBX64)
+      sqrtPriceAX64,
+      sqrtPriceBX64
     );
-
-    invariant(sqrtPriceAX64Bn && sqrtPriceBX64Bn);
 
     return amount1BN
       .multipliedBy(Q64)
@@ -65,11 +59,9 @@ export abstract class LiquidityAmounts {
     const sqrtPriceX64BN = new BigNumber(sqrtPriceX64);
 
     const [sqrtPriceAX64Bn, sqrtPriceBX64Bn] = BigNumberUtils.sort(
-      new BigNumber(sqrtPriceAX64),
-      new BigNumber(sqrtPriceBX64)
+      sqrtPriceAX64,
+      sqrtPriceBX64
     );
-
-    invariant(sqrtPriceAX64Bn && sqrtPriceBX64Bn);
 
     if (sqrtPriceX64BN.isLessThanOrEqualTo(sqrtPriceAX64Bn)) {
       return LiquidityAmounts.getLiquidityForAmount0({
@@ -106,13 +98,11 @@ export abstract class LiquidityAmounts {
     liquidity,
   }: GetAmount0ForLiquidityArgs) {
     const [sqrtPriceAX64Bn, sqrtPriceBX64Bn] = BigNumberUtils.sort(
-      new BigNumber(sqrtPriceAX64),
-      new BigNumber(sqrtPriceBX64)
+      sqrtPriceAX64,
+      sqrtPriceBX64
     );
 
-    invariant(sqrtPriceAX64Bn && sqrtPriceBX64Bn);
-
-    return BigNumberUtils.shiftLeft(new BigNumber(liquidity), 64)
+    return BigNumberUtils.shiftLeft(liquidity, 64)
       .multipliedBy(sqrtPriceBX64Bn.minus(sqrtPriceAX64Bn))
       .div(sqrtPriceBX64Bn.div(sqrtPriceAX64Bn));
   }
@@ -123,11 +113,9 @@ export abstract class LiquidityAmounts {
     liquidity,
   }: GetAmount1ForLiquidityArgs) {
     const [sqrtPriceAX64Bn, sqrtPriceBX64Bn] = BigNumberUtils.sort(
-      new BigNumber(sqrtPriceAX64),
-      new BigNumber(sqrtPriceBX64)
+      sqrtPriceAX64,
+      sqrtPriceBX64
     );
-
-    invariant(sqrtPriceAX64Bn && sqrtPriceBX64Bn);
 
     return new BigNumber(liquidity)
       .multipliedBy(sqrtPriceBX64Bn.minus(sqrtPriceAX64Bn))
@@ -143,11 +131,9 @@ export abstract class LiquidityAmounts {
     const sqrtPriceX64BN = new BigNumber(sqrtPriceX64);
 
     const [sqrtPriceAX64Bn, sqrtPriceBX64Bn] = BigNumberUtils.sort(
-      new BigNumber(sqrtPriceAX64),
-      new BigNumber(sqrtPriceBX64)
+      sqrtPriceAX64,
+      sqrtPriceBX64
     );
-
-    invariant(sqrtPriceAX64Bn && sqrtPriceBX64Bn);
 
     if (sqrtPriceX64BN.isLessThanOrEqualTo(sqrtPriceAX64Bn)) {
       return [

@@ -4,20 +4,25 @@ const typescript = require('@rollup/plugin-typescript');
 const pkg = require('./package.json');
 
 // Get workspace dependencies
-const workspaceDeps = Object.keys(pkg.dependencies || {})
-  .filter(dep => pkg.dependencies[dep].startsWith('workspace:'));
+const workspaceDeps = Object.keys(pkg.dependencies || {}).filter((dep) =>
+  pkg.dependencies[dep].startsWith('workspace:')
+);
 
 // Get publishConfig dependencies (which will remain external)
-const publishConfigDeps = pkg.publishConfig?.dependencies 
-  ? Object.keys(pkg.publishConfig.dependencies) 
+const publishConfigDeps = pkg.publishConfig?.dependencies
+  ? Object.keys(pkg.publishConfig.dependencies)
   : [];
 
 // Workspace dependencies to bundle (not in publishConfig)
-const depsToBundled = workspaceDeps.filter(dep => !publishConfigDeps.includes(dep));
+const depsToBundled = workspaceDeps.filter(
+  (dep) => !publishConfigDeps.includes(dep)
+);
 
 // All external dependencies
 const allExternalDeps = [
-  ...Object.keys(pkg.dependencies || {}).filter(dep => !depsToBundled.includes(dep))
+  ...Object.keys(pkg.dependencies || {}).filter(
+    (dep) => !depsToBundled.includes(dep)
+  ),
 ];
 
 console.log('Workspace dependencies to bundle:', depsToBundled);
@@ -29,25 +34,25 @@ module.exports = {
     {
       file: 'dist/index.js',
       format: 'cjs',
-      sourcemap: true
+      sourcemap: true,
     },
     {
       file: 'dist/index.mjs',
       format: 'esm',
-      sourcemap: true
-    }
+      sourcemap: true,
+    },
   ],
   external: allExternalDeps,
   plugins: [
     resolve({
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
       // Critical for bundling workspace dependencies
-      preserveSymlinks: false
+      preserveSymlinks: false,
     }),
     commonjs(),
     typescript({
       tsconfig: './tsconfig.json',
-      declaration: true
-    })
-  ]
+      declaration: true,
+    }),
+  ],
 };
