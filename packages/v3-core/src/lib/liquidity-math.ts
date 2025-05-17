@@ -1,3 +1,6 @@
+import invariant from 'tiny-invariant';
+
+import { Numberish } from '../types';
 import BigNumber from './big-number';
 
 export abstract class LiquidityMath {
@@ -6,11 +9,18 @@ export abstract class LiquidityMath {
    */
   private constructor() {}
 
-  public static addDelta(x: BigNumber, y: BigNumber): BigNumber {
+  public static addDelta(x: Numberish, y: Numberish): BigNumber {
+    x = new BigNumber(x);
+    y = new BigNumber(y);
+
     if (y.isNegative()) {
-      return x.minus(y.abs());
+      const r = x.minus(y.abs());
+      invariant(r.isPositive(), 'LiquidityMath: addDelta: result is negative');
+      return r;
     } else {
-      return x.plus(y);
+      const r = x.plus(y);
+      invariant(r.isPositive(), 'LiquidityMath: addDelta: result is negative');
+      return r;
     }
   }
 }

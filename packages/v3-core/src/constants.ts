@@ -1,6 +1,6 @@
-import BigNumber from './lib/big-number';
+import { BigNumber } from 'bignumber.js';
 
-export const MaxUint256 = BigNumber(
+export const MaxUint256 = new BigNumber(
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
 );
 
