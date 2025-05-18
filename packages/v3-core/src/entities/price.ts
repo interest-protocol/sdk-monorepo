@@ -45,11 +45,11 @@ export class Price extends Fraction {
 
   public toClosestTick(): number {
     const sqrtRatioX64 = this.#isSorted
-      ? PriceEncoder.encodeAmountsSqrtX64({
+      ? PriceEncoder.encodeSqrtPriceX64({
           amount0: this.denominator,
           amount1: this.numerator,
         })
-      : PriceEncoder.encodeAmountsSqrtX64({
+      : PriceEncoder.encodeSqrtPriceX64({
           amount0: this.numerator,
           amount1: this.denominator,
         });
