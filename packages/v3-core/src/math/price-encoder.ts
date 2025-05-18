@@ -1,4 +1,4 @@
-import { BigNumber } from '@/lib';
+import { BigNumber, BigNumberUtils } from '@/lib';
 
 import { EncodeSqrtPriceX64Args } from './math.types';
 
@@ -7,13 +7,8 @@ export abstract class PriceEncoder {
     amount0,
     amount1,
   }: EncodeSqrtPriceX64Args): bigint {
-    const ratioX128 = (amount1 << 128n) / amount0;
-
-    return BigInt(
-      BigNumber(ratioX128.toString())
-        .sqrt()
-        .integerValue(BigNumber.ROUND_DOWN)
-        .toString()
+    return BigNumberUtils.toBigInt(
+      BigNumber((amount1 << 128n) / amount0).sqrt()
     );
   }
 }
