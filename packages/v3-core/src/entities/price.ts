@@ -43,23 +43,23 @@ export class Price extends Fraction {
     return new Price(baseToken, quoteToken, numerator, denominator);
   }
 
-  public toClosestTick(price: Price): number {
-    const sqrtRatioX64 = price.#isSorted
+  public toClosestTick(): number {
+    const sqrtRatioX64 = this.#isSorted
       ? PriceEncoder.encodeAmountsSqrtX64({
-          amount0: price.denominator,
-          amount1: price.numerator,
+          amount0: this.denominator,
+          amount1: this.numerator,
         })
       : PriceEncoder.encodeAmountsSqrtX64({
-          amount0: price.numerator,
-          amount1: price.denominator,
+          amount0: this.numerator,
+          amount1: this.denominator,
         });
 
     let tick = TickMath.getTickAtSqrtRatio(sqrtRatioX64);
 
     const nextTick = Price.fromTick({
       tick: tick + 1,
-      baseToken: price.baseToken,
-      quoteToken: price.quoteToken,
+      baseToken: this.baseToken,
+      quoteToken: this.quoteToken,
     });
 
     if (this.#isSorted) {
