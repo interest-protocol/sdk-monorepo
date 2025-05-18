@@ -1,5 +1,5 @@
 import { Q64 } from '@/constants';
-import { BigNumber } from '@/lib';
+import { BigNumber, BigNumberUtils } from '@/lib';
 
 import { GetTokensOwedArgs } from './types';
 
@@ -10,7 +10,7 @@ export abstract class PositionLibrary {
     feeGrowthInside1X64,
     feeGrowthInside0LastX64,
     feeGrowthInside1LastX64,
-  }: GetTokensOwedArgs): [BigNumber, BigNumber] {
+  }: GetTokensOwedArgs): [bigint, bigint] {
     const tokensOwed0 = new BigNumber(feeGrowthInside0X64)
       .minus(new BigNumber(feeGrowthInside0LastX64))
       .multipliedBy(new BigNumber(liquidity))
@@ -21,6 +21,9 @@ export abstract class PositionLibrary {
       .multipliedBy(new BigNumber(liquidity))
       .dividedBy(Q64);
 
-    return [tokensOwed0, tokensOwed1];
+    return [
+      BigNumberUtils.toBigInt(tokensOwed0),
+      BigNumberUtils.toBigInt(tokensOwed1),
+    ];
   }
 }

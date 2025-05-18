@@ -1,7 +1,11 @@
-export function mostSignificantBit(x: bigint): number {
-  // Convert to binary string and find the length
-  const bitLength = x.toString(2).length;
+import invariant from 'tiny-invariant';
 
-  // The most significant bit position is one less than the bit length
-  return bitLength - 1;
+import { MaxUint256 } from '@/constants';
+import { BigNumberUtils } from '@/lib';
+
+export function mostSignificantBit(x: bigint): number {
+  invariant(x > 0n, 'msb: ZERO');
+  invariant(x <= BigNumberUtils.toBigInt(MaxUint256), 'msb: MAX');
+
+  return x.toString(2).length - 1;
 }

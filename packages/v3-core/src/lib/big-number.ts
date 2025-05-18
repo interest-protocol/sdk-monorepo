@@ -26,7 +26,8 @@ export const sort = (x: Numberish, y: Numberish): [BigNumber, BigNumber] =>
     ? [new BigNumber(y), new BigNumber(x)]
     : [new BigNumber(x), new BigNumber(y)];
 
-export const min = (x: BigNumber, y: BigNumber) => (x.lt(y) ? x : y);
+export const min = (x: Numberish, y: Numberish) =>
+  new BigNumber(x).lt(new BigNumber(y)) ? new BigNumber(x) : new BigNumber(y);
 
 export const bitwiseOr = (a: BigNumber, b: BigNumber) => {
   // Convert BigNumber to BigInt, perform OR, then back to BigNumber
@@ -67,5 +68,8 @@ export const assertNotZero = (
 ) => {
   invariant(!new BigNumber(x).isZero(), msg);
 };
+
+export const toBigInt = (x: Numberish, rounding = BigNumber.ROUND_DOWN) =>
+  BigInt(new BigNumber(x).integerValue(rounding).toString());
 
 export default BigNumber;
