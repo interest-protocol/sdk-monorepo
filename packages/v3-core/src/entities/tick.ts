@@ -9,6 +9,11 @@ interface TickConstructorArgs {
   liquidityGross: Numberish;
   liquidityNet: Numberish;
   rewardsGrowthOutsideX64?: Numberish[];
+  feeGrowthOutside0X64?: Numberish;
+  feeGrowthOutside1X64?: Numberish;
+  tickCumulativeOutside?: Numberish;
+  secondsPerLiquidityOutsideX64?: Numberish;
+  secondsOutside?: Numberish;
 }
 
 export interface NearestUsableTickArgs {
@@ -21,12 +26,22 @@ export class Tick {
   public readonly liquidityGross: bigint;
   public readonly liquidityNet: bigint;
   public readonly rewardsGrowthOutsideX64: bigint[];
+  public readonly feeGrowthOutside0X64: bigint;
+  public readonly feeGrowthOutside1X64: bigint;
+  public readonly tickCumulativeOutside: bigint;
+  public readonly secondsPerLiquidityOutsideX64: bigint;
+  public readonly secondsOutside: bigint;
 
   constructor({
     index,
     liquidityGross,
     liquidityNet,
     rewardsGrowthOutsideX64 = [],
+    feeGrowthOutside0X64 = 0n,
+    feeGrowthOutside1X64 = 0n,
+    tickCumulativeOutside = 0n,
+    secondsPerLiquidityOutsideX64 = 0n,
+    secondsOutside = 0n,
   }: TickConstructorArgs) {
     invariant(index >= TickMath.MIN_TICK && index <= TickMath.MAX_TICK, 'TICK');
     this.index = index;
@@ -35,6 +50,13 @@ export class Tick {
     this.rewardsGrowthOutsideX64 = rewardsGrowthOutsideX64.map((value) =>
       BigNumberUtils.toBigInt(value)
     );
+    this.feeGrowthOutside0X64 = BigNumberUtils.toBigInt(feeGrowthOutside0X64);
+    this.feeGrowthOutside1X64 = BigNumberUtils.toBigInt(feeGrowthOutside1X64);
+    this.tickCumulativeOutside = BigNumberUtils.toBigInt(tickCumulativeOutside);
+    this.secondsPerLiquidityOutsideX64 = BigNumberUtils.toBigInt(
+      secondsPerLiquidityOutsideX64
+    );
+    this.secondsOutside = BigNumberUtils.toBigInt(secondsOutside);
   }
 
   public static nearestUsableTick({

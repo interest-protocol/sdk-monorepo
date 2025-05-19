@@ -11,25 +11,28 @@ function tickComparator(a: Tick, b: Tick) {
 
 export abstract class TickList {
   public static validate(tickList: Tick[], tickSpacing: number) {
-    invariant(tickSpacing > 0, 'tickSpacing must be greater than 0');
+    invariant(tickSpacing > 0, 'TickList: tickSpacing must be greater than 0');
 
     invariant(
       tickList.every((tick) => tick.index % tickSpacing === 0),
-      'tickList must be evenly spaced'
+      'TickList: tickList must be evenly spaced'
     );
 
     invariant(
       tickList
         .reduce((acc, tick) => acc.plus(tick.liquidityNet), Zero)
         .isZero(),
-      'tickList must have no net liquidity'
+      'TickList: tickList must have no net liquidity'
     );
 
-    invariant(isSorted(tickList, tickComparator), 'tickList must be sorted');
+    invariant(
+      isSorted(tickList, tickComparator),
+      'TickList: tickList must be sorted'
+    );
   }
 
   public static isBelowSmallest(ticks: readonly Tick[], tick: number): boolean {
-    invariant(ticks.length > 0 && ticks[0], 'LENGTH');
+    invariant(ticks.length > 0 && ticks[0], 'TickList: length');
     return tick < ticks[0].index;
   }
 
@@ -43,7 +46,7 @@ export abstract class TickList {
 
   public static getTick(ticks: readonly Tick[], index: number): Tick {
     const tick = ticks[this.binarySearch(ticks, index)];
-    invariant(tick && tick.index === index, 'NOT_CONTAINED');
+    invariant(tick && tick.index === index, 'TickList: not contained');
     return tick;
   }
 
@@ -53,14 +56,20 @@ export abstract class TickList {
     lte: boolean
   ): Tick {
     if (lte) {
-      invariant(!TickList.isBelowSmallest(ticks, tick), 'BELOW_SMALLEST');
-      if (TickList.isAtOrAboveLargest(ticks, tick)) {
+      invariant(
+        !this.isBelowSmallest(ticks, tick),
+        'TickList: is below smallest'
+      );
+      if (this.isAtOrAboveLargest(ticks, tick)) {
         return ticks[ticks.length - 1]!;
       }
       const index = this.binarySearch(ticks, tick);
       return ticks[index]!;
     } else {
-      invariant(!this.isAtOrAboveLargest(ticks, tick), 'AT_OR_ABOVE_LARGEST');
+      invariant(
+        !this.isAtOrAboveLargest(ticks, tick),
+        'TickList: is at or above largest'
+      );
       if (this.isBelowSmallest(ticks, tick)) {
         return ticks[0]!;
       }
@@ -103,7 +112,10 @@ export abstract class TickList {
   }
 
   private static binarySearch(ticks: readonly Tick[], tick: number): number {
-    invariant(!this.isBelowSmallest(ticks, tick), 'BELOW_SMALLEST');
+    invariant(
+      !this.isBelowSmallest(ticks, tick),
+      'TickList:  is below smallest'
+    );
 
     let l = 0;
     let r = ticks.length - 1;
