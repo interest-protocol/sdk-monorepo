@@ -4,6 +4,8 @@ export const MaxUint256 = new BigNumber(
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
 );
 
+export const MaxUint128 = new BigNumber('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
+
 export const Q128 = new BigNumber(2n ** 128n);
 
 export const Q64 = new BigNumber(2n ** 64n);

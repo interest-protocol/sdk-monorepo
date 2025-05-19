@@ -61,9 +61,12 @@ export const wrappingAdd = (x: Numberish, y: Numberish) =>
     ? new BigNumber(x).minus(MaxUint256.minus(new BigNumber(y))).minus(One)
     : new BigNumber(x).plus(new BigNumber(y));
 
-export const wrappingSub = (x: Numberish, y: Numberish) =>
+export const wrappingSub = (x: Numberish, y: Numberish, maxValue: Numberish) =>
   new BigNumber(y).gt(new BigNumber(x))
-    ? MaxUint256.minus(new BigNumber(y)).minus(new BigNumber(x)).plus(One)
+    ? new BigNumber(maxValue)
+        .minus(new BigNumber(y))
+        .plus(new BigNumber(x))
+        .plus(One)
     : new BigNumber(x).minus(new BigNumber(y));
 
 export const assertNotZero = (
