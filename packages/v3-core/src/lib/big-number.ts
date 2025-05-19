@@ -38,10 +38,14 @@ export const bitwiseOr = (a: BigNumber, b: BigNumber) => {
   return new BigNumber(resultBigInt.toString());
 };
 
-export const divUp = (a: Numberish, b: Numberish) =>
-  new BigNumber(a).isZero()
-    ? Zero
-    : One.plus(new BigNumber(a).minus(One).dividedBy(new BigNumber(b)));
+export const divUp = (a: Numberish, b: Numberish) => {
+  a = new BigNumber(a);
+  const result = a.dividedBy(b);
+
+  if (a.mod(b).isZero()) return result;
+
+  return result.plus(One);
+};
 
 export const tryMul = (x: Numberish, y: Numberish): [boolean, BigNumber] => {
   if (new BigNumber(y).isZero() || new BigNumber(x).isZero())
@@ -69,7 +73,9 @@ export const assertNotZero = (
   invariant(!new BigNumber(x).isZero(), msg);
 };
 
-export const toBigInt = (x: Numberish, rounding = BigNumber.ROUND_DOWN) =>
-  BigInt(new BigNumber(x).integerValue(rounding).toString());
+export const toBigInt = (
+  x: Numberish,
+  rounding: BigNumber.RoundingMode = BigNumber.ROUND_DOWN
+) => BigInt(new BigNumber(x).integerValue(rounding).toString());
 
 export default BigNumber;

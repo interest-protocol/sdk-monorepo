@@ -1,3 +1,5 @@
+import invariant from 'tiny-invariant';
+
 import { Q64 } from '@/constants';
 import { BigNumber, BigNumberUtils } from '@/lib';
 
@@ -13,7 +15,7 @@ export abstract class SqrtPriceMath {
     liquidity,
     amountIn,
     zeroForOne,
-  }: GetNextSqrtPriceFromInputArgs) {
+  }: GetNextSqrtPriceFromInputArgs): bigint {
     BigNumberUtils.assertNotZero(
       sqrtPriceX64,
       'sqrtPriceX64 must be greater than 0'
@@ -42,7 +44,7 @@ export abstract class SqrtPriceMath {
     liquidity,
     amountIn,
     zeroForOne,
-  }: GetNextSqrtPriceFromInputArgs) {
+  }: GetNextSqrtPriceFromInputArgs): bigint {
     BigNumberUtils.assertNotZero(
       sqrtPriceX64,
       'sqrtPriceX64 must be greater than 0'
@@ -71,7 +73,7 @@ export abstract class SqrtPriceMath {
     sqrtPriceBX64,
     liquidity,
     roundUp,
-  }: GetAmountDeltaArgs) {
+  }: GetAmountDeltaArgs): bigint {
     [sqrtPriceAX64, sqrtPriceBX64] = BigNumberUtils.sort(
       sqrtPriceAX64,
       sqrtPriceBX64
@@ -86,18 +88,22 @@ export abstract class SqrtPriceMath {
     );
 
     if (roundUp) {
-      return BigNumberUtils.divUp(
+      return BigNumberUtils.toBigInt(
         BigNumberUtils.divUp(
-          numerator1.multipliedBy(numerator2),
-          sqrtPriceBX64
-        ),
-        sqrtPriceAX64
+          BigNumberUtils.divUp(
+            numerator1.multipliedBy(numerator2),
+            sqrtPriceBX64
+          ),
+          sqrtPriceAX64
+        )
       );
     } else {
-      return numerator1
-        .multipliedBy(numerator2)
-        .dividedBy(sqrtPriceBX64)
-        .dividedBy(sqrtPriceAX64);
+      return BigNumberUtils.toBigInt(
+        numerator1
+          .multipliedBy(numerator2)
+          .dividedBy(sqrtPriceBX64)
+          .dividedBy(sqrtPriceAX64)
+      );
     }
   }
 
@@ -106,23 +112,27 @@ export abstract class SqrtPriceMath {
     sqrtPriceBX64,
     liquidity,
     roundUp,
-  }: GetAmountDeltaArgs) {
+  }: GetAmountDeltaArgs): bigint {
     [sqrtPriceAX64, sqrtPriceBX64] = BigNumberUtils.sort(
       sqrtPriceAX64,
       sqrtPriceBX64
     );
 
     if (roundUp) {
-      return BigNumberUtils.divUp(
-        new BigNumber(liquidity).multipliedBy(
-          sqrtPriceBX64.minus(sqrtPriceAX64)
-        ),
-        Q64
+      return BigNumberUtils.toBigInt(
+        BigNumberUtils.divUp(
+          new BigNumber(liquidity).multipliedBy(
+            sqrtPriceBX64.minus(sqrtPriceAX64)
+          ),
+          Q64
+        )
       );
     } else {
-      return new BigNumber(liquidity)
-        .multipliedBy(sqrtPriceBX64.minus(sqrtPriceAX64))
-        .dividedBy(Q64);
+      return BigNumberUtils.toBigInt(
+        new BigNumber(liquidity)
+          .multipliedBy(sqrtPriceBX64.minus(sqrtPriceAX64))
+          .dividedBy(Q64)
+      );
     }
   }
 
@@ -131,8 +141,9 @@ export abstract class SqrtPriceMath {
     liquidity,
     amount,
     add,
-  }: GetNextSqrtPriceFromAmountArgs) {
-    if (new BigNumber(amount).isZero()) return new BigNumber(sqrtPriceX64);
+  }: GetNextSqrtPriceFromAmountArgs): bigint {
+    if (new BigNumber(amount).isZero())
+      return BigNumberUtils.toBigInt(sqrtPriceX64);
 
     const numerator1 = BigNumberUtils.shiftLeft(liquidity, 64);
     const [success, product] = BigNumberUtils.tryMul(amount, sqrtPriceX64);
@@ -142,24 +153,29 @@ export abstract class SqrtPriceMath {
         const denominator = BigNumberUtils.wrappingAdd(product, numerator1);
 
         if (denominator.gte(numerator1)) {
-          return BigNumberUtils.divUp(
-            numerator1.multipliedBy(sqrtPriceX64),
-            denominator
+          return BigNumberUtils.toBigInt(
+            BigNumberUtils.divUp(
+              numerator1.multipliedBy(sqrtPriceX64),
+              denominator
+            )
           );
         }
+      }
 
-        return BigNumberUtils.divUp(
+      return BigNumberUtils.toBigInt(
+        BigNumberUtils.divUp(
           numerator1,
           numerator1.dividedBy(sqrtPriceX64).plus(new BigNumber(amount))
-        );
-      } else {
-        const denominator = numerator1.minus(product);
+        )
+      );
+    } else {
+      invariant(success, 'sqrtPriceX64: overflow');
+      invariant(numerator1.gt(product), 'sqrtPriceX64: not enough liquidity');
+      const denominator = numerator1.minus(product);
 
-        return BigNumberUtils.divUp(
-          numerator1.multipliedBy(sqrtPriceX64),
-          denominator
-        );
-      }
+      return BigNumberUtils.toBigInt(
+        BigNumberUtils.divUp(numerator1.multipliedBy(sqrtPriceX64), denominator)
+      );
     }
   }
 
@@ -168,17 +184,30 @@ export abstract class SqrtPriceMath {
     liquidity,
     amount,
     add,
-  }: GetNextSqrtPriceFromAmountArgs) {
+  }: GetNextSqrtPriceFromAmountArgs): bigint {
     if (add) {
-      return new BigNumber(sqrtPriceX64).plus(
-        BigNumberUtils.shiftLeft(amount, 64).dividedBy(liquidity)
+      return BigNumberUtils.toBigInt(
+        new BigNumber(sqrtPriceX64).plus(
+          BigNumberUtils.shiftLeft(amount, 64).dividedBy(liquidity)
+        )
       );
     } else {
       const quotient = BigNumberUtils.divUp(
         BigNumberUtils.shiftLeft(amount, 64),
         liquidity
       );
-      return new BigNumber(sqrtPriceX64).minus(quotient);
+
+      sqrtPriceX64 = new BigNumber(sqrtPriceX64);
+
+      invariant(
+        sqrtPriceX64.gt(quotient),
+        'sqrtPriceX64: not enough liquidity'
+      );
+
+      return BigNumberUtils.toBigInt(
+        sqrtPriceX64.minus(quotient),
+        BigNumber.ROUND_UP
+      );
     }
   }
 }
