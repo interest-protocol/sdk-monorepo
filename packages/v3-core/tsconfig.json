@@ -15,13 +15,16 @@
     "declarationMap": true,
     "composite": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": "."
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"],
-  "references": [
-    {
-      "path": "./tsconfig.spec.json"
+    "baseUrl": ".",
+    "paths": {
+      "@/lib": ["./src/lib/index.ts"],
+      "@/constants": ["./src/constants.ts"],
+      "@/math": ["./src/math/index.ts"],
+      "@/types": ["./src/types.ts"],
+      "@/entities": ["./src/entities/index.ts"],
+      "@/utils": ["./src/utils.ts"]
     }
-  ]
+  },
+  "include": ["src/**/*.ts", "types/**/*.d.ts"],
+  "exclude": ["node_modules", "dist"]
 }
