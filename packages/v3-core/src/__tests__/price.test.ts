@@ -30,7 +30,7 @@ describe(Price.fromTick.name, () => {
         baseToken: token0,
         quoteToken: token1,
       })
-    ).toThrow('TICK');
+    ).toThrow('TickMath: Invalid tick');
 
     expect(() =>
       Price.fromTick({
@@ -38,7 +38,7 @@ describe(Price.fromTick.name, () => {
         baseToken: token0,
         quoteToken: token1,
       })
-    ).toThrow('TICK');
+    ).toThrow('TickMath: Invalid tick');
   });
 
   it('1800 t0/1 t1', () => {

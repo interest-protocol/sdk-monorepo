@@ -1,6 +1,6 @@
 import { Q64 } from '@/constants';
 
-import { PositionLibrary } from '../position';
+import { PositionLibrary } from '../position-library';
 
 describe(PositionLibrary.name, () => {
   describe(PositionLibrary.getTokensOwed.name, () => {

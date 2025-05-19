@@ -24,7 +24,7 @@ export abstract class TickMath {
       tick > TickMath.MAX_TICK ||
       !Number.isInteger(tick)
     ) {
-      throw new Error('TICK');
+      throw new Error('TickMath: Invalid tick');
     }
 
     const absTick: number = tick < 0 ? -tick : tick;
