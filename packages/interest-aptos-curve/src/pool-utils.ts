@@ -83,7 +83,6 @@ const addStableState = (
   resource: MoveResource,
   network: Network
 ) => {
-  console.log(resource);
   if (resource.type === TYPES[network].STABLE_STATE) {
     return {
       ...acc,
