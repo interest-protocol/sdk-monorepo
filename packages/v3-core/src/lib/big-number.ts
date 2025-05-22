@@ -12,22 +12,30 @@ BigNumber.config({
   EXPONENTIAL_AT: 1e9,
 });
 
+export const toBigNumber = (x: Numberish) => {
+  if (typeof x === 'bigint') return new BigNumber(x.toString());
+  if (typeof x === 'number') return new BigNumber(x);
+  if (typeof x === 'string') return new BigNumber(x);
+  if (x instanceof BigNumber) return x;
+  throw new Error('Invalid input');
+};
+
 const willOverflow = (x: Numberish, y: Numberish) =>
-  MaxUint256.dividedBy(new BigNumber(y)).lt(new BigNumber(x));
+  MaxUint256.dividedBy(toBigNumber(y)).lt(toBigNumber(x));
 
 export const shiftLeft = (amount: Numberish, shift: number) =>
-  new BigNumber(amount).multipliedBy(new BigNumber(2).pow(shift));
+  toBigNumber(amount).multipliedBy(toBigNumber(2).pow(shift));
 
 export const shiftRight = (amount: Numberish, shift: number) =>
-  new BigNumber(amount).dividedBy(new BigNumber(2).pow(shift));
+  toBigNumber(amount).dividedBy(toBigNumber(2).pow(shift));
 
 export const sort = (x: Numberish, y: Numberish): [BigNumber, BigNumber] =>
-  new BigNumber(x).gt(new BigNumber(y))
-    ? [new BigNumber(y), new BigNumber(x)]
-    : [new BigNumber(x), new BigNumber(y)];
+  toBigNumber(x).gt(toBigNumber(y))
+    ? [toBigNumber(y), toBigNumber(x)]
+    : [toBigNumber(x), toBigNumber(y)];
 
 export const min = (x: Numberish, y: Numberish) =>
-  new BigNumber(x).lt(new BigNumber(y)) ? new BigNumber(x) : new BigNumber(y);
+  toBigNumber(x).lt(toBigNumber(y)) ? toBigNumber(x) : toBigNumber(y);
 
 export const bitwiseOr = (a: BigNumber, b: BigNumber) => {
   // Convert BigNumber to BigInt, perform OR, then back to BigNumber
@@ -35,11 +43,11 @@ export const bitwiseOr = (a: BigNumber, b: BigNumber) => {
   const bBigInt = BigInt(b.toString());
   const resultBigInt = aBigInt | bBigInt;
 
-  return new BigNumber(resultBigInt.toString());
+  return toBigNumber(resultBigInt.toString());
 };
 
 export const divUp = (a: Numberish, b: Numberish) => {
-  a = new BigNumber(a);
+  a = toBigNumber(a);
   const result = a.dividedBy(b);
 
   if (a.mod(b).isZero()) return result;
@@ -48,37 +56,35 @@ export const divUp = (a: Numberish, b: Numberish) => {
 };
 
 export const tryMul = (x: Numberish, y: Numberish): [boolean, BigNumber] => {
-  if (new BigNumber(y).isZero() || new BigNumber(x).isZero())
-    return [true, Zero];
+  if (toBigNumber(y).isZero() || toBigNumber(x).isZero()) return [true, Zero];
 
   if (willOverflow(x, y)) return [false, Zero];
 
-  return [true, new BigNumber(x).multipliedBy(new BigNumber(y))];
+  return [true, toBigNumber(x).multipliedBy(toBigNumber(y))];
 };
 
 export const wrappingAdd = (x: Numberish, y: Numberish) =>
-  new BigNumber(x).gt(MaxUint256.minus(new BigNumber(y)))
-    ? new BigNumber(x).minus(MaxUint256.minus(new BigNumber(y))).minus(One)
-    : new BigNumber(x).plus(new BigNumber(y));
+  toBigNumber(x).gt(MaxUint256.minus(toBigNumber(y)))
+    ? toBigNumber(x)
+        .minus(MaxUint256.minus(toBigNumber(y)))
+        .minus(One)
+    : toBigNumber(x).plus(toBigNumber(y));
 
 export const wrappingSub = (x: Numberish, y: Numberish, maxValue: Numberish) =>
-  new BigNumber(y).gt(new BigNumber(x))
-    ? new BigNumber(maxValue)
-        .minus(new BigNumber(y))
-        .plus(new BigNumber(x))
-        .plus(One)
-    : new BigNumber(x).minus(new BigNumber(y));
+  toBigNumber(y).gt(toBigNumber(x))
+    ? toBigNumber(maxValue).minus(toBigNumber(y)).plus(toBigNumber(x)).plus(One)
+    : toBigNumber(x).minus(toBigNumber(y));
 
 export const assertNotZero = (
   x: Numberish,
   msg = 'BigNumber must be greater than 0'
 ) => {
-  invariant(!new BigNumber(x).isZero(), msg);
+  invariant(!toBigNumber(x).isZero(), msg);
 };
 
 export const toBigInt = (
   x: Numberish,
   rounding: BigNumber.RoundingMode = BigNumber.ROUND_DOWN
-) => BigInt(new BigNumber(x).integerValue(rounding).toString());
+) => BigInt(toBigNumber(x).integerValue(rounding).toString());
 
 export default BigNumber;
