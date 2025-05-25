@@ -12,14 +12,16 @@ const USDC_DECIMALS_SCALAR = 1_000_000;
 
 // API Endpoint
 const PROVIDER_USDC_FEED = {
-  [WHITELISTED_FAS.MOVE.toString()]: 0.1941,
+  [WHITELISTED_FAS.MOVE.toString()]: 0.1844,
   [WHITELISTED_FAS.USDCe.toString()]: 1,
+  [WHITELISTED_FAS.USDTe.toString()]: 1,
 };
 
 // DB
 export const DECIMALS_SCALAR = {
   [WHITELISTED_FAS.MOVE.toString()]: MOVE_DECIMALS_SCALAR,
   [WHITELISTED_FAS.USDCe.toString()]: USDC_DECIMALS_SCALAR,
+  [WHITELISTED_FAS.USDTe.toString()]: USDC_DECIMALS_SCALAR,
 };
 
 const calculateAllRewardInUSD = async (farm: Farm) => {
@@ -58,7 +60,7 @@ const calculateOneLpCoinPriceInUsd = async (farm: Farm) => {
 };
 
 (async () => {
-  const data = await curveMainnetSDK.getFarms([FARMS[2]!.address.toString()!]);
+  const data = await curveMainnetSDK.getFarms([FARMS[0]!.address.toString()!]);
 
   const farm = data[0]!;
 

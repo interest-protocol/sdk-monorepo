@@ -270,3 +270,12 @@ export const FARMS = [
     rewards: [WHITELISTED_FAS.MOVE.toString()],
   },
 ];
+
+export const BLACKLISTED_FARMS = [
+  AccountAddress.from(
+    '0xc7522bffe00b76d8a29d2a0290689868ca88d858c5923c725df23290500cc8c2'
+  ),
+  AccountAddress.from(
+    '0xf54948ae917f101621ed02e813b0603f9c556f0041aa311d9e535c3b07a1ca6b'
+  ),
+];
