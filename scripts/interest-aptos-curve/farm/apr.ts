@@ -13,7 +13,7 @@ const WETHe_DECIMALS_SCALAR = 100_000_000;
 
 // API Endpoint
 const PROVIDER_USDC_FEED = {
-  [WHITELISTED_FAS.MOVE.toString()]: 0.1681,
+  [WHITELISTED_FAS.MOVE.toString()]: 0.1491,
   [WHITELISTED_FAS.USDCe.toString()]: 1,
   [WHITELISTED_FAS.USDTe.toString()]: 1,
   [WHITELISTED_FAS.WETHe.toString()]: 2647.63,
