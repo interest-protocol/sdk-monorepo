@@ -20,11 +20,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "rollup -c rollup.config.js",
-    "build:types": "tsc --emitDeclarationOnly",
-    "check-bundle": "node check-bundle.js",
-    "check-build": "node check-bundle.js",
-    "build:check": "pnpm run build && pnpm run check-bundle",
-    "prepublishOnly": "pnpm run build:check"
+    "build:types": "tsc --emitDeclarationOnly"
   },
   "keywords": [],
   "license": "ISC",
