@@ -96,4 +96,14 @@ export const POOLS = {
       '0x2030dc777d15810aeb255ec2db3fe183eed46da3459d2635492b7339229ff595'
     ),
   },
+  USDC_SUI_BRIDGE_USDT: {
+    lpCoinType: COIN_TYPES.USDC_SUI_BRIDGE_USDT,
+    coinTypes: [COIN_TYPES.USDC, COIN_TYPES.SUI_BRIDGE_USDT],
+    objectId: normalizeSuiObjectId(
+      '0xb80c66040037eb2b3b3e5e002706fcd4e8ad2f6071c24f0b7bcde22dbc2b2932'
+    ),
+    state: normalizeSuiObjectId(
+      '0xfe1a9f7c33897d63dfda17d849017b2871b4970499502487c25c4387a3ccbb30'
+    ),
+  },
 };
