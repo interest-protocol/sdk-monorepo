@@ -5,7 +5,7 @@ import { executeTx } from '@interest-protocol/movement-utils';
 
 import { curveMainnetSDK } from '../utils';
 
-const REWARDS_PER_SECOND = 0.050745701058201;
+const REWARDS_PER_SECOND = 0.0373528439153439;
 
 (async () => {
   const data = curveMainnetSDK.setRewardsPerSecond({
