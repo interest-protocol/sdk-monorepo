@@ -1,21 +1,16 @@
 {
-  "extends": "@interest-protocol/typescript-config/base.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["esnext"],
+    "target": "es2020",
     "module": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "declaration": true,
-    "emitDeclarationOnly": true,
-    "allowJs": true,
-    // output .js.map sourcemap files for consumers
-    "sourceMap": true,
-    "allowSyntheticDefaultImports": true,
-    // match output dir to input dir. e.g. dist/index instead of dist/src/index
-    "rootDir": "./src",
-    "outDir": "./dist",
     "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@interest-protocol/*": ["../*/dist"]
