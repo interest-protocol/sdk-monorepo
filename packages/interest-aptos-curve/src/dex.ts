@@ -44,7 +44,7 @@ import {
   SwapArgs,
   SwapCoinToFaArgs,
   UnstakeArgs,
-  WrapCoinArgs,
+  WrapCoinsArgs,
 } from './dex.types';
 import {
   getDefaultConstructorArgs,
@@ -53,6 +53,7 @@ import {
   toFaPayload,
   toFarms,
   toInterestPool,
+  WRAP_COIN_FUNCTION_NAME,
 } from './utils';
 
 export class InterestCurve {
@@ -341,21 +342,49 @@ export class InterestCurve {
     };
   }
 
-  public wrapCoin({
-    coinType,
-    amount,
+  public wrapCoins({
+    coinTypes,
+    amounts,
     recipient,
-  }: WrapCoinArgs): InputGenerateTransactionPayloadData {
+  }: WrapCoinsArgs): InputGenerateTransactionPayloadData {
     invariant(
       AccountAddress.isValid({ input: recipient }).valid,
       'Recipient is invalid'
     );
-    invariant(amount > 0n, 'Amount must be greater than 0');
+
+    invariant(
+      amounts.every((amount) => amount > 0n),
+      'Amount must be greater than 0'
+    );
+
+    invariant(
+      coinTypes.length === amounts.length,
+      'Coin types and amounts must be the same length'
+    );
+
+    invariant(
+      coinTypes.length <= 10,
+      'Coin types must be less than or equal to 10'
+    );
+
+    invariant(
+      this.network === Network.MAINNET,
+      'Wrap coins is only supported on mainnet'
+    );
+
+    if (coinTypes.length === 1) {
+      return {
+        function:
+          '0x8f258472810d1491fe54db233ea0acc98f05c119a6e5873de2b912f4f630d1c2::coin_wrapper::wrap_coin',
+        functionArguments: [amounts[0], recipient],
+        typeArguments: coinTypes,
+      };
+    }
 
     return {
-      function: `${this.#package.address.toString()}::${this.#interfaceModule}::wrap_coin`,
-      functionArguments: [amount, recipient],
-      typeArguments: [coinType],
+      function: `0x8f258472810d1491fe54db233ea0acc98f05c119a6e5873de2b912f4f630d1c2::coin_wrapper::${WRAP_COIN_FUNCTION_NAME[coinTypes.length]}`,
+      functionArguments: [amounts, recipient],
+      typeArguments: coinTypes,
     };
   }
 

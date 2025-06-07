@@ -13,9 +13,9 @@ import { acl, stableSwapSDK } from '../utils.script';
 
   await stableSwapSDK.commitFees({
     tx,
-    pool: POOLS.WAL_WWAL.objectId,
-    fee: 1000000000000000n,
-    adminFee: 200000000000000000n,
+    pool: POOLS.USDC_SUI_BRIDGE_USDT.objectId,
+    fee: 1000000000000n,
+    adminFee: 100000000000000000n,
     adminWitness,
   });
 

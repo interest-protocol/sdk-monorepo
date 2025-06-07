@@ -104,12 +104,6 @@ export interface RemoveLiquidityOneFaArgs {
   recipient: string;
 }
 
-export interface WrapCoinArgs {
-  coinType: string;
-  amount: bigint;
-  recipient: string;
-}
-
 export interface StakeArgs {
   farm: string;
   amount: bigint;
@@ -365,3 +359,11 @@ export interface SetLpFaMetadataArgs {
 }
 
 // ===  LP FA METADATA END ===
+
+// === Utilities Start ===
+
+export interface WrapCoinsArgs {
+  coinTypes: string[];
+  amounts: bigint[];
+  recipient: string;
+}

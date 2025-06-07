@@ -63,6 +63,18 @@ export const NEW_VOLATILE_POOL_COIN_FUNCTION_NAME = {
   6: 'new_volatile_6_coin_pool',
 } as Record<number, string>;
 
+export const WRAP_COIN_FUNCTION_NAME = {
+  2: 'wrap_coin_2',
+  3: 'wrap_coin_3',
+  4: 'wrap_coin_4',
+  5: 'wrap_coin_5',
+  6: 'wrap_coin_6',
+  7: 'wrap_coin_7',
+  8: 'wrap_coin_8',
+  9: 'wrap_coin_9',
+  10: 'wrap_coin_10',
+} as Record<number, string>;
+
 const makeFaSupply = (resources: MoveResource[]): FaSupply => {
   const concurrentSupplyData = findConcurrentSupply(resources);
 

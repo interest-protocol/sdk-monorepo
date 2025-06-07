@@ -13,7 +13,7 @@ import { TREASURY_ADDRESS } from '../utils';
     data: {
       function: `${PACKAGES.mainnet.address.toString()}::interest_curve_entry::claim_volatile_admin`,
       functionArguments: [
-        WHITELISTED_CURVE_LP_COINS.USDCe_MOVE_VOLATILE.toString(),
+        WHITELISTED_CURVE_LP_COINS.MOVE_WETHe_VOLATILE.toString(),
         TREASURY_ADDRESS.toString(),
       ],
     },

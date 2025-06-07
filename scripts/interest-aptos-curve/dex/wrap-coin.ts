@@ -7,9 +7,9 @@ import { COINS, curveMainnetSDK } from '../utils';
 const POW_8 = 100000000n;
 
 (async () => {
-  const data = curveMainnetSDK.wrapCoin({
-    coinType: COINS[Network.MAINNET].MOVE,
-    amount: POW_8 / 2n,
+  const data = curveMainnetSDK.wrapCoins({
+    coinTypes: [COINS[Network.MAINNET].MOVE],
+    amounts: [POW_8 / 3n],
     recipient: account.accountAddress.toString(),
   });
 
