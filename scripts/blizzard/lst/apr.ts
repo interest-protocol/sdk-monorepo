@@ -24,8 +24,6 @@ import { blizzardSDK } from '../utils.script';
   invariant(currentEpochRate, 'currentEpochRate is null');
 
   const diff = BigInt(currentEpochRate) - BigInt(lastEpochRate);
-  console.log(lastEpochRate.toString());
-  console.log(currentEpochRate.toString());
 
   // apr 0.1491603437331874
   logSuccess(
