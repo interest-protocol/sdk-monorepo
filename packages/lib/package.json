@@ -31,7 +31,9 @@
   "packageManager": "pnpm@10.11.0",
   "devDependencies": {
     "@interest-protocol/prettier-config": "workspace:*",
-    "@interest-protocol/typescript-config": "workspace:*"
+    "@interest-protocol/typescript-config": "workspace:*",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.5.0"
   },
   "dependencies": {
     "ramda": "^0.30.1",

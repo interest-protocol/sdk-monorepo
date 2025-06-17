@@ -325,7 +325,7 @@ export class InterestStableSwapSDK extends SDK {
     ]);
 
     invariant(
-      typeof result[0] === 'string',
+      typeof result[0][0] === 'string' && typeof result[0][1] === 'string',
       'Invalid quote swap: devInspectAndGetReturnValues'
     );
 
