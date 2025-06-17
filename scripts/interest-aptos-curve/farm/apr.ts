@@ -13,7 +13,7 @@ const WETHe_DECIMALS_SCALAR = 100_000_000;
 
 // API Endpoint
 const PROVIDER_USDC_FEED = {
-  [WHITELISTED_FAS.MOVE.toString()]: 0.1426,
+  [WHITELISTED_FAS.MOVE.toString()]: 0.1546,
   [WHITELISTED_FAS.USDCe.toString()]: 1,
   [WHITELISTED_FAS.USDTe.toString()]: 1,
   [WHITELISTED_FAS.WETHe.toString()]: 2647.63,
@@ -63,7 +63,7 @@ const calculateOneLpCoinPriceInUsd = async (farm: Farm) => {
 };
 
 (async () => {
-  const data = await curveMainnetSDK.getFarms([FARMS[2]!.address.toString()!]);
+  const data = await curveMainnetSDK.getFarms([FARMS[3]!.address.toString()!]);
 
   const farm = data[0]!;
 
