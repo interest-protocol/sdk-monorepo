@@ -8,30 +8,35 @@ import { blizzardSDK } from '../utils.script';
 (async () => {
   const epoch = await blizzardSDK.getEpochData();
 
-  const lastEpochRate = await blizzardSDK.toWalAtEpoch({
-    blizzardStaking: SHARED_OBJECTS.WWAL_STAKING({ mutable: true }),
-    epoch: epoch.currentEpoch - 1,
-    value: 1_000_000_000n,
-  });
-
-  const currentEpochRate = await blizzardSDK.toWalAtEpoch({
-    blizzardStaking: SHARED_OBJECTS.WWAL_STAKING({ mutable: true }),
-    epoch: epoch.currentEpoch,
-    value: 1_000_000_000n,
-  });
+  const [currentEpochRate, lastEpochRate] = await Promise.all([
+    blizzardSDK.toWalAtEpoch({
+      blizzardStaking: SHARED_OBJECTS.WWAL_STAKING({ mutable: true }),
+      epoch: epoch.currentEpoch,
+      value: 1_000_000_000n,
+    }),
+    blizzardSDK.toWalAtEpoch({
+      blizzardStaking: SHARED_OBJECTS.WWAL_STAKING({ mutable: true }),
+      epoch: epoch.currentEpoch - 1,
+      value: 1_000_000_000n,
+    }),
+  ]);
 
   invariant(lastEpochRate, 'lastEpochRate is null');
   invariant(currentEpochRate, 'currentEpochRate is null');
 
-  const diff = BigInt(currentEpochRate) - BigInt(lastEpochRate);
+  const twoWeeklyGrowth = BigInt(currentEpochRate) - BigInt(lastEpochRate);
 
   // apr 0.1491603437331874
   logSuccess(
     'apr',
-    new Decimal(diff.toString())
+    new Decimal(twoWeeklyGrowth.toString())
+      // one week growth
       .div(new Decimal(2))
+      // Weekly growth Rate
       .div(new Decimal(lastEpochRate.toString()))
+      // To percentage e.g. 0.01 -> 1%
       .mul(new Decimal(100))
+      // one week growth to annual growth (52 weeks in a year)
       .mul(new Decimal(52))
       .toNumber()
   );
