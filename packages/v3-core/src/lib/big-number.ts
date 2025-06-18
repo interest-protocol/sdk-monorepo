@@ -20,6 +20,32 @@ export const toBigNumber = (x: Numberish) => {
   throw new Error('Invalid input');
 };
 
+export const fromI32 = (value: string) =>
+  fromInt(value, 0xffffffffn, 0x80000000n);
+
+export const fromI64 = (value: string) =>
+  fromInt(value, 0xffffffffffffffffn, 0x8000000000000000n);
+
+export const fromI128 = (value: string) =>
+  fromInt(
+    value,
+    0xffffffffffffffffffffffffffffffffn,
+    0x80000000000000000000000000000000n
+  );
+
+export const fromI256 = (value: string) =>
+  fromInt(
+    value,
+    0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffn,
+    0x8000000000000000000000000000000000000000000000000000000000000000n
+  );
+
+const fromInt = (value: string, maxValue: bigint, minNegative: bigint) => {
+  const x = BigInt(value);
+  const isPositive = minNegative > x;
+  return isPositive ? new BigNumber(x) : new BigNumber(x - (maxValue + 1n));
+};
+
 const willOverflow = (x: Numberish, y: Numberish) =>
   MaxUint256.dividedBy(toBigNumber(y)).lt(toBigNumber(x));
 
