@@ -26,3 +26,9 @@ export const bardockClient = new Aptos(
     indexer: MOVEMENT_BARDOCK_INDEXER_URL,
   })
 );
+
+export const aptosTestnetClient = new Aptos(
+  new AptosConfig({
+    network: Network.TESTNET,
+  })
+);
