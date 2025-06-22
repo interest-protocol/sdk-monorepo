@@ -3,6 +3,8 @@ import { Numberish } from '@/types';
 export interface EncodeSqrtPriceX64Args {
   amount0: bigint;
   amount1: bigint;
+  decimals0: number;
+  decimals1: number;
 }
 
 export interface GetLiquidityForAmount0Args {

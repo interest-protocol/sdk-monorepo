@@ -3,10 +3,17 @@ import {
   Aptos,
   InputEntryFunctionData,
 } from '@aptos-labs/ts-sdk';
+import {
+  MAX_SQRT_PRICE_X64,
+  MAX_TICK,
+  MIN_SQRT_PRICE_X64,
+  MIN_TICK,
+} from '@interest-protocol/v3-core';
 import invariant from 'tiny-invariant';
 
 import {
   FEE_DENOMINATOR,
+  FEE_TICK_SPACING,
   MAX_TICK_SPACING,
   MODULES,
   PACKAGES,
@@ -15,6 +22,7 @@ import {
   AddAdminArgs,
   AddFeeTickSpacingArgs,
   ConstructorArgs,
+  NewPoolAndLiquidityFAsArgs,
   RemoveAdminArgs,
   SetProtocolFeeArgs,
 } from './dex.types';
@@ -91,6 +99,89 @@ export class InterestV3 {
       function: `${this.#packages.PROTOCOL.toString()}::${MODULES.CONFIG.toString()}::set_protocol_fee`,
       functionArguments: [fee],
     };
+  }
+
+  newPoolAndLiquidityFAs({
+    faAMetadata,
+    faBMetadata,
+    amountA,
+    amountB,
+    fee,
+    sqrtPriceX64,
+    lowerTick,
+    upperTick,
+    rewards_tick_spacing_multiplier = 1,
+    minFAAmount = 0n,
+    minFBAmount = 0n,
+    recipient,
+  }: NewPoolAndLiquidityFAsArgs): InputEntryFunctionData {
+    this.#isValidAddress(faAMetadata);
+    this.#isValidAddress(faBMetadata);
+    this.#isValidAddress(recipient);
+
+    this.#isValidTickRange(lowerTick, upperTick);
+
+    this.#isValidSqrtPriceX64(sqrtPriceX64);
+
+    invariant(amountA > 0n, 'Amount A must be greater than 0');
+    invariant(amountB > 0n, 'Amount B must be greater than 0');
+    invariant(
+      rewards_tick_spacing_multiplier > 0,
+      'Rewards tick spacing multiplier must be greater than 0'
+    );
+
+    invariant(
+      Object.keys(FEE_TICK_SPACING).includes(fee.toString()),
+      'Fee must be a valid fee'
+    );
+
+    const [isPositiveLowerTick, lowerTickAbs] = this.#numberToTuple(lowerTick);
+    const [isPositiveUpperTick, upperTickAbs] = this.#numberToTuple(upperTick);
+
+    return {
+      function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::new_pool_and_add_liquidity_fas`,
+      functionArguments: [
+        faAMetadata,
+        amountA,
+        faBMetadata,
+        amountB,
+        fee,
+        sqrtPriceX64,
+        isPositiveLowerTick,
+        lowerTickAbs,
+        isPositiveUpperTick,
+        upperTickAbs,
+        rewards_tick_spacing_multiplier,
+        minFAAmount,
+        minFBAmount,
+        recipient,
+      ],
+    };
+  }
+
+  #numberToTuple(number: number): [boolean, number] {
+    return [number >= 0, number];
+  }
+
+  #isValidSqrtPriceX64(sqrtPriceX64: bigint) {
+    invariant(
+      sqrtPriceX64 >= BigInt(MIN_SQRT_PRICE_X64.toString()) &&
+        sqrtPriceX64 < BigInt(MAX_SQRT_PRICE_X64.toString()),
+      'Sqrt price must be between MIN_SQRT_PRICE_X64 and MAX_SQRT_PRICE_X64'
+    );
+  }
+
+  #isValidTickRange(lowerTick: number, upperTick: number) {
+    invariant(lowerTick < upperTick, 'Lower tick must be less than upper tick');
+
+    invariant(
+      lowerTick >= MIN_TICK,
+      'Lower tick must be greater than or equal to MIN_TICK'
+    );
+    invariant(
+      upperTick <= MAX_TICK,
+      'Upper tick must be less than or equal to MAX_TICK'
+    );
   }
 
   #isValidAddress(input: string) {

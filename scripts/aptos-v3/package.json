@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@interest-protocol/logger": "workspace:*",
+    "@interest-protocol/v3-core": "workspace:*",
     "@interest-protocol/aptos-v3": "workspace:*",
     "@interest-protocol/movement-core-sdk": "workspace:*",
     "@interest-protocol/movement-utils": "workspace:*",

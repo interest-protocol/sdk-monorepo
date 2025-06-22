@@ -40,3 +40,59 @@ export interface FaucetMultiMintArgs {
   amounts: bigint[];
   recipients: string[];
 }
+
+// DEX functions
+
+export interface NewPoolAndLiquidityFAsArgs {
+  faAMetadata: string;
+  faBMetadata: string;
+  amountA: bigint;
+  amountB: bigint;
+  fee: number;
+  sqrtPriceX64: bigint;
+  lowerTick: number;
+  upperTick: number;
+  rewards_tick_spacing_multiplier?: number;
+  minFAAmount?: bigint;
+  minFBAmount?: bigint;
+  recipient: string;
+}
+
+export interface NewLPAndAddLiquidityFAsArgs {
+  faAMetadata: string;
+  faBMetadata: string;
+  amountA: bigint;
+  amountB: bigint;
+  lowerTick: number;
+  upperTick: number;
+  fee: number;
+  minFAAmount?: bigint;
+  minFBAmount?: bigint;
+  recipient: string;
+}
+
+export interface AddLiquidityFAsArgs {
+  interestLp: string;
+  amount0: bigint;
+  amount1: bigint;
+  minFAAmount?: bigint;
+  minFBAmount?: bigint;
+  recipient: string;
+}
+
+export interface RemoveLiquidityFAsArgs {
+  interestLp: string;
+  liquidity: bigint;
+  minFAAmount?: bigint;
+  minFBAmount?: bigint;
+  recipient: string;
+}
+
+export interface SwapFAsArgs {
+  pool: string;
+  faInMetadata: string;
+  amountIn: bigint;
+  sqrtPriceLimitX64: bigint;
+  minAmountOut: bigint;
+  recipient: string;
+}

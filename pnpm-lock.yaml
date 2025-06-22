@@ -561,6 +561,9 @@ importers:
       '@interest-protocol/movement-utils':
         specifier: workspace:*
         version: link:../../packages/movement-utils
+      '@interest-protocol/v3-core':
+        specifier: workspace:*
+        version: link:../../packages/v3-core
       tiny-invariant:
         specifier: ^1.3.3
         version: 1.3.3

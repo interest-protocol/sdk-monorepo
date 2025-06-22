@@ -18,6 +18,16 @@ export const One = new BigNumber(1);
 
 export const Zero = new BigNumber(0);
 
+export const MAX_TICK = 443636;
+
+export const MIN_TICK = -MAX_TICK;
+
+export const MIN_SQRT_PRICE_X64 = new BigNumber(4295048016);
+
+export const MAX_SQRT_PRICE_X64 = new BigNumber(
+  '79226673515401279992447579061'
+);
+
 export const Rounding = {
   ROUND_DOWN: 0,
   ROUND_HALF_UP: 1,
