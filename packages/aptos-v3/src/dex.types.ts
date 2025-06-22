@@ -40,8 +40,3 @@ export interface FaucetMultiMintArgs {
   amounts: bigint[];
   recipients: string[];
 }
-
-export interface BurnArgs {
-  metadata: string;
-  amount: bigint;
-}

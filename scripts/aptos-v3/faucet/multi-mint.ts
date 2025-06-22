@@ -1,0 +1,21 @@
+import { TEST_FAS } from '@interest-protocol/aptos-v3';
+import { logSuccess } from '@interest-protocol/logger';
+import { aptosTestnetClient } from '@interest-protocol/movement-core-sdk';
+import { account, executeTx } from '@interest-protocol/movement-utils';
+
+import { faucet, POW_10_8 } from '../utils.script';
+
+(async () => {
+  const adminDataPayload = faucet.multiMint({
+    metadata: TEST_FAS.WETH.toString(),
+    amounts: [1n * POW_10_8],
+    recipients: [account.accountAddress.toString()],
+  });
+
+  const tx = await executeTx({
+    data: adminDataPayload,
+    client: aptosTestnetClient,
+  });
+
+  logSuccess('multi-mint', tx);
+})();

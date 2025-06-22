@@ -8,7 +8,6 @@ import invariant from 'tiny-invariant';
 
 import { PACKAGES } from './constants';
 import {
-  BurnArgs,
   ConstructorArgs,
   FaucetCreateArgs,
   FaucetMintArgs,
@@ -88,22 +87,8 @@ export class Faucet {
     );
 
     return {
-      function: `${this.faucet.toString()}::faucet::multi_mint`,
+      function: `${this.faucet.toString()}::faucet::mint_to`,
       functionArguments: [metadata, amounts, recipients],
-    };
-  }
-
-  burn({ metadata, amount }: BurnArgs): InputEntryFunctionData {
-    invariant(
-      AccountAddress.isValid({ input: metadata }),
-      'Metadata is required'
-    );
-
-    invariant(amount > 0n, 'Amount is required');
-
-    return {
-      function: `${this.faucet.toString()}::faucet::burn`,
-      functionArguments: [metadata, amount],
     };
   }
 }
