@@ -108,6 +108,9 @@ importers:
       '@interest-protocol/movement-core-sdk':
         specifier: workspace:*
         version: link:../movement-core-sdk
+      '@interest-protocol/v3-core':
+        specifier: workspace:*
+        version: link:../v3-core
       tiny-invariant:
         specifier: ^1.3.3
         version: 1.3.3
@@ -540,6 +543,40 @@ importers:
       tsup:
         specifier: ^8.3.6
         version: 8.5.0(postcss@8.5.3)(tsx@4.19.4)(typescript@5.8.3)(yaml@2.7.1)
+
+  scripts/aptos-v3:
+    dependencies:
+      '@aptos-labs/ts-sdk':
+        specifier: ^1.29.1
+        version: 1.39.0(axios@1.9.0)(got@11.8.6)
+      '@interest-protocol/aptos-v3':
+        specifier: workspace:*
+        version: link:../../packages/aptos-v3
+      '@interest-protocol/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
+      '@interest-protocol/movement-core-sdk':
+        specifier: workspace:*
+        version: link:../../packages/movement-core-sdk
+      '@interest-protocol/movement-utils':
+        specifier: workspace:*
+        version: link:../../packages/movement-utils
+      tiny-invariant:
+        specifier: ^1.3.3
+        version: 1.3.3
+    devDependencies:
+      '@interest-protocol/prettier-config':
+        specifier: workspace:*
+        version: link:../../tools/prettier-config
+      '@interest-protocol/typescript-config':
+        specifier: workspace:*
+        version: link:../../tools/typescript-config
+      '@types/node':
+        specifier: ^22.15.18
+        version: 22.15.18
+      vitest:
+        specifier: ^0.34.4
+        version: 0.34.6(terser@5.39.2)
 
   scripts/blizzard:
     dependencies:

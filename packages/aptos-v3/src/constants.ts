@@ -1,5 +1,23 @@
 import { AccountAddress } from '@aptos-labs/ts-sdk';
 
+export enum MODULES {
+  CONFIG = 'interest_v3_config',
+  POOL = 'interest_v3_pool',
+  INTERFACE = 'v3_interface',
+}
+
+export const FEE_DENOMINATOR = 1_000_000;
+
+export const MAX_TICK_SPACING = 16_384;
+
+export enum Fees {
+  VOLATILE = 2000,
+}
+
+export const FEE_TICK_SPACING = {
+  [Fees.VOLATILE]: 60,
+};
+
 export const PACKAGES = {
   DATA_STRUCTURES: AccountAddress.from(
     '0x7620421c699c50fc4145888e5ba36c13df1a86dda7165feeb3c157f8d147b686'
