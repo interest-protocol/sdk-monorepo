@@ -22,3 +22,26 @@ export interface AddAdminArgs {
 export interface RemoveAdminArgs {
   admin: string;
 }
+
+export interface FaucetCreateArgs {
+  name: string;
+  symbol: string;
+  decimals?: number;
+}
+
+export interface FaucetMintArgs {
+  metadata: string;
+  amount: bigint;
+  recipient: string;
+}
+
+export interface FaucetMultiMintArgs {
+  metadata: string;
+  amounts: bigint[];
+  recipients: string[];
+}
+
+export interface BurnArgs {
+  metadata: string;
+  amount: bigint;
+}
