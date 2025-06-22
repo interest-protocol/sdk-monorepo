@@ -8,8 +8,6 @@ describe(PriceEncoder.encodeSqrtPriceX64.name, () => {
       PriceEncoder.encodeSqrtPriceX64({
         amount0: 1n,
         amount1: 1n,
-        decimals0: 1,
-        decimals1: 1,
       })
     ).toEqual(BigInt(Q64.toString()));
   });
@@ -19,8 +17,6 @@ describe(PriceEncoder.encodeSqrtPriceX64.name, () => {
       PriceEncoder.encodeSqrtPriceX64({
         amount0: 1n,
         amount1: 100n,
-        decimals0: 1,
-        decimals1: 1,
       })
     ).toEqual(184467440737095516160n);
   });
@@ -30,8 +26,6 @@ describe(PriceEncoder.encodeSqrtPriceX64.name, () => {
       PriceEncoder.encodeSqrtPriceX64({
         amount0: 100n,
         amount1: 1n,
-        decimals0: 1,
-        decimals1: 1,
       })
     ).toEqual(1844674407370955161n);
   });
@@ -41,8 +35,6 @@ describe(PriceEncoder.encodeSqrtPriceX64.name, () => {
       PriceEncoder.encodeSqrtPriceX64({
         amount0: 111n,
         amount1: 333n,
-        decimals0: 1,
-        decimals1: 1,
       })
     ).toEqual(31950697969885030203n);
   });
@@ -52,22 +44,42 @@ describe(PriceEncoder.encodeSqrtPriceX64.name, () => {
       PriceEncoder.encodeSqrtPriceX64({
         amount0: 333n,
         amount1: 111n,
-        decimals0: 1,
-        decimals1: 1,
       })
     ).toEqual(10650232656628343401n);
   });
 
-  it('should decode the sqrt price x64 to price', () => {
+  it('should decode the sqrt price x64 to price with the right decimals', () => {
     expect(
-      PriceEncoder.decodeSqrtPriceX64ToPrice(
-        PriceEncoder.encodeSqrtPriceX64({
+      PriceEncoder.decodeSqrtPriceX64ToPrice({
+        sqrtPriceX64: PriceEncoder.encodeSqrtPriceX64({
           amount0: 100_000_000n,
           amount1: 2_500_000_000n,
-          decimals0: 8,
-          decimals1: 6,
-        })
-      ).toNumber()
+        }),
+        token0Decimals: 8,
+        token1Decimals: 6,
+      }).toNumber()
+    ).toEqual(2_500);
+
+    expect(
+      PriceEncoder.decodeSqrtPriceX64ToPrice({
+        sqrtPriceX64: PriceEncoder.encodeSqrtPriceX64({
+          amount0: 1000_000n,
+          amount1: 250_000_000_000n,
+        }),
+        token0Decimals: 6,
+        token1Decimals: 8,
+      }).toNumber()
+    ).toEqual(2_500);
+
+    expect(
+      PriceEncoder.decodeSqrtPriceX64ToPrice({
+        sqrtPriceX64: PriceEncoder.encodeSqrtPriceX64({
+          amount0: 100_000_000n,
+          amount1: 2_500_00_000_000n,
+        }),
+        token0Decimals: 0,
+        token1Decimals: 0,
+      }).toNumber()
     ).toEqual(2_500);
   });
 });

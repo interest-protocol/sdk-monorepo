@@ -48,14 +48,10 @@ export class Price extends Fraction {
       ? PriceEncoder.encodeSqrtPriceX64({
           amount0: this.denominator,
           amount1: this.numerator,
-          decimals0: this.baseToken.decimals,
-          decimals1: this.quoteToken.decimals,
         })
       : PriceEncoder.encodeSqrtPriceX64({
           amount0: this.numerator,
           amount1: this.denominator,
-          decimals0: this.quoteToken.decimals,
-          decimals1: this.baseToken.decimals,
         });
 
     let tick = TickMath.getTickAtSqrtRatio(sqrtRatioX64);
