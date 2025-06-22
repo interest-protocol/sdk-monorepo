@@ -25,6 +25,7 @@ import {
   NewPoolAndLiquidityFAsArgs,
   RemoveAdminArgs,
   SetProtocolFeeArgs,
+  SwapFAArgs,
 } from './dex.types';
 import { getDefaultConstructorArgs } from './utils';
 
@@ -154,6 +155,39 @@ export class InterestV3 {
         rewards_tick_spacing_multiplier,
         minFAAmount,
         minFBAmount,
+        recipient,
+      ],
+    };
+  }
+
+  swapFA({
+    pool,
+    faInMetadata,
+    amountIn,
+    sqrtPriceLimitX64,
+    minAmountOut = 0n,
+    recipient,
+  }: SwapFAArgs): InputEntryFunctionData {
+    this.#isValidAddress(pool);
+    this.#isValidAddress(faInMetadata);
+    this.#isValidAddress(recipient);
+
+    this.#isValidSqrtPriceX64(sqrtPriceLimitX64);
+
+    invariant(amountIn > 0n, 'Amount in must be greater than 0');
+    invariant(
+      minAmountOut >= 0n,
+      'Min amount out must be greater than or equal to 0'
+    );
+
+    return {
+      function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::swap_fa`,
+      functionArguments: [
+        pool,
+        faInMetadata,
+        amountIn,
+        sqrtPriceLimitX64,
+        minAmountOut,
         recipient,
       ],
     };

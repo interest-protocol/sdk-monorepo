@@ -88,11 +88,11 @@ export interface RemoveLiquidityFAsArgs {
   recipient: string;
 }
 
-export interface SwapFAsArgs {
+export interface SwapFAArgs {
   pool: string;
   faInMetadata: string;
   amountIn: bigint;
   sqrtPriceLimitX64: bigint;
-  minAmountOut: bigint;
+  minAmountOut?: bigint;
   recipient: string;
 }
