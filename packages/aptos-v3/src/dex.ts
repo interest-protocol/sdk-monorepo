@@ -3,12 +3,7 @@ import {
   Aptos,
   InputEntryFunctionData,
 } from '@aptos-labs/ts-sdk';
-import {
-  MAX_SQRT_PRICE_X64,
-  MAX_TICK,
-  MIN_SQRT_PRICE_X64,
-  MIN_TICK,
-} from '@interest-protocol/v3-core';
+import { MAX_TICK, MIN_TICK } from '@interest-protocol/v3-core';
 import invariant from 'tiny-invariant';
 
 import {
@@ -109,7 +104,6 @@ export class InterestV3 {
     amountA,
     amountB,
     fee,
-    sqrtPriceX64,
     lowerTick,
     upperTick,
     rewards_tick_spacing_multiplier = 1,
@@ -122,8 +116,6 @@ export class InterestV3 {
     this.#isValidAddress(recipient);
 
     this.#isValidTickRange(lowerTick, upperTick);
-
-    this.#isValidSqrtPriceX64(sqrtPriceX64);
 
     invariant(amountA > 0n, 'Amount A must be greater than 0');
     invariant(amountB > 0n, 'Amount B must be greater than 0');
@@ -148,7 +140,6 @@ export class InterestV3 {
         faBMetadata,
         amountB,
         fee,
-        sqrtPriceX64,
         isPositiveLowerTick,
         lowerTickAbs,
         isPositiveUpperTick,
@@ -165,15 +156,13 @@ export class InterestV3 {
     pool,
     faInMetadata,
     amountIn,
-    sqrtPriceLimitX64,
+    sqrtPriceLimitX64 = 0n,
     minAmountOut = 0n,
     recipient,
   }: SwapFAArgs): InputEntryFunctionData {
     this.#isValidAddress(pool);
     this.#isValidAddress(faInMetadata);
     this.#isValidAddress(recipient);
-
-    this.#isValidSqrtPriceX64(sqrtPriceLimitX64);
 
     invariant(amountIn > 0n, 'Amount in must be greater than 0');
     invariant(
@@ -195,15 +184,7 @@ export class InterestV3 {
   }
 
   #numberToTuple(number: number): [boolean, number] {
-    return [number >= 0, number];
-  }
-
-  #isValidSqrtPriceX64(sqrtPriceX64: bigint) {
-    invariant(
-      sqrtPriceX64 >= BigInt(MIN_SQRT_PRICE_X64.toString()) &&
-        sqrtPriceX64 < BigInt(MAX_SQRT_PRICE_X64.toString()),
-      'Sqrt price must be between MIN_SQRT_PRICE_X64 and MAX_SQRT_PRICE_X64'
-    );
+    return [number >= 0, Math.abs(number)];
   }
 
   #isValidTickRange(lowerTick: number, upperTick: number) {

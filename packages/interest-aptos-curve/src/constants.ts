@@ -19,6 +19,12 @@ export const PACKAGES = {
       '0x373aab3f20ef3c31fc4caa287b0f18170f4a0b4a28c80f7ee79434458f70f241'
     ),
   },
+  [Network.APTOS_TESTNET]: {
+    name: 'interest_curve',
+    address: AccountAddress.from(
+      '0x373aab3f20ef3c31fc4caa287b0f18170f4a0b4a28c80f7ee79434458f70f241'
+    ),
+  },
 } as Record<Network, Package>;
 
 export const TYPES = {
@@ -34,6 +40,17 @@ export const TYPES = {
     STABLE_STATE: `${PACKAGES[Network.MAINNET].address.toString()}::stable_pool::StableState`,
   },
   [Network.BARDOCK]: {
+    PAIRED_COIN_TYPE: '0x1::coin::PairedCoinType',
+    CONCURRENT_SUPPLY: '0x1::fungible_asset::ConcurrentSupply',
+    FA_METADATA: '0x1::fungible_asset::Metadata',
+    OBJECT_CORE: '0x1::object::ObjectCore',
+    COIN_STORE: '0x1::coin::CoinStore',
+    FUNGIBLE_STORE: '0x1::fungible_asset::FungibleStore',
+    INTEREST_POOL: `${PACKAGES[Network.BARDOCK].address.toString()}::interest_curve_pool::InterestCurvePool`,
+    VOLATILE_STATE: `${PACKAGES[Network.BARDOCK].address.toString()}::volatile_pool::VolatileState`,
+    STABLE_STATE: `${PACKAGES[Network.BARDOCK].address.toString()}::stable_pool::StableState`,
+  },
+  [Network.APTOS_TESTNET]: {
     PAIRED_COIN_TYPE: '0x1::coin::PairedCoinType',
     CONCURRENT_SUPPLY: '0x1::fungible_asset::ConcurrentSupply',
     FA_METADATA: '0x1::fungible_asset::Metadata',

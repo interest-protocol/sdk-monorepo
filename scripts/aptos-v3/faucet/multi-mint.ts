@@ -7,7 +7,7 @@ import { faucet, POW_10_8 } from '../utils.script';
 
 (async () => {
   const adminDataPayload = faucet.multiMint({
-    metadata: TEST_FAS.WETH.toString(),
+    metadata: TEST_FAS.aptos_testnet.WETH.toString(),
     amounts: [1n * POW_10_8],
     recipients: [account.accountAddress.toString()],
   });

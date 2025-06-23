@@ -49,7 +49,6 @@ export interface NewPoolAndLiquidityFAsArgs {
   amountA: bigint;
   amountB: bigint;
   fee: number;
-  sqrtPriceX64: bigint;
   lowerTick: number;
   upperTick: number;
   rewards_tick_spacing_multiplier?: number;
@@ -92,7 +91,7 @@ export interface SwapFAArgs {
   pool: string;
   faInMetadata: string;
   amountIn: bigint;
-  sqrtPriceLimitX64: bigint;
+  sqrtPriceLimitX64?: bigint;
   minAmountOut?: bigint;
   recipient: string;
 }
