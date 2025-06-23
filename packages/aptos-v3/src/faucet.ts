@@ -2,7 +2,6 @@ import {
   AccountAddress,
   Aptos,
   InputEntryFunctionData,
-  Network as AptosNetwork,
 } from '@aptos-labs/ts-sdk';
 import invariant from 'tiny-invariant';
 
@@ -18,7 +17,7 @@ import { getDefaultConstructorArgs } from './utils';
 export class Faucet {
   client: Aptos;
   network: ConstructorArgs['network'];
-  faucet = PACKAGES.FAUCET;
+  faucet: AccountAddress;
 
   constructor(args?: ConstructorArgs | null | undefined) {
     const data = {
@@ -27,10 +26,11 @@ export class Faucet {
     };
 
     invariant(data.client, 'Client is required');
-    invariant(data.network === AptosNetwork.TESTNET, 'Network is required');
+    invariant(data.network, 'Network is required');
 
     this.client = data.client;
     this.network = data.network;
+    this.faucet = PACKAGES[data.network].FAUCET;
   }
 
   create({

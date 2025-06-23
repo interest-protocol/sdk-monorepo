@@ -32,7 +32,7 @@ import { getDefaultConstructorArgs } from './utils';
 export class InterestV3 {
   client: Aptos;
   network: ConstructorArgs['network'];
-  #packages = PACKAGES;
+  #packages: (typeof PACKAGES)[keyof typeof PACKAGES];
 
   constructor(args?: ConstructorArgs | null | undefined) {
     const data = {
@@ -45,6 +45,7 @@ export class InterestV3 {
 
     this.client = data.client;
     this.network = data.network;
+    this.#packages = PACKAGES[data.network as keyof typeof PACKAGES];
   }
 
   addAdmin(args: AddAdminArgs): InputEntryFunctionData {

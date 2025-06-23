@@ -1,4 +1,5 @@
 import { AccountAddress } from '@aptos-labs/ts-sdk';
+import { Network } from '@interest-protocol/movement-core-sdk';
 
 export enum MODULES {
   CONFIG = 'interest_v3_config',
@@ -19,22 +20,48 @@ export const FEE_TICK_SPACING = {
 };
 
 export const PACKAGES = {
-  DATA_STRUCTURES: AccountAddress.from(
-    '0x7620421c699c50fc4145888e5ba36c13df1a86dda7165feeb3c157f8d147b686'
-  ),
-  MATH: AccountAddress.from(
-    '0x613750dd62684b5b92e8d36a651bb237856b69a4a8a0bc9365985d04c060ac5d'
-  ),
-  PROTOCOL: AccountAddress.from(
-    '0x2effd528db1ae8b0ff3c38a73f99393f6684a42ebbe5e9f8c89a3eca787f87cd'
-  ),
-  INTERFACE: AccountAddress.from(
-    '0x4ff28ac1fa0eb13c15515f4b391ad3608391f5a98221531f57673f178b579bce'
-  ),
-  FAUCET: AccountAddress.from(
-    '0x3a8440c5088d81637eb7f8769674d3ef9d95f8b88bc3fa2ee828c89c1f09eb6e'
-  ),
-} as const;
+  [Network.APTOS_TESTNET]: {
+    DATA_STRUCTURES: AccountAddress.from(
+      '0x7620421c699c50fc4145888e5ba36c13df1a86dda7165feeb3c157f8d147b686'
+    ),
+    MATH: AccountAddress.from(
+      '0x613750dd62684b5b92e8d36a651bb237856b69a4a8a0bc9365985d04c060ac5d'
+    ),
+    PROTOCOL: AccountAddress.from(
+      '0x2effd528db1ae8b0ff3c38a73f99393f6684a42ebbe5e9f8c89a3eca787f87cd'
+    ),
+    INTERFACE: AccountAddress.from(
+      '0x4ff28ac1fa0eb13c15515f4b391ad3608391f5a98221531f57673f178b579bce'
+    ),
+    FAUCET: AccountAddress.from(
+      '0x3a8440c5088d81637eb7f8769674d3ef9d95f8b88bc3fa2ee828c89c1f09eb6e'
+    ),
+  },
+  [Network.BARDOCK]: {
+    DATA_STRUCTURES: AccountAddress.from(
+      '0x6bdd0cf9fdc22515cbf080468d6d707cfc7e59bd6e555d10d0cc5b9e40fd479f'
+    ),
+    MATH: AccountAddress.from(
+      '0x217a8a66f30bc786877bf342532fc8e6ad98cc261344cb0de0b353a3270e57ab'
+    ),
+    PROTOCOL: AccountAddress.from(
+      '0x2effd528db1ae8b0ff3c38a73f99393f6684a42ebbe5e9f8c89a3eca787f87cd'
+    ),
+    INTERFACE: AccountAddress.from(
+      '0xd1e5c423a67a649bbb1c3029e5c4109e7faadd8807d8f3fcc4c65cb462eeeedd'
+    ),
+    FAUCET: AccountAddress.from(
+      '0xbca9d3ae8081557fba52f90479bc1bf1b6d850d59b934e8916270bdd95de2914'
+    ),
+  },
+  [Network.MAINNET]: {
+    DATA_STRUCTURES: AccountAddress.from('0x0'),
+    MATH: AccountAddress.from('0x0'),
+    PROTOCOL: AccountAddress.from('0x0'),
+    INTERFACE: AccountAddress.from('0x0'),
+    FAUCET: AccountAddress.from('0x0'),
+  },
+};
 
 export const TEST_FAS = {
   BTC: AccountAddress.from(

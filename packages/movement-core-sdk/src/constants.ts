@@ -3,6 +3,7 @@ import { AccountAddress } from '@aptos-labs/ts-sdk';
 export enum Network {
   BARDOCK = 'bardock',
   MAINNET = 'mainnet',
+  APTOS_TESTNET = 'aptos_testnet',
 }
 
 export const MAX_BPS = 10_000;
