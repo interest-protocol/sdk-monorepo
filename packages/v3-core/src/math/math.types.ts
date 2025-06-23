@@ -1,8 +1,14 @@
 import { Numberish } from '@/types';
 
-export interface EncodeSqrtPriceX64Args {
+export interface PriceEncoderFromAmountsArgs {
   amount0: bigint;
   amount1: bigint;
+}
+
+export interface PriceEncoderToPriceArgs {
+  sqrtPriceX64: bigint;
+  token0Decimals: number;
+  token1Decimals: number;
 }
 
 export interface GetLiquidityForAmount0Args {
@@ -63,10 +69,4 @@ export interface GetNextSqrtPriceFromInputArgs {
   liquidity: Numberish;
   amountIn: Numberish;
   zeroForOne: boolean;
-}
-
-export interface DecodeSqrtPriceX64ToPriceArgs {
-  sqrtPriceX64: bigint;
-  token0Decimals: number;
-  token1Decimals: number;
 }

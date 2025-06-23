@@ -1,26 +1,30 @@
 import { BigNumber, BigNumberUtils } from '@/lib';
 
 import {
-  DecodeSqrtPriceX64ToPriceArgs,
-  EncodeSqrtPriceX64Args,
+  PriceEncoderFromAmountsArgs,
+  PriceEncoderToPriceArgs,
 } from './math.types';
 
 export abstract class PriceEncoder {
-  static encodeSqrtPriceX64({
+  static fromAmounts({
     amount0,
     amount1,
-  }: EncodeSqrtPriceX64Args): bigint {
+  }: PriceEncoderFromAmountsArgs): bigint {
     return BigNumberUtils.toBigInt(
       BigNumber((amount1 << 128n) / amount0).sqrt()
     );
   }
 
+  static fromPrice(price: BigNumber): bigint {
+    return BigNumberUtils.toBigInt(BigNumberUtils.shiftLeft(price, 128).sqrt());
+  }
+
   // Decode back to price ratio (amount1/amount0)
-  static decodeSqrtPriceX64ToPrice({
+  static toPrice({
     sqrtPriceX64,
     token0Decimals,
     token1Decimals,
-  }: DecodeSqrtPriceX64ToPriceArgs): BigNumber {
+  }: PriceEncoderToPriceArgs): BigNumber {
     // sqrtPriceX64 = sqrt((amount1 << 128) / amount0)
     // So: (sqrtPriceX64)^2 = (amount1 << 128) / amount0
     // Therefore: price = amount1/amount0 = (sqrtPriceX64)^2 / (2^128)
