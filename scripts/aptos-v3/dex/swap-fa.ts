@@ -12,8 +12,6 @@ import { interestV3, POW_10_6, TEST_POOLS } from '../utils.script';
   const sqrtPriceX64 = PriceEncoder.encodeSqrtPriceX64({
     amount0: 20n,
     amount1: 1n,
-    decimals0: 1,
-    decimals1: 1,
   });
 
   const payload = interestV3.swapFA({

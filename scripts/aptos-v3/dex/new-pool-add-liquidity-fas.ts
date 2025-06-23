@@ -15,8 +15,6 @@ import { interestV3, POW_10_6, POW_10_8 } from '../utils.script';
   const sqrtPriceX64 = PriceEncoder.encodeSqrtPriceX64({
     amount0: isSorted ? wethAmount : usdcAmount,
     amount1: isSorted ? usdcAmount : wethAmount,
-    decimals0: isSorted ? 8 : 6,
-    decimals1: isSorted ? 6 : 8,
   });
 
   const variance = 35n;
@@ -40,8 +38,6 @@ import { interestV3, POW_10_6, POW_10_8 } from '../utils.script';
     upperTick,
     recipient: account.accountAddress.toString(),
   });
-
-  console.log(payload);
 
   const tx = await executeTx({
     data: payload,
