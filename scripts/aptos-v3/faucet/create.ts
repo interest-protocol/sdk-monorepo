@@ -2,11 +2,13 @@ import { logSuccess } from '@interest-protocol/logger';
 import { bardockClient } from '@interest-protocol/movement-core-sdk';
 import { executeTx } from '@interest-protocol/movement-utils';
 
-import { interestV3 } from '../utils.script';
+import { faucet } from '../utils.script';
 
 (async () => {
-  const adminDataPayload = interestV3.setProtocolFee({
-    fee: 250_000,
+  const adminDataPayload = faucet.create({
+    name: 'Bitcoin',
+    symbol: 'BTC',
+    decimals: 8,
   });
 
   const tx = await executeTx({
@@ -14,5 +16,5 @@ import { interestV3 } from '../utils.script';
     client: bardockClient,
   });
 
-  logSuccess('set-protocol-fee', tx);
+  logSuccess('mint', tx);
 })();

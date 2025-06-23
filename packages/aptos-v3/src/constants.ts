@@ -64,13 +64,31 @@ export const PACKAGES = {
 };
 
 export const TEST_FAS = {
-  BTC: AccountAddress.from(
-    '0x397c1b0de29ce47b0f6a43f577248dfcc4b2ae11db8fdbaef3f8b9a5634933f4'
-  ),
-  WETH: AccountAddress.from(
-    '0x21f12c6b789dc2cb04082e9a2de99cdda47ea10447c12a43c5ca209395d358d8'
-  ),
-  USDC: AccountAddress.from(
-    '0x9b46c4742132205c1179622b0b676418cb86bc5720b47641d3c08ae25f8644f1'
-  ),
+  [Network.APTOS_TESTNET]: {
+    BTC: AccountAddress.from(
+      '0x397c1b0de29ce47b0f6a43f577248dfcc4b2ae11db8fdbaef3f8b9a5634933f4'
+    ),
+    WETH: AccountAddress.from(
+      '0x21f12c6b789dc2cb04082e9a2de99cdda47ea10447c12a43c5ca209395d358d8'
+    ),
+    USDC: AccountAddress.from(
+      '0x9b46c4742132205c1179622b0b676418cb86bc5720b47641d3c08ae25f8644f1'
+    ),
+  },
+  [Network.BARDOCK]: {
+    BTC: AccountAddress.from(
+      '0x5b1eecef1577a45d8db0bea5f6a03173a87800c098adfcd3efe329e627a89323'
+    ),
+    WETH: AccountAddress.from(
+      '0xe93efa8c945a4a7ba49b017d40ee5e406e768ecf6907d798896d8419bb0cf79a'
+    ),
+    USDC: AccountAddress.from(
+      '0xe89bb4a170a8bf94afa759c4ca596462ec2ae9c6afbc10e9bf4263ebd061e8b2'
+    ),
+  },
+  [Network.MAINNET]: {
+    BTC: AccountAddress.from('0x0'),
+    WETH: AccountAddress.from('0x0'),
+    USDC: AccountAddress.from('0x0'),
+  },
 };
