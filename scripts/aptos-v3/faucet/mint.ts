@@ -3,12 +3,12 @@ import { logSuccess } from '@interest-protocol/logger';
 import { bardockClient } from '@interest-protocol/movement-core-sdk';
 import { account, executeTx } from '@interest-protocol/movement-utils';
 
-import { faucet, POW_10_8 } from '../utils.script';
+import { faucet, POW_10_6 } from '../utils.script';
 
 (async () => {
   const adminDataPayload = faucet.mint({
-    amount: 5n * POW_10_8,
-    metadata: TEST_FAS.bardock.WETH.toString(),
+    amount: 25_000n * POW_10_6,
+    metadata: TEST_FAS.bardock.USDC.toString(),
     recipient: account.accountAddress.toString(),
   });
 
