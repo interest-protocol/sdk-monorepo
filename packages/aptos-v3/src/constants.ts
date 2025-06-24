@@ -28,10 +28,10 @@ export const PACKAGES = {
       '0x613750dd62684b5b92e8d36a651bb237856b69a4a8a0bc9365985d04c060ac5d'
     ),
     PROTOCOL: AccountAddress.from(
-      '0x2effd528db1ae8b0ff3c38a73f99393f6684a42ebbe5e9f8c89a3eca787f87cd'
+      '0x4fba6e64b3ad27fe2fb38f0fe248172b1e504efc8f4fe7dcfd058145b7ec1754'
     ),
     INTERFACE: AccountAddress.from(
-      '0x4ff28ac1fa0eb13c15515f4b391ad3608391f5a98221531f57673f178b579bce'
+      '0xdee535765ba14ef7314c50b01ba747081696940ee8ac0ca3974086641ef554e3'
     ),
     FAUCET: AccountAddress.from(
       '0x3a8440c5088d81637eb7f8769674d3ef9d95f8b88bc3fa2ee828c89c1f09eb6e'
@@ -45,10 +45,10 @@ export const PACKAGES = {
       '0x217a8a66f30bc786877bf342532fc8e6ad98cc261344cb0de0b353a3270e57ab'
     ),
     PROTOCOL: AccountAddress.from(
-      '0x2effd528db1ae8b0ff3c38a73f99393f6684a42ebbe5e9f8c89a3eca787f87cd'
+      '0x4fba6e64b3ad27fe2fb38f0fe248172b1e504efc8f4fe7dcfd058145b7ec1754'
     ),
     INTERFACE: AccountAddress.from(
-      '0xd1e5c423a67a649bbb1c3029e5c4109e7faadd8807d8f3fcc4c65cb462eeeedd'
+      '0x203694810243bfca96c8a3367814a3800ea2a01e18fe3d9f7e62853464090ec7'
     ),
     FAUCET: AccountAddress.from(
       '0xbca9d3ae8081557fba52f90479bc1bf1b6d850d59b934e8916270bdd95de2914'

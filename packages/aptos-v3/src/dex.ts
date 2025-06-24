@@ -99,26 +99,26 @@ export class InterestV3 {
   }
 
   newPoolAndLiquidityFAs({
-    faAMetadata,
-    faBMetadata,
-    amountA,
-    amountB,
+    fa0Metadata,
+    fa1Metadata,
+    amount0,
+    amount1,
     fee,
     lowerTick,
     upperTick,
     rewards_tick_spacing_multiplier = 1,
-    minFAAmount = 0n,
-    minFBAmount = 0n,
+    minFa0Amount = 0n,
+    minFa1Amount = 0n,
     recipient,
   }: NewPoolAndLiquidityFAsArgs): InputEntryFunctionData {
-    this.#isValidAddress(faAMetadata);
-    this.#isValidAddress(faBMetadata);
+    this.#isValidAddress(fa0Metadata);
+    this.#isValidAddress(fa1Metadata);
     this.#isValidAddress(recipient);
 
     this.#isValidTickRange(lowerTick, upperTick);
 
-    invariant(amountA > 0n, 'Amount A must be greater than 0');
-    invariant(amountB > 0n, 'Amount B must be greater than 0');
+    invariant(amount0 > 0n, 'Amount 0 must be greater than 0');
+    invariant(amount1 > 0n, 'Amount 1 must be greater than 0');
     invariant(
       rewards_tick_spacing_multiplier > 0,
       'Rewards tick spacing multiplier must be greater than 0'
@@ -135,18 +135,18 @@ export class InterestV3 {
     return {
       function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::new_pool_and_add_liquidity_fas`,
       functionArguments: [
-        faAMetadata,
-        amountA,
-        faBMetadata,
-        amountB,
+        fa0Metadata,
+        amount0,
+        fa1Metadata,
+        amount1,
         fee,
         isPositiveLowerTick,
         lowerTickAbs,
         isPositiveUpperTick,
         upperTickAbs,
         rewards_tick_spacing_multiplier,
-        minFAAmount,
-        minFBAmount,
+        minFa0Amount,
+        minFa1Amount,
         recipient,
       ],
     };

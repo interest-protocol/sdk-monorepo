@@ -1,9 +1,12 @@
 import { Faucet, InterestV3 } from '@interest-protocol/aptos-v3';
-import { bardockClient, Network } from '@interest-protocol/movement-core-sdk';
+import {
+  aptosTestnetClient,
+  Network,
+} from '@interest-protocol/movement-core-sdk';
 
 export const interestV3 = new InterestV3({
-  network: Network.BARDOCK,
-  client: bardockClient,
+  network: Network.APTOS_TESTNET,
+  client: aptosTestnetClient,
 });
 export const faucet = new Faucet();
 
@@ -18,6 +21,6 @@ export const TEST_POOLS = {
   },
   [Network.APTOS_TESTNET]: {
     WETH_USDC:
-      '0x3570c65d025f8df88173a44e79b2f1ef2104dac4f642f45eba90ea1804bb25b9',
+      '0x58645946db3e0b647535dcc14850e1051ca0fbc246496a8ae793914c64d1c1f8',
   },
 };
