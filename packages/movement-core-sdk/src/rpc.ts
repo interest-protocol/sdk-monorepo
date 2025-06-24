@@ -10,7 +10,7 @@ export const MOVEMENT_BARDOCK_RPC_URL =
   'https://full.testnet.movementinfra.xyz/v1';
 
 export const MOVEMENT_BARDOCK_INDEXER_URL =
-  'https://indexer.testnet.movementnetwork.xyz';
+  'https://indexer.testnet.movementnetwork.xyz/v1/graphql';
 
 export const movementMainnetClient = new Aptos(
   new AptosConfig({

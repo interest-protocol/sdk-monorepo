@@ -58,13 +58,11 @@ export interface NewPoolAndLiquidityFAsArgs {
 }
 
 export interface NewLPAndAddLiquidityFAsArgs {
-  fa0Metadata: string;
-  fa1Metadata: string;
+  pool: string;
   amount0: bigint;
   amount1: bigint;
   lowerTick: number;
   upperTick: number;
-  fee: number;
   minFa0Amount?: bigint;
   minFa1Amount?: bigint;
   recipient: string;

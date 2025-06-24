@@ -17,6 +17,7 @@ import {
   AddAdminArgs,
   AddFeeTickSpacingArgs,
   ConstructorArgs,
+  NewLPAndAddLiquidityFAsArgs,
   NewPoolAndLiquidityFAsArgs,
   RemoveAdminArgs,
   SetProtocolFeeArgs,
@@ -178,6 +179,44 @@ export class InterestV3 {
         amountIn,
         sqrtPriceLimitX64,
         minAmountOut,
+        recipient,
+      ],
+    };
+  }
+
+  newLpAndAddLiquidityFAs({
+    pool,
+    amount0,
+    amount1,
+    lowerTick,
+    upperTick,
+    minFa0Amount = 0n,
+    minFa1Amount = 0n,
+    recipient,
+  }: NewLPAndAddLiquidityFAsArgs): InputEntryFunctionData {
+    this.#isValidAddress(pool);
+    this.#isValidAddress(recipient);
+
+    this.#isValidTickRange(lowerTick, upperTick);
+
+    invariant(amount0 > 0n, 'Amount 0 must be greater than 0');
+    invariant(amount1 > 0n, 'Amount 1 must be greater than 0');
+
+    const [isPositiveLowerTick, lowerTickAbs] = this.#numberToTuple(lowerTick);
+    const [isPositiveUpperTick, upperTickAbs] = this.#numberToTuple(upperTick);
+
+    return {
+      function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::new_lp_and_add_liquidity_fas`,
+      functionArguments: [
+        pool,
+        amount0,
+        amount1,
+        isPositiveLowerTick,
+        lowerTickAbs,
+        isPositiveUpperTick,
+        upperTickAbs,
+        minFa0Amount,
+        minFa1Amount,
         recipient,
       ],
     };
