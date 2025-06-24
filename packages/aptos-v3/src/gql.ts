@@ -1,6 +1,8 @@
-export const getCurrentOwnershipsV2AggregateQuery = `query($ownerAddress: String!) {
+export const getCurrentOwnershipsV2AggregateQuery = `query($ownerAddress: String!, $limit: Int, $offset: Int) {
   current_token_ownerships_v2_aggregate(
-    where: {owner_address: {_eq: $ownerAddress}}
+    where: {owner_address: {_eq: $ownerAddress}},
+    limit: $limit,
+    offset: $offset
   ) {
     aggregate {
       count

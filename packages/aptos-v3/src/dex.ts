@@ -2,7 +2,9 @@ import {
   AccountAddress,
   Aptos,
   InputEntryFunctionData,
+  MoveResource,
 } from '@aptos-labs/ts-sdk';
+import { Network } from '@interest-protocol/movement-core-sdk';
 import { MAX_TICK, MIN_TICK } from '@interest-protocol/v3-core';
 import invariant from 'tiny-invariant';
 
@@ -12,22 +14,26 @@ import {
   MAX_TICK_SPACING,
   MODULES,
   PACKAGES,
+  STRUCT_TYPES,
 } from './constants';
 import {
   AddAdminArgs,
   AddFeeTickSpacingArgs,
+  AddLiquidityFasArgs,
   ConstructorArgs,
+  InterestLpResource,
   NewLPAndAddLiquidityFAsArgs,
   NewPoolAndLiquidityFAsArgs,
   RemoveAdminArgs,
   SetProtocolFeeArgs,
   SwapFAArgs,
 } from './dex.types';
-import { getDefaultConstructorArgs } from './utils';
+import { CurrentTokenOwnershipsV2AggregateNode } from './gql.types';
+import { formatInterestLpResource, getDefaultConstructorArgs } from './utils';
 
 export class InterestV3 {
   client: Aptos;
-  network: ConstructorArgs['network'];
+  network: Network;
   #packages: (typeof PACKAGES)[keyof typeof PACKAGES];
 
   constructor(args?: ConstructorArgs | null | undefined) {
@@ -220,6 +226,81 @@ export class InterestV3 {
         recipient,
       ],
     };
+  }
+
+  addLiquidityFas({
+    interestLp,
+    amount0,
+    amount1,
+    minFa0Amount = 0n,
+    minFa1Amount = 0n,
+    recipient,
+  }: AddLiquidityFasArgs): InputEntryFunctionData {
+    this.#isValidAddress(interestLp);
+    this.#isValidAddress(recipient);
+
+    invariant(
+      amount0 > 0n || amount1 > 0n,
+      'Amount 0 or amount 1 must be greater than 0'
+    );
+
+    return {
+      function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::add_liquidity_fas`,
+      functionArguments: [
+        interestLp,
+        amount0,
+        amount1,
+        minFa0Amount,
+        minFa1Amount,
+        recipient,
+      ],
+    };
+  }
+
+  async filterLpByType(nodes: CurrentTokenOwnershipsV2AggregateNode[]) {
+    const resources = await Promise.all(
+      nodes.map((node) =>
+        this.client.getAccountResources({
+          accountAddress: node.current_token_data!.token_data_id,
+        })
+      )
+    );
+
+    const resourcesMap = resources.reduce(
+      (acc, resource, index) => {
+        acc[nodes[index]!.current_token_data!.token_data_id!] = resource;
+        return acc;
+      },
+      {} as Record<string, MoveResource[]>
+    );
+
+    return nodes
+      .filter((_, index) => {
+        const x = resources[index]!;
+
+        if (!x) return false;
+
+        return x.some(
+          (resource) => resource.type === STRUCT_TYPES[this.network].INTEREST_LP
+        );
+      })
+      .map((data) => {
+        const resources =
+          resourcesMap[data.current_token_data!.token_data_id!]!;
+
+        const y = resources.find(
+          (resource) => resource.type === STRUCT_TYPES[this.network].INTEREST_LP
+        )!;
+
+        return {
+          ...formatInterestLpResource(y!.data as InterestLpResource),
+          tokenDataId: data.current_token_data!.token_data_id,
+          collectionName:
+            data.current_token_data.current_collection.collection_name,
+          collectionId: data.current_token_data.collection_id,
+          owner: data.owner_address,
+        };
+      });
   }
 
   #numberToTuple(number: number): [boolean, number] {

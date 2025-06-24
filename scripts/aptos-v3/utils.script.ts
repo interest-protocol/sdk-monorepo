@@ -1,5 +1,10 @@
 import { Faucet, InterestV3 } from '@interest-protocol/aptos-v3';
-import { bardockClient, Network } from '@interest-protocol/movement-core-sdk';
+import {
+  bardockClient,
+  MOVEMENT_BARDOCK_INDEXER_URL,
+  Network,
+} from '@interest-protocol/movement-core-sdk';
+import { GraphQLClient } from 'graphql-request';
 
 export const interestV3 = new InterestV3({
   network: Network.BARDOCK,
@@ -21,3 +26,7 @@ export const TEST_POOLS = {
       '0x58645946db3e0b647535dcc14850e1051ca0fbc246496a8ae793914c64d1c1f8',
   },
 };
+
+export const bardockGraphQLClient = new GraphQLClient(
+  MOVEMENT_BARDOCK_INDEXER_URL
+);

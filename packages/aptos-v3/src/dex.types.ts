@@ -93,3 +93,53 @@ export interface SwapFAArgs {
   minAmountOut?: bigint;
   recipient: string;
 }
+
+export interface AddLiquidityFasArgs {
+  interestLp: string;
+  amount0: bigint;
+  amount1: bigint;
+  minFa0Amount?: bigint;
+  minFa1Amount?: bigint;
+  recipient: string;
+}
+
+export interface InterestLpReward {
+  growth_inside_last_x64: string;
+  rewards_owed: string;
+}
+
+export interface InterestLpResource {
+  burn_ref: {
+    inner: {
+      vec: [
+        {
+          self: string;
+        },
+      ];
+    };
+    self: {
+      vec: [];
+    };
+  };
+  fee_growth_inside_0_last_x64: string;
+  fee_growth_inside_1_last_x64: string;
+  liquidity: string;
+  pool: string;
+  property_map_mutator_ref: {
+    self: string;
+  };
+  rewards: {
+    data: InterestLpReward[];
+  };
+  tick_lower: {
+    value: number;
+  };
+  tick_upper: {
+    value: number;
+  };
+  token_mutator_ref: {
+    self: string;
+  };
+  tokens_owed_0: string;
+  tokens_owed_1: string;
+}

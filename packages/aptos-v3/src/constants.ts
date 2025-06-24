@@ -92,3 +92,15 @@ export const TEST_FAS = {
     USDC: AccountAddress.from('0x0'),
   },
 };
+
+export const STRUCT_TYPES = {
+  [Network.APTOS_TESTNET]: {
+    INTEREST_LP: `${PACKAGES[Network.APTOS_TESTNET].PROTOCOL}::interest_v3_lp::InterestLP`,
+  },
+  [Network.BARDOCK]: {
+    INTEREST_LP: `${PACKAGES[Network.BARDOCK].PROTOCOL}::interest_v3_lp::InterestLP`,
+  },
+  [Network.MAINNET]: {
+    INTEREST_LP: `${PACKAGES[Network.MAINNET].PROTOCOL}::interest_v3_lp::InterestLP`,
+  },
+};
