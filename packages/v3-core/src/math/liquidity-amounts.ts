@@ -1,14 +1,19 @@
+import { roundUp } from 'big.js';
+import invariant from 'tiny-invariant';
+
 import { Q64 } from '@/constants';
-import { BigNumber, BigNumberUtils } from '@/lib';
+import { BigNumber, BigNumberUtils, Decimal } from '@/lib';
 
 import {
   GetAmount0ForLiquidityArgs,
   GetAmount1ForLiquidityArgs,
   GetAmountsForLiquidityArgs,
+  GetLiquidityCoinAmountsArgs,
   GetLiquidityForAmount0Args,
   GetLiquidityForAmount1Args,
   GetLiquidityForAmountsArgs,
 } from './math.types';
+import { TickMath } from './tick-math';
 
 export abstract class LiquidityAmounts {
   private constructor() {}
@@ -178,4 +183,96 @@ export abstract class LiquidityAmounts {
       ];
     }
   }
+
+  static getLiquidityCoinAmounts({
+    slippage,
+    lowerTick,
+    upperTick,
+    currentSqrtPriceX64,
+    isAmount0,
+    amount,
+  }: GetLiquidityCoinAmountsArgs) {
+    const lowerSqrtPriceX64 = TickMath.getSqrtRatioAtTick(lowerTick);
+    const upperSqrtPriceX64 = TickMath.getSqrtRatioAtTick(upperTick);
+    const currentTick = TickMath.getTickAtSqrtRatio(
+      BigNumberUtils.toBigInt(currentSqrtPriceX64)
+    );
+
+    let liquidity;
+
+    if (currentTick < lowerTick) {
+      invariant(
+        isAmount0,
+        'You can only provide Token B when you are above the range'
+      );
+      liquidity = LiquidityAmounts.getLiquidityForAmount0({
+        sqrtPriceAX64: lowerSqrtPriceX64,
+        sqrtPriceBX64: upperSqrtPriceX64,
+        amount0: amount,
+      });
+    } else if (currentTick > upperTick) {
+      invariant(
+        !isAmount0,
+        'You can only provide Token A when you are within the range'
+      );
+      liquidity = LiquidityAmounts.getLiquidityForAmount1({
+        sqrtPriceAX64: lowerSqrtPriceX64,
+        sqrtPriceBX64: upperSqrtPriceX64,
+        amount1: amount,
+      });
+    } else {
+      liquidity = isAmount0
+        ? LiquidityAmounts.getLiquidityForAmount0({
+            sqrtPriceAX64: lowerSqrtPriceX64,
+            sqrtPriceBX64: upperSqrtPriceX64,
+            amount0: amount,
+          })
+        : LiquidityAmounts.getLiquidityForAmount1({
+            sqrtPriceAX64: lowerSqrtPriceX64,
+            sqrtPriceBX64: upperSqrtPriceX64,
+            amount1: amount,
+          });
+    }
+
+    const amounts = LiquidityAmounts.getAmountsForLiquidity({
+      sqrtPriceX64: currentSqrtPriceX64,
+      sqrtPriceAX64: lowerSqrtPriceX64,
+      sqrtPriceBX64: upperSqrtPriceX64,
+      liquidity,
+    });
+
+    const maxAmount0 = roundUp
+      ? new Decimal(amounts[0].toString()).mul(1 + slippage).toString()
+      : new Decimal(amounts[0].toString()).mul(1 - slippage).toString();
+
+    const maxAmount1 = roundUp
+      ? new Decimal(amounts[1].toString()).mul(1 + slippage).toString()
+      : new Decimal(amounts[1].toString()).mul(1 - slippage).toString();
+
+    return {
+      amount0: amounts[0],
+      amount1: amounts[1],
+      maxAmount0: BigNumberUtils.toBigInt(
+        roundUp
+          ? Decimal.ceil(maxAmount0).toString()
+          : Decimal.floor(maxAmount0).toString()
+      ),
+      maxAmount1: BigNumberUtils.toBigInt(
+        roundUp
+          ? Decimal.ceil(maxAmount1).toString()
+          : Decimal.floor(maxAmount1).toString()
+      ),
+      liquidity,
+      fixed0: isAmount0,
+    };
+  }
+}
+
+export interface LiquidityCoinAmounts {
+  amount0: bigint;
+  amount1: bigint;
+  maxAmount0: bigint;
+  maxAmount1: bigint;
+  liquidity: bigint;
+  fixed0: boolean;
 }
