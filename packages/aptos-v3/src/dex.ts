@@ -21,6 +21,7 @@ import {
   AddFeeTickSpacingArgs,
   AddLiquidityFasArgs,
   ConstructorArgs,
+  DecreaseLiquidityFAsArgs,
   InterestLpResource,
   NewLPAndAddLiquidityFAsArgs,
   NewPoolAndLiquidityFAsArgs,
@@ -250,6 +251,28 @@ export class InterestV3 {
         interestLp,
         amount0,
         amount1,
+        minFa0Amount,
+        minFa1Amount,
+        recipient,
+      ],
+    };
+  }
+
+  decreaseLiquidityFas({
+    interestLp,
+    liquidity,
+    minFa0Amount = 0n,
+    minFa1Amount = 0n,
+    recipient,
+  }: DecreaseLiquidityFAsArgs): InputEntryFunctionData {
+    this.#isValidAddress(interestLp);
+    this.#isValidAddress(recipient);
+
+    return {
+      function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::decrease_liquidity`,
+      functionArguments: [
+        interestLp,
+        liquidity,
         minFa0Amount,
         minFa1Amount,
         recipient,

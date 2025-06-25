@@ -8,17 +8,9 @@ import { account, executeTx } from '@interest-protocol/movement-utils';
 import { gql } from 'graphql-request';
 import invariant from 'tiny-invariant';
 
-import {
-  bardockGraphQLClient,
-  interestV3,
-  POW_10_6,
-  POW_10_8,
-} from '../utils.script';
+import { bardockGraphQLClient, interestV3 } from '../utils.script';
 
 (async () => {
-  const wethAmount = 1n * POW_10_8;
-  const usdcAmount = 2_500n * POW_10_6;
-
   const data =
     await bardockGraphQLClient.request<CurrentTokenOwnershipsV2Aggregate>(
       gql`
@@ -31,16 +23,15 @@ import {
       }
     );
 
-  const nodes = data.current_token_ownerships_v2_aggregate.nodes;
-
-  const filtered = await interestV3.filterLpByType(nodes);
+  const filtered = await interestV3.filterLpByType(
+    data.current_token_ownerships_v2_aggregate.nodes
+  );
 
   invariant(filtered.length > 0, 'No LP positions found');
 
-  const payload = interestV3.addLiquidityFas({
+  const payload = interestV3.decreaseLiquidityFas({
     interestLp: filtered[0]!.tokenDataId,
-    amount0: wethAmount,
-    amount1: usdcAmount,
+    liquidity: BigInt(filtered[0]!.liquidity) / 4n,
     recipient: account.accountAddress.toString(),
   });
 

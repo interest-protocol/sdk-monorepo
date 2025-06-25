@@ -103,6 +103,14 @@ export interface AddLiquidityFasArgs {
   recipient: string;
 }
 
+export interface DecreaseLiquidityFAsArgs {
+  interestLp: string;
+  liquidity: bigint;
+  minFa0Amount?: bigint;
+  minFa1Amount?: bigint;
+  recipient: string;
+}
+
 export interface InterestLpReward {
   growth_inside_last_x64: string;
   rewards_owed: string;
