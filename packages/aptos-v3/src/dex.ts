@@ -20,6 +20,7 @@ import {
   AddAdminArgs,
   AddFeeTickSpacingArgs,
   AddLiquidityFasArgs,
+  CollectFeesArgs,
   ConstructorArgs,
   DecreaseLiquidityFAsArgs,
   InterestLpResource,
@@ -277,6 +278,26 @@ export class InterestV3 {
         minFa1Amount,
         recipient,
       ],
+    };
+  }
+
+  collectFees({
+    interestLp,
+    amount0Max,
+    amount1Max,
+    recipient,
+  }: CollectFeesArgs): InputEntryFunctionData {
+    this.#isValidAddress(interestLp);
+    this.#isValidAddress(recipient);
+
+    invariant(
+      amount0Max > 0n || amount1Max > 0n,
+      'Amount 0 max or amount 1 max must be greater than 0'
+    );
+
+    return {
+      function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::collect_fees`,
+      functionArguments: [interestLp, amount0Max, amount1Max, recipient],
     };
   }
 

@@ -111,6 +111,13 @@ export interface DecreaseLiquidityFAsArgs {
   recipient: string;
 }
 
+export interface CollectFeesArgs {
+  interestLp: string;
+  amount0Max: bigint;
+  amount1Max: bigint;
+  recipient: string;
+}
+
 export interface InterestLpReward {
   growth_inside_last_x64: string;
   rewards_owed: string;

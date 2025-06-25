@@ -29,9 +29,10 @@ import { bardockGraphQLClient, interestV3 } from '../utils.script';
 
   invariant(filtered.length > 0, 'No LP positions found');
 
-  const payload = interestV3.decreaseLiquidityFas({
+  const payload = interestV3.collectFees({
     interestLp: filtered[0]!.tokenDataId,
-    liquidity: BigInt(filtered[0]!.liquidity) / 4n,
+    amount0Max: BigInt(filtered[0]!.tokensOwed0),
+    amount1Max: BigInt(filtered[0]!.tokensOwed1),
     recipient: account.accountAddress.toString(),
   });
 
@@ -40,5 +41,5 @@ import { bardockGraphQLClient, interestV3 } from '../utils.script';
     client: bardockClient,
   });
 
-  logSuccess('decrease-liquidity', tx);
+  logSuccess('collect-fees', tx);
 })();
