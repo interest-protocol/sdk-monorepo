@@ -5,12 +5,12 @@ import { executeTx } from '@interest-protocol/movement-utils';
 import { interestV3 } from '../utils.script';
 
 (async () => {
-  const adminDataPayload = interestV3.setProtocolFee({
+  const data = interestV3.setProtocolFee({
     fee: 250_000,
   });
 
   const tx = await executeTx({
-    data: adminDataPayload,
+    data,
     client: bardockClient,
   });
 

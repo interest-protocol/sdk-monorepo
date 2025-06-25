@@ -9,7 +9,7 @@ import { interestV3, POW_10_6, POW_10_8, TEST_POOLS } from '../utils.script';
   const wethAmount = 1n * POW_10_8;
   const usdcAmount = 2_500n * POW_10_6;
 
-  const payload = interestV3.newLpAndAddLiquidityFAs({
+  const data = interestV3.newLpAndAddLiquidityFAs({
     pool: TEST_POOLS.bardock.WETH_USDC,
     amount0: wethAmount,
     amount1: usdcAmount,
@@ -19,7 +19,7 @@ import { interestV3, POW_10_6, POW_10_8, TEST_POOLS } from '../utils.script';
   });
 
   const tx = await executeTx({
-    data: payload,
+    data,
     client: bardockClient,
   });
 

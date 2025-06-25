@@ -1,6 +1,7 @@
 import {
   CurrentTokenOwnershipsV2Aggregate,
   getCurrentOwnershipsV2AggregateQuery,
+  TEST_FAS,
 } from '@interest-protocol/aptos-v3';
 import { logSuccess } from '@interest-protocol/logger';
 import { bardockClient } from '@interest-protocol/movement-core-sdk';
@@ -8,17 +9,9 @@ import { account, executeTx } from '@interest-protocol/movement-utils';
 import { gql } from 'graphql-request';
 import invariant from 'tiny-invariant';
 
-import {
-  bardockGraphQLClient,
-  interestV3,
-  POW_10_6,
-  POW_10_8,
-} from '../utils.script';
+import { bardockGraphQLClient, interestV3 } from '../utils.script';
 
 (async () => {
-  const wethAmount = 1n * POW_10_8;
-  const usdcAmount = 2_500n * POW_10_6;
-
   const tokensRequest =
     await bardockGraphQLClient.request<CurrentTokenOwnershipsV2Aggregate>(
       gql`
@@ -37,10 +30,9 @@ import {
 
   invariant(filtered.length > 0, 'No LP positions found');
 
-  const data = interestV3.addLiquidityFas({
+  const data = interestV3.collectReward({
     interestLp: filtered[0]!.tokenDataId,
-    amount0: wethAmount,
-    amount1: usdcAmount,
+    reward: TEST_FAS.bardock.BTC.toString(),
     recipient: account.accountAddress.toString(),
   });
 
@@ -49,5 +41,5 @@ import {
     client: bardockClient,
   });
 
-  logSuccess('add-liquidity-fas', tx);
+  logSuccess('collect-reward', tx);
 })();

@@ -5,14 +5,14 @@ import { executeTx } from '@interest-protocol/movement-utils';
 import { faucet } from '../utils.script';
 
 (async () => {
-  const adminDataPayload = faucet.create({
+  const data = faucet.create({
     name: 'Bitcoin',
     symbol: 'BTC',
     decimals: 8,
   });
 
   const tx = await executeTx({
-    data: adminDataPayload,
+    data,
     client: bardockClient,
   });
 

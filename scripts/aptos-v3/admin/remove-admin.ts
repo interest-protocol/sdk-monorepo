@@ -5,12 +5,12 @@ import { account, executeTx } from '@interest-protocol/movement-utils';
 import { interestV3 } from '../utils.script';
 
 (async () => {
-  const adminDataPayload = interestV3.removeAdmin({
+  const data = interestV3.removeAdmin({
     admin: account.accountAddress.toString(),
   });
 
   const tx = await executeTx({
-    data: adminDataPayload,
+    data,
     client: aptosTestnetClient,
   });
 

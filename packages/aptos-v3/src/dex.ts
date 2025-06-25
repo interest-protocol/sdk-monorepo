@@ -291,8 +291,8 @@ export class InterestV3 {
 
   collectFees({
     interestLp,
-    amount0Max,
-    amount1Max,
+    amount0Max = BigInt(MaxUint64.toString()),
+    amount1Max = BigInt(MaxUint64.toString()),
     recipient,
   }: CollectFeesArgs): InputEntryFunctionData {
     this.#isValidAddress(interestLp);
@@ -387,7 +387,7 @@ export class InterestV3 {
 
     return {
       function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::update_end_timestamp`,
-      functionArguments: [pool, reward, endTimestamp],
+      functionArguments: [pool, reward, Math.floor(endTimestamp)],
     };
   }
 

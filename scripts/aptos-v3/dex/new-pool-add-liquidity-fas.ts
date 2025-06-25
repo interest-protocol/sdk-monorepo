@@ -13,7 +13,7 @@ const USDC = TEST_FAS.bardock.USDC.toString();
   const wethAmount = 10n * POW_10_8;
   const usdcAmount = 20_500n * POW_10_6;
 
-  const payload = interestV3.newPoolAndLiquidityFAs({
+  const data = interestV3.newPoolAndLiquidityFAs({
     fa0Metadata: WETH,
     fa1Metadata: USDC,
     amount0: wethAmount,
@@ -25,7 +25,7 @@ const USDC = TEST_FAS.bardock.USDC.toString();
   });
 
   const tx = await executeTx({
-    data: payload,
+    data,
     client: bardockClient,
   });
 

@@ -105,8 +105,8 @@ export interface DecreaseLiquidityFasArgs {
 
 export interface CollectFeesArgs {
   interestLp: string;
-  amount0Max: bigint;
-  amount1Max: bigint;
+  amount0Max?: bigint;
+  amount1Max?: bigint;
   recipient: string;
 }
 

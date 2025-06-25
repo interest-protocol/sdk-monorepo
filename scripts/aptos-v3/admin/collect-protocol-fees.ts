@@ -2,11 +2,12 @@ import { logSuccess } from '@interest-protocol/logger';
 import { bardockClient } from '@interest-protocol/movement-core-sdk';
 import { account, executeTx } from '@interest-protocol/movement-utils';
 
-import { interestV3 } from '../utils.script';
+import { interestV3, TEST_POOLS } from '../utils.script';
 
 (async () => {
-  const data = interestV3.addAdmin({
-    admin: account.accountAddress.toString(),
+  const data = interestV3.collectProtocolFee({
+    pool: TEST_POOLS.bardock.WETH_USDC,
+    recipient: account.accountAddress.toString(),
   });
 
   const tx = await executeTx({
@@ -14,5 +15,5 @@ import { interestV3 } from '../utils.script';
     client: bardockClient,
   });
 
-  logSuccess('add-admin', tx);
+  logSuccess('collect-protocol-fees', tx);
 })();

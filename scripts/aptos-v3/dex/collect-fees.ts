@@ -11,7 +11,7 @@ import invariant from 'tiny-invariant';
 import { bardockGraphQLClient, interestV3 } from '../utils.script';
 
 (async () => {
-  const data =
+  const tokensRequest =
     await bardockGraphQLClient.request<CurrentTokenOwnershipsV2Aggregate>(
       gql`
         ${getCurrentOwnershipsV2AggregateQuery}
@@ -24,12 +24,12 @@ import { bardockGraphQLClient, interestV3 } from '../utils.script';
     );
 
   const filtered = await interestV3.filterLpByType(
-    data.current_token_ownerships_v2_aggregate.nodes
+    tokensRequest.current_token_ownerships_v2_aggregate.nodes
   );
 
   invariant(filtered.length > 0, 'No LP positions found');
 
-  const payload = interestV3.collectFees({
+  const data = interestV3.collectFees({
     interestLp: filtered[0]!.tokenDataId,
     amount0Max: BigInt(filtered[0]!.tokensOwed0),
     amount1Max: BigInt(filtered[0]!.tokensOwed1),
@@ -37,7 +37,7 @@ import { bardockGraphQLClient, interestV3 } from '../utils.script';
   });
 
   const tx = await executeTx({
-    data: payload,
+    data,
     client: bardockClient,
   });
 

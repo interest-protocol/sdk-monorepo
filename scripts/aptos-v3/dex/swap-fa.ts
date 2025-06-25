@@ -8,7 +8,7 @@ import { interestV3, POW_10_6, TEST_POOLS } from '../utils.script';
 (async () => {
   const usdcAmount = 10n * POW_10_6;
 
-  const payload = interestV3.swapFA({
+  const data = interestV3.swapFA({
     pool: TEST_POOLS.bardock.WETH_USDC,
     faInMetadata: TEST_FAS.bardock.USDC.toString(),
     amountIn: usdcAmount,
@@ -17,7 +17,7 @@ import { interestV3, POW_10_6, TEST_POOLS } from '../utils.script';
   });
 
   const tx = await executeTx({
-    data: payload,
+    data,
     client: bardockClient,
   });
 

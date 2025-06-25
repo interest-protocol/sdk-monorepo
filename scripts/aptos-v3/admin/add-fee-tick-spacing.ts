@@ -5,13 +5,13 @@ import { executeTx } from '@interest-protocol/movement-utils';
 import { interestV3 } from '../utils.script';
 
 (async () => {
-  const adminDataPayload = interestV3.addFeeTickSpacing({
+  const data = interestV3.addFeeTickSpacing({
     fee: 2000,
     tickSpacing: 60,
   });
 
   const tx = await executeTx({
-    data: adminDataPayload,
+    data,
     client: bardockClient,
   });
 
