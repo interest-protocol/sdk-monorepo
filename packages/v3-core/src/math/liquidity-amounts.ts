@@ -267,12 +267,3 @@ export abstract class LiquidityAmounts {
     };
   }
 }
-
-export interface LiquidityCoinAmounts {
-  amount0: bigint;
-  amount1: bigint;
-  maxAmount0: bigint;
-  maxAmount1: bigint;
-  liquidity: bigint;
-  fixed0: boolean;
-}
