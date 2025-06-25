@@ -1,7 +1,7 @@
-import { Q64 } from '@/constants';
+import { PositionStatus, Q64 } from '@/constants';
 import { BigNumber, BigNumberUtils } from '@/lib';
 
-import { GetTokensOwedArgs } from './types';
+import { GetPositionStatusArgs, GetTokensOwedArgs } from './types';
 
 export abstract class PositionLibrary {
   public static getTokensOwed({
@@ -25,5 +25,21 @@ export abstract class PositionLibrary {
       BigNumberUtils.toBigInt(tokensOwed0),
       BigNumberUtils.toBigInt(tokensOwed1),
     ];
+  }
+
+  public static getStatus({
+    lowerTick,
+    upperTick,
+    tick,
+  }: GetPositionStatusArgs): PositionStatus {
+    if (tick < lowerTick) {
+      return PositionStatus.AboveRange;
+    }
+
+    if (tick <= upperTick) {
+      return PositionStatus.Active;
+    }
+
+    return PositionStatus.BelowRange;
   }
 }

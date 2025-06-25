@@ -23,3 +23,9 @@ export interface GetFeeGrowthInsideArgs {
   feeGrowthGlobal0X64: Numberish;
   feeGrowthGlobal1X64: Numberish;
 }
+
+export interface GetPositionStatusArgs {
+  lowerTick: number;
+  upperTick: number;
+  tick: number;
+}

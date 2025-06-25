@@ -35,3 +35,9 @@ export const Rounding = {
   ROUND_HALF_UP: 1,
   ROUND_UP: 2,
 };
+
+export enum PositionStatus {
+  BelowRange,
+  Active,
+  AboveRange,
+}
