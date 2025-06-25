@@ -2,6 +2,7 @@ import {
   AccountAddress,
   Aptos,
   InputEntryFunctionData,
+  InputViewFunctionData,
   MoveResource,
 } from '@aptos-labs/ts-sdk';
 import { Network } from '@interest-protocol/movement-core-sdk';
@@ -26,6 +27,7 @@ import {
   InterestLpResource,
   NewLPAndAddLiquidityFAsArgs,
   NewPoolAndLiquidityFAsArgs,
+  PendingFeesArgs,
   RemoveAdminArgs,
   SetProtocolFeeArgs,
   SwapFAArgs,
@@ -301,6 +303,22 @@ export class InterestV3 {
     };
   }
 
+  async pendingFees({ pool, interestLp }: PendingFeesArgs) {
+    this.#isValidAddress(pool);
+    this.#isValidAddress(interestLp);
+
+    const payload: InputViewFunctionData = {
+      function: `${this.#packages.PROTOCOL.toString()}::${MODULES.POOL.toString()}::pending_fees`,
+      functionArguments: [pool, interestLp],
+    };
+
+    const data = await this.client.view({ payload });
+
+    return {
+      amount0: data[0] as string,
+      amount1: data[1] as string,
+    };
+  }
   async filterLpByType(nodes: CurrentTokenOwnershipsV2AggregateNode[]) {
     const resources = await Promise.all(
       nodes.map((node) =>

@@ -118,6 +118,11 @@ export interface CollectFeesArgs {
   recipient: string;
 }
 
+export interface PendingFeesArgs {
+  pool: string;
+  interestLp: string;
+}
+
 export interface InterestLpReward {
   growth_inside_last_x64: string;
   rewards_owed: string;
