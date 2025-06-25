@@ -43,7 +43,7 @@ export interface FaucetMultiMintArgs {
 
 // DEX functions
 
-export interface NewPoolAndLiquidityFAsArgs {
+export interface NewPoolAndLiquidityFasArgs {
   fa0Metadata: string;
   fa1Metadata: string;
   amount0: bigint;
@@ -57,7 +57,7 @@ export interface NewPoolAndLiquidityFAsArgs {
   recipient: string;
 }
 
-export interface NewLPAndAddLiquidityFAsArgs {
+export interface NewLPAndAddLiquidityFasArgs {
   pool: string;
   amount0: bigint;
   amount1: bigint;
@@ -68,7 +68,7 @@ export interface NewLPAndAddLiquidityFAsArgs {
   recipient: string;
 }
 
-export interface AddLiquidityFAsArgs {
+export interface AddLiquidityFasArgs {
   interestLp: string;
   amount0: bigint;
   amount1: bigint;
@@ -77,15 +77,7 @@ export interface AddLiquidityFAsArgs {
   recipient: string;
 }
 
-export interface RemoveLiquidityFAsArgs {
-  interestLp: string;
-  liquidity: bigint;
-  minFa0Amount?: bigint;
-  minFa1Amount?: bigint;
-  recipient: string;
-}
-
-export interface SwapFAArgs {
+export interface SwapFaArgs {
   pool: string;
   faInMetadata: string;
   amountIn: bigint;
@@ -103,7 +95,7 @@ export interface AddLiquidityFasArgs {
   recipient: string;
 }
 
-export interface DecreaseLiquidityFAsArgs {
+export interface DecreaseLiquidityFasArgs {
   interestLp: string;
   liquidity: bigint;
   minFa0Amount?: bigint;
@@ -116,6 +108,42 @@ export interface CollectFeesArgs {
   amount0Max: bigint;
   amount1Max: bigint;
   recipient: string;
+}
+
+export interface CollectRewardArgs {
+  interestLp: string;
+  reward: string;
+  recipient: string;
+}
+
+export interface CollectProtocolFeeArgs {
+  pool: string;
+  recipient: string;
+}
+
+export interface InitializeRewardArgs {
+  pool: string;
+  reward: string;
+  amount: bigint;
+  emissionsPerSecond: number;
+}
+
+export interface AddRewardArgs {
+  pool: string;
+  reward: string;
+  amount: bigint;
+}
+
+export interface UpdateEmissionsPerSecondArgs {
+  pool: string;
+  reward: string;
+  emissionsPerSecond: number;
+}
+
+export interface UpdateEndTimestampArgs {
+  pool: string;
+  reward: string;
+  endTimestamp: number;
 }
 
 export interface PendingFeesArgs {

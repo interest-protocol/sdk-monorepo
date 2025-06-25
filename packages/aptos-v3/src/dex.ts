@@ -6,7 +6,7 @@ import {
   MoveResource,
 } from '@aptos-labs/ts-sdk';
 import { Network } from '@interest-protocol/movement-core-sdk';
-import { MAX_TICK, MIN_TICK } from '@interest-protocol/v3-core';
+import { MAX_TICK, MaxUint64, MIN_TICK } from '@interest-protocol/v3-core';
 import invariant from 'tiny-invariant';
 
 import {
@@ -21,16 +21,22 @@ import {
   AddAdminArgs,
   AddFeeTickSpacingArgs,
   AddLiquidityFasArgs,
+  AddRewardArgs,
   CollectFeesArgs,
+  CollectProtocolFeeArgs,
+  CollectRewardArgs,
   ConstructorArgs,
-  DecreaseLiquidityFAsArgs,
+  DecreaseLiquidityFasArgs,
+  InitializeRewardArgs,
   InterestLpResource,
-  NewLPAndAddLiquidityFAsArgs,
-  NewPoolAndLiquidityFAsArgs,
+  NewLPAndAddLiquidityFasArgs,
+  NewPoolAndLiquidityFasArgs,
   PendingFeesArgs,
   RemoveAdminArgs,
   SetProtocolFeeArgs,
-  SwapFAArgs,
+  SwapFaArgs,
+  UpdateEmissionsPerSecondArgs,
+  UpdateEndTimestampArgs,
 } from './dex.types';
 import { CurrentTokenOwnershipsV2AggregateNode } from './gql.types';
 import { formatInterestLpResource, getDefaultConstructorArgs } from './utils';
@@ -121,7 +127,7 @@ export class InterestV3 {
     minFa0Amount = 0n,
     minFa1Amount = 0n,
     recipient,
-  }: NewPoolAndLiquidityFAsArgs): InputEntryFunctionData {
+  }: NewPoolAndLiquidityFasArgs): InputEntryFunctionData {
     this.#isValidAddress(fa0Metadata);
     this.#isValidAddress(fa1Metadata);
     this.#isValidAddress(recipient);
@@ -170,7 +176,7 @@ export class InterestV3 {
     sqrtPriceLimitX64 = 0n,
     minAmountOut = 0n,
     recipient,
-  }: SwapFAArgs): InputEntryFunctionData {
+  }: SwapFaArgs): InputEntryFunctionData {
     this.#isValidAddress(pool);
     this.#isValidAddress(faInMetadata);
     this.#isValidAddress(recipient);
@@ -203,7 +209,7 @@ export class InterestV3 {
     minFa0Amount = 0n,
     minFa1Amount = 0n,
     recipient,
-  }: NewLPAndAddLiquidityFAsArgs): InputEntryFunctionData {
+  }: NewLPAndAddLiquidityFasArgs): InputEntryFunctionData {
     this.#isValidAddress(pool);
     this.#isValidAddress(recipient);
 
@@ -267,7 +273,7 @@ export class InterestV3 {
     minFa0Amount = 0n,
     minFa1Amount = 0n,
     recipient,
-  }: DecreaseLiquidityFAsArgs): InputEntryFunctionData {
+  }: DecreaseLiquidityFasArgs): InputEntryFunctionData {
     this.#isValidAddress(interestLp);
     this.#isValidAddress(recipient);
 
@@ -300,6 +306,103 @@ export class InterestV3 {
     return {
       function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::collect_fees`,
       functionArguments: [interestLp, amount0Max, amount1Max, recipient],
+    };
+  }
+
+  collectProtocolFee({
+    pool,
+    recipient,
+  }: CollectProtocolFeeArgs): InputEntryFunctionData {
+    this.#isValidAddress(pool);
+    this.#isValidAddress(recipient);
+
+    return {
+      function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::collect_protocol_fees`,
+      functionArguments: [
+        pool,
+        MaxUint64.toString(),
+        MaxUint64.toString(),
+        recipient,
+      ],
+    };
+  }
+
+  initializeReward({
+    pool,
+    amount,
+    emissionsPerSecond,
+    reward,
+  }: InitializeRewardArgs): InputEntryFunctionData {
+    this.#isValidAddress(pool);
+    invariant(amount > 0n, 'Amount must be greater than 0');
+    invariant(
+      emissionsPerSecond > 0,
+      'Emissions per second must be greater than 0'
+    );
+    this.#isValidAddress(reward);
+
+    return {
+      function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::initialize_reward`,
+      functionArguments: [pool, reward, amount, emissionsPerSecond],
+    };
+  }
+
+  addReward({ pool, reward, amount }: AddRewardArgs): InputEntryFunctionData {
+    this.#isValidAddress(pool);
+    invariant(amount > 0n, 'Amount must be greater than 0');
+    this.#isValidAddress(reward);
+
+    return {
+      function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::add_reward`,
+      functionArguments: [pool, reward, amount],
+    };
+  }
+
+  updateEmissionsPerSecond({
+    pool,
+    reward,
+    emissionsPerSecond,
+  }: UpdateEmissionsPerSecondArgs): InputEntryFunctionData {
+    this.#isValidAddress(pool);
+    this.#isValidAddress(reward);
+
+    return {
+      function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::update_emissions_per_second`,
+      functionArguments: [pool, reward, emissionsPerSecond],
+    };
+  }
+
+  updateEndTimestamp({
+    pool,
+    reward,
+    endTimestamp,
+  }: UpdateEndTimestampArgs): InputEntryFunctionData {
+    this.#isValidAddress(pool);
+    this.#isValidAddress(reward);
+
+    invariant(
+      endTimestamp > new Date().getTime() / 1000,
+      'End timestamp must be greater than 0'
+    );
+
+    return {
+      function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::update_end_timestamp`,
+      functionArguments: [pool, reward, endTimestamp],
+    };
+  }
+
+  collectReward({
+    interestLp,
+    reward,
+    recipient,
+  }: CollectRewardArgs): InputEntryFunctionData {
+    this.#isValidAddress(interestLp);
+    this.#isValidAddress(reward);
+    this.#isValidAddress(recipient);
+
+    return {
+      function: `${this.#packages.INTERFACE.toString()}::${MODULES.INTERFACE.toString()}::collect_reward`,
+      functionArguments: [interestLp, reward, recipient],
     };
   }
 

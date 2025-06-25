@@ -17,7 +17,7 @@ import { TREASURY_ADDRESS } from '../utils';
       function: `${PACKAGES.mainnet.address.toString()}::interest_curve_entry::claim_stable_admin`,
       functionArguments: [
         WHITELISTED_CURVE_LP_COINS.USDCe_USDTe_STABLE,
-        WHITELISTED_FAS.USDTe.toString(),
+        WHITELISTED_FAS.USDCe.toString(),
         TREASURY_ADDRESS.toString(),
       ],
     },
