@@ -112,7 +112,8 @@ export abstract class LiquidityAmounts {
     );
 
     return BigNumberUtils.toBigInt(
-      BigNumberUtils.shiftLeft(liquidity, 64)
+      new BigNumber(liquidity)
+        .multipliedBy(Q64)
         .multipliedBy(sqrtPriceBX64Bn.minus(sqrtPriceAX64Bn))
         .div(sqrtPriceBX64Bn)
         .div(sqrtPriceAX64Bn)

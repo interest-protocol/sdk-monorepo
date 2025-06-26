@@ -1,3 +1,4 @@
+import { Q128 } from '@/constants';
 import { BigNumber, BigNumberUtils } from '@/lib';
 
 import {
@@ -16,7 +17,7 @@ export abstract class PriceEncoder {
   }
 
   static fromPrice(price: BigNumber): bigint {
-    return BigNumberUtils.toBigInt(BigNumberUtils.shiftLeft(price, 128).sqrt());
+    return BigNumberUtils.toBigInt(price.multipliedBy(Q128).sqrt());
   }
 
   // Decode back to price ratio (amount1/amount0)

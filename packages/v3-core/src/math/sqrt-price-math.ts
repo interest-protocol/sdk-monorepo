@@ -79,7 +79,7 @@ export abstract class SqrtPriceMath {
       sqrtPriceBX64
     );
 
-    const numerator1 = BigNumberUtils.shiftLeft(liquidity, 64);
+    const numerator1 = new BigNumber(liquidity).multipliedBy(Q64);
     const numerator2 = sqrtPriceBX64.minus(sqrtPriceAX64);
 
     BigNumberUtils.assertNotZero(
@@ -145,7 +145,7 @@ export abstract class SqrtPriceMath {
     if (new BigNumber(amount).isZero())
       return BigNumberUtils.toBigInt(sqrtPriceX64);
 
-    const numerator1 = BigNumberUtils.shiftLeft(liquidity, 64);
+    const numerator1 = new BigNumber(liquidity).multipliedBy(Q64);
     const [success, product] = BigNumberUtils.tryMul(amount, sqrtPriceX64);
 
     if (add) {
@@ -188,12 +188,12 @@ export abstract class SqrtPriceMath {
     if (add) {
       return BigNumberUtils.toBigInt(
         new BigNumber(sqrtPriceX64).plus(
-          BigNumberUtils.shiftLeft(amount, 64).dividedBy(liquidity)
+          new BigNumber(amount).multipliedBy(Q64).dividedBy(liquidity)
         )
       );
     } else {
       const quotient = BigNumberUtils.divUp(
-        BigNumberUtils.shiftLeft(amount, 64),
+        new BigNumber(amount).multipliedBy(Q64),
         liquidity
       );
 

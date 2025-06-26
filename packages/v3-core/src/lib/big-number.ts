@@ -49,12 +49,6 @@ const fromInt = (value: string, maxValue: bigint, minNegative: bigint) => {
 const willOverflow = (x: Numberish, y: Numberish) =>
   MaxUint256.dividedBy(toBigNumber(y)).lt(toBigNumber(x));
 
-export const shiftLeft = (amount: Numberish, shift: number) =>
-  toBigNumber(amount).multipliedBy(toBigNumber(2).pow(shift));
-
-export const shiftRight = (amount: Numberish, shift: number) =>
-  toBigNumber(amount).dividedBy(toBigNumber(2).pow(shift));
-
 export const sort = (x: Numberish, y: Numberish): [BigNumber, BigNumber] =>
   toBigNumber(x).gt(toBigNumber(y))
     ? [toBigNumber(y), toBigNumber(x)]
