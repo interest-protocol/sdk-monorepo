@@ -7,9 +7,9 @@ import { curveMainnetSDK } from '../utils';
 (async () => {
   const transactionResponse = await executeTx({
     data: curveMainnetSDK.setLpFaMetadata({
-      pool: WHITELISTED_CURVE_LP_COINS.MOVE_WETHe_VOLATILE.toString(),
-      name: 'IPX MOVE/WETHe Volatile',
-      symbol: 'IPX v-MOVE/WETHe',
+      pool: WHITELISTED_CURVE_LP_COINS.MUSD_USDCe_STABLE.toString(),
+      name: 'IPX mUSD/USDCe Stable',
+      symbol: 'IPX s-mUSD/USDCe',
       iconUri:
         'https://interestprotocol.infura-ipfs.io/ipfs/QmezXPykL5y92t6tvsJrmyRr2GUZHwSqyAmVUM32zcKWz2',
       projectUri: 'https://www.interest.xyz/',

@@ -12,11 +12,17 @@ export const FEE_DENOMINATOR = 1_000_000;
 export const MAX_TICK_SPACING = 16_384;
 
 export enum Fees {
-  VOLATILE = 2000,
+  EXOTIC = 10_000,
+  VOLATILE = 3000,
+  CORRELATED = 500,
+  STABLE = 100,
 }
 
 export const FEE_TICK_SPACING = {
+  [Fees.EXOTIC]: 200,
   [Fees.VOLATILE]: 60,
+  [Fees.CORRELATED]: 10,
+  [Fees.STABLE]: 1,
 };
 
 export const PACKAGES = {

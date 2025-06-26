@@ -1,4 +1,5 @@
 import { PACKAGES } from '@interest-protocol/interest-aptos-curve';
+import { WHITELISTED_CURVE_LP_COINS } from '@interest-protocol/interest-aptos-curve';
 import { logSuccess } from '@interest-protocol/logger';
 import { executeTx } from '@interest-protocol/movement-utils';
 
@@ -6,11 +7,11 @@ import { executeTx } from '@interest-protocol/movement-utils';
   const data = {
     function: `${PACKAGES.mainnet.address.toString()}::stable_pool::apply_fee`,
     functionArguments: [
-      '0x54c89a961dd60e30f1c03ba2c6f5a052e7ed0ba36fcca3c1153f06449199b285',
+      WHITELISTED_CURVE_LP_COINS.MUSD_USDCe_STABLE.toString(),
     ],
   } as any;
 
   const transactionResponse = await executeTx({ data });
 
-  logSuccess('apply-fee', transactionResponse.hash);
+  logSuccess('apply-stable-fee', transactionResponse.hash);
 })();
