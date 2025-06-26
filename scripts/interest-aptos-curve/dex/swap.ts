@@ -10,7 +10,7 @@ import { curveMainnetSDK } from '../utils';
     pool: WHITELISTED_CURVE_LP_COINS.USDCe_MUSD_STABLE.toString(),
     faIn: WHITELISTED_FAS.MUSD.toString(),
     faOut: WHITELISTED_FAS.USDCe.toString(),
-    amountIn: 1_000n,
+    amountIn: 80_000n,
     recipient: account.accountAddress.toString(),
     minAmountOut: 0n,
   });

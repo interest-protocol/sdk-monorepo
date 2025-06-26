@@ -161,7 +161,7 @@ export const WHITELISTED_CURVE_LP_COINS = {
   MOVE_WETHe_VOLATILE: AccountAddress.from(
     '0xc047546436145affa73b73df880d7b3a3c793e7155e0c6ad00a323ffc7e1d65a'
   ),
-  USDCe_MUSD_STABLE: AccountAddress.from(
+  MUSD_USDCe_STABLE: AccountAddress.from(
     '0x11a9500b4eaae0375dea274403bc9a508122c19139f586ba50aea6433e9ff70a'
   ),
 };
@@ -246,13 +246,13 @@ export const MAINNET_POOLS = {
     name: 'MOVE-WETHe Volatile',
     fas: [WHITELISTED_FAS.MOVE, WHITELISTED_FAS.WETHe],
   },
-  [WHITELISTED_CURVE_LP_COINS.USDCe_MUSD_STABLE.toString()]: {
+  [WHITELISTED_CURVE_LP_COINS.MUSD_USDCe_STABLE.toString()]: {
     isStable: true,
     address: AccountAddress.from(
       '0x11a9500b4eaae0375dea274403bc9a508122c19139f586ba50aea6433e9ff70a'
     ),
-    name: 'USDCe-MUSD Stable',
-    fas: [WHITELISTED_FAS.USDCe, WHITELISTED_FAS.MUSD],
+    name: 'MUSD-USDCe Stable',
+    fas: [WHITELISTED_FAS.MUSD, WHITELISTED_FAS.USDCe],
   },
 };
 
