@@ -12,7 +12,7 @@ import { account } from '@interest-protocol/movement-utils';
     data: {
       function: `${PACKAGES.mainnet.address.toString()}::stable_pool::commit_fee`,
       functionArguments: [
-        WHITELISTED_CURVE_LP_COINS.USDCe_MUSD_STABLE.toString(),
+        WHITELISTED_CURVE_LP_COINS.MUSD_USDCe_STABLE.toString(),
         100_000_000_000_000n,
         200000000000000000n,
       ],

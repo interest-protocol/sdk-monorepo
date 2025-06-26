@@ -3,6 +3,9 @@ import { Aptos, AptosConfig, Network } from '@aptos-labs/ts-sdk';
 export const MOVEMENT_MAINNET_RPC_URL =
   'https://full.mainnet.movementinfra.xyz/v1';
 
+export const SECONDARY_MOVEMENT_MAINNET_RPC_URL =
+  'https://mainnet.movementnetwork.xyz/v1';
+
 export const MOVEMENT_MAINNET_INDEXER_URL =
   'https://indexer.mainnet.movementnetwork.xyz/v1/graphql';
 

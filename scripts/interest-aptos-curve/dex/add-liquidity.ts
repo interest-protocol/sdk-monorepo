@@ -12,7 +12,7 @@ import { curveMainnetSDK, POW_6, POW_8 } from '../utils';
 (async () => {
   const data = curveMainnetSDK.addLiquidity({
     pool: returnIfDefinedOrThrow(
-      MAINNET_POOLS[WHITELISTED_CURVE_LP_COINS.USDCe_MUSD_STABLE.toString()],
+      MAINNET_POOLS[WHITELISTED_CURVE_LP_COINS.MUSD_USDCe_STABLE.toString()],
       'Pool not found'
     ).address.toString(),
     fasIn: [WHITELISTED_FAS.USDCe.toString(), WHITELISTED_FAS.MUSD.toString()],

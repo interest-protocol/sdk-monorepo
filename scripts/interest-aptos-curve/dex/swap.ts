@@ -7,7 +7,7 @@ import { curveMainnetSDK } from '../utils';
 
 (async () => {
   const data = curveMainnetSDK.swap({
-    pool: WHITELISTED_CURVE_LP_COINS.USDCe_MUSD_STABLE.toString(),
+    pool: WHITELISTED_CURVE_LP_COINS.MUSD_USDCe_STABLE.toString(),
     faIn: WHITELISTED_FAS.MUSD.toString(),
     faOut: WHITELISTED_FAS.USDCe.toString(),
     amountIn: 80_000n,
