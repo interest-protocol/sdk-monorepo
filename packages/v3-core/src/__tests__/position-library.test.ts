@@ -38,7 +38,7 @@ describe(PositionLibrary.name, () => {
         tick: 0,
       });
 
-      expect(status).toEqual(PositionStatus.AboveRange);
+      expect(status).toEqual(PositionStatus.BelowRange);
     });
 
     it('active', () => {
@@ -58,7 +58,7 @@ describe(PositionLibrary.name, () => {
         tick: 0,
       });
 
-      expect(status).toEqual(PositionStatus.BelowRange);
+      expect(status).toEqual(PositionStatus.AboveRange);
     });
   });
 });

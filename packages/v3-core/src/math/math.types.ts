@@ -71,12 +71,20 @@ export interface GetNextSqrtPriceFromInputArgs {
   zeroForOne: boolean;
 }
 
-export interface GetLiquidityCoinAmountsArgs {
+export interface GetAmountsArgs {
   slippage: number;
   lowerTick: number;
   upperTick: number;
   currentSqrtPriceX64: Numberish;
   isAmount0: boolean;
   amount: Numberish;
+  roundUp: boolean;
+}
+
+export interface GetAmountsForLiquidityEstimatedArgs {
+  liquidity: bigint;
+  currentSqrtPriceX64: bigint;
+  lowerSqrtPriceX64: bigint;
+  upperSqrtPriceX64: bigint;
   roundUp: boolean;
 }
