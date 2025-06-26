@@ -184,48 +184,6 @@ export abstract class LiquidityAmounts {
     }
   }
 
-  static getLiquidityForAmount0Estimated({
-    sqrtPriceAX64,
-    sqrtPriceBX64,
-    amount0,
-  }: GetLiquidityForAmount0Args): bigint {
-    const amount0BN = new BigNumber(amount0);
-
-    const [lowerSqrtPriceX64Bn, upperSqrtPriceX64Bn] = BigNumberUtils.sort(
-      sqrtPriceAX64,
-      sqrtPriceBX64
-    );
-
-    const numerator = BigNumberUtils.shiftRight(
-      amount0BN
-        .multipliedBy(upperSqrtPriceX64Bn)
-        .multipliedBy(lowerSqrtPriceX64Bn),
-      64
-    );
-    const denominator = upperSqrtPriceX64Bn.minus(lowerSqrtPriceX64Bn);
-
-    return BigNumberUtils.toBigInt(numerator.div(denominator));
-  }
-
-  static #getLiquidityForAmount1Estimated({
-    sqrtPriceAX64,
-    sqrtPriceBX64,
-    amount1,
-  }: GetLiquidityForAmount1Args): bigint {
-    const amount1BN = new BigNumber(amount1);
-
-    const [lowerSqrtPriceX64Bn, upperSqrtPriceX64Bn] = BigNumberUtils.sort(
-      sqrtPriceAX64,
-      sqrtPriceBX64
-    );
-
-    return BigNumberUtils.toBigInt(
-      amount1BN
-        .multipliedBy(Q64)
-        .div(upperSqrtPriceX64Bn.minus(lowerSqrtPriceX64Bn))
-    );
-  }
-
   static #getAmountsForLiquidityEstimated({
     liquidity,
     currentSqrtPriceX64,
@@ -299,7 +257,7 @@ export abstract class LiquidityAmounts {
         isAmount0,
         'You can only provide Token B when you are above the range'
       );
-      liquidity = LiquidityAmounts.getLiquidityForAmount0Estimated({
+      liquidity = LiquidityAmounts.getLiquidityForAmount0({
         sqrtPriceAX64: lowerSqrtPriceX64,
         sqrtPriceBX64: upperSqrtPriceX64,
         amount0: amount,
@@ -327,7 +285,7 @@ export abstract class LiquidityAmounts {
         !isAmount0,
         'You can only provide Token A when you are within the range'
       );
-      liquidity = LiquidityAmounts.#getLiquidityForAmount1Estimated({
+      liquidity = LiquidityAmounts.getLiquidityForAmount1({
         sqrtPriceAX64: lowerSqrtPriceX64,
         sqrtPriceBX64: upperSqrtPriceX64,
         amount1: amount,
@@ -351,12 +309,12 @@ export abstract class LiquidityAmounts {
       };
     } else {
       liquidity = isAmount0
-        ? LiquidityAmounts.getLiquidityForAmount0Estimated({
+        ? LiquidityAmounts.getLiquidityForAmount0({
             sqrtPriceAX64: currentSqrtPriceX64,
             sqrtPriceBX64: upperSqrtPriceX64,
             amount0: amount,
           })
-        : LiquidityAmounts.#getLiquidityForAmount1Estimated({
+        : LiquidityAmounts.getLiquidityForAmount1({
             sqrtPriceAX64: currentSqrtPriceX64,
             sqrtPriceBX64: lowerSqrtPriceX64,
             amount1: amount,
