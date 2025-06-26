@@ -8,7 +8,7 @@ import { curveMainnetSDK } from '../utils';
   const data = curveMainnetSDK.newStablePoolWithFas({
     metadatas: [
       WHITELISTED_FAS.USDCe.toString(),
-      WHITELISTED_FAS.USDTe.toString(),
+      WHITELISTED_FAS.MUSD.toString(),
     ],
   });
 

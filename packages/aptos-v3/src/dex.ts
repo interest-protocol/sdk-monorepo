@@ -488,7 +488,7 @@ export class InterestV3 {
   #isValidAddress(input: string) {
     invariant(
       AccountAddress.isValid({ input }),
-      'Admin must be a valid Aptos address'
+      'Input must be a valid Aptos address'
     );
   }
 }

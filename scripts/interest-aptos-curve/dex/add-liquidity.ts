@@ -7,16 +7,16 @@ import { logSuccess } from '@interest-protocol/logger';
 import { WHITELISTED_FAS } from '@interest-protocol/movement-core-sdk';
 import { account, executeTx } from '@interest-protocol/movement-utils';
 
-import { curveMainnetSDK, POW_8, POW_8BN } from '../utils';
+import { curveMainnetSDK, POW_6, POW_8 } from '../utils';
 
 (async () => {
   const data = curveMainnetSDK.addLiquidity({
     pool: returnIfDefinedOrThrow(
-      MAINNET_POOLS[WHITELISTED_CURVE_LP_COINS.MOVE_WETHe_VOLATILE.toString()],
+      MAINNET_POOLS[WHITELISTED_CURVE_LP_COINS.USDCe_MUSD_STABLE.toString()],
       'Pool not found'
     ).address.toString(),
-    fasIn: [WHITELISTED_FAS.WETHe.toString(), WHITELISTED_FAS.MOVE.toString()],
-    amounts: [BigInt(Math.floor(0.5 * POW_8)), 3662n * POW_8BN],
+    fasIn: [WHITELISTED_FAS.USDCe.toString(), WHITELISTED_FAS.MUSD.toString()],
+    amounts: [BigInt(Math.floor(0.1 * POW_6)), BigInt(Math.floor(0.1 * POW_8))],
     recipient: account.accountAddress.toString(),
     minAmountOut: 0n,
   });

@@ -63,6 +63,9 @@ export const TEST_MAINNET_TEST_POOLS = {
 export const POW_8 = 100_000_000;
 export const POW_8BN = BigInt(POW_8);
 
+export const POW_6 = 1_000_000;
+export const POW_6BN = BigInt(POW_6);
+
 export const TREASURY_ADDRESS = AccountAddress.from(
   '0xba515545b9681def6f170b6a3a533368c3404f2a91e8842150d08ba377aabd34'
 );

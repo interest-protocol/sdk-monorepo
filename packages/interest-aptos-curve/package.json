@@ -15,7 +15,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "version": "4.5.0",
+  "version": "5.0.0",
   "description": "Interest Protocol DEX SDK",
   "scripts": {
     "prebuild": "rimraf dist",

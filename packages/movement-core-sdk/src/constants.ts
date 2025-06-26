@@ -52,6 +52,9 @@ export const WHITELISTED_FAS = {
   WBTCe: AccountAddress.from(
     '0xb06f29f24dde9c6daeec1f930f14a441a8d6c0fbea590725e88b340af3e1939c'
   ),
+  MUSD: AccountAddress.from(
+    '0xdd84125d1ebac8f1ecb2819801417fc392325e672be111ec03830c34d6ff82dd'
+  ),
 };
 
 export const FUNGIBLE_ASSETS_METADATA = {
@@ -88,6 +91,13 @@ export const FUNGIBLE_ASSETS_METADATA = {
     name: 'WBTC.e',
     address: WHITELISTED_FAS.WBTCe,
     iconUri: '',
+    decimals: 8,
+  },
+  [WHITELISTED_FAS.MUSD.toString()]: {
+    symbol: 'mUSD',
+    name: 'Mirage Dollar',
+    address: WHITELISTED_FAS.MUSD,
+    iconUri: 'https://api.mirage.money/assets/mUSD.svg',
     decimals: 8,
   },
 };

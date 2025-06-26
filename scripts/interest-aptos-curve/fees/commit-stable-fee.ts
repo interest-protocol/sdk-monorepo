@@ -1,4 +1,8 @@
-import { PACKAGES } from '@interest-protocol/interest-aptos-curve';
+import {
+  PACKAGES,
+  WHITELISTED_CURVE_LP_COINS,
+} from '@interest-protocol/interest-aptos-curve';
+import { logSuccess } from '@interest-protocol/logger';
 import { movementMainnetClient } from '@interest-protocol/movement-core-sdk';
 import { account } from '@interest-protocol/movement-utils';
 
@@ -8,8 +12,8 @@ import { account } from '@interest-protocol/movement-utils';
     data: {
       function: `${PACKAGES.mainnet.address.toString()}::stable_pool::commit_fee`,
       functionArguments: [
-        '0x54c89a961dd60e30f1c03ba2c6f5a052e7ed0ba36fcca3c1153f06449199b285',
-        10000000000000n,
+        WHITELISTED_CURVE_LP_COINS.USDCe_MUSD_STABLE.toString(),
+        100_000_000_000_000n,
         200000000000000000n,
       ],
     },
@@ -29,5 +33,5 @@ import { account } from '@interest-protocol/movement-utils';
     transactionHash: submittedTx.hash,
   });
 
-  console.log(transactionResponse);
+  logSuccess('commit-stable-fee', transactionResponse.hash);
 })();
