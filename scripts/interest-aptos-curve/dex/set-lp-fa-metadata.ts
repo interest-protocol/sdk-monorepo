@@ -11,7 +11,7 @@ import { curveMainnetSDK } from '../utils';
       name: 'IPX mUSD/USDCe Stable',
       symbol: 'IPX s-mUSD/USDCe',
       iconUri:
-        'https://interestprotocol.infura-ipfs.io/ipfs/QmezXPykL5y92t6tvsJrmyRr2GUZHwSqyAmVUM32zcKWz2',
+        'https://api.interestlabs.io/movement/lp/0x11a9500b4eaae0375dea274403bc9a508122c19139f586ba50aea6433e9ff70a.png',
       projectUri: 'https://www.interest.xyz/',
     }),
   });

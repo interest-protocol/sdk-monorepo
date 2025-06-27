@@ -13,7 +13,7 @@ export const MAX_TICK_SPACING = 16_384;
 
 export enum Fees {
   EXOTIC = 10_000,
-  VOLATILE = 3000,
+  VOLATILE = 2_500,
   CORRELATED = 500,
   STABLE = 100,
 }
