@@ -7,7 +7,7 @@ import { executeTx } from '@interest-protocol/movement-utils';
   const data = {
     function: `${PACKAGES.mainnet.address.toString()}::stable_pool::apply_fee`,
     functionArguments: [
-      WHITELISTED_CURVE_LP_COINS.MUSD_USDCe_STABLE.toString(),
+      WHITELISTED_CURVE_LP_COINS.USDCe_USDTe_STABLE.toString(),
     ],
   } as any;
 

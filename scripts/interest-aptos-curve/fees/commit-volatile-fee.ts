@@ -4,13 +4,14 @@ import {
   WHITELISTED_CURVE_LP_COINS,
 } from '@interest-protocol/interest-aptos-curve';
 import { logSuccess } from '@interest-protocol/logger';
+import { bardockClient } from '@interest-protocol/movement-core-sdk';
 import { executeTx } from '@interest-protocol/movement-utils';
 
 import { curveMainnetSDK } from '../utils';
 
 (async () => {
   const pool = await curveMainnetSDK.getPool(
-    WHITELISTED_CURVE_LP_COINS.MOVE_WETHe_VOLATILE.toString()
+    WHITELISTED_CURVE_LP_COINS.USDTe_MOVE_VOLATILE.toString()
   );
 
   const volatileData = pool.data as VolatilePool;
@@ -19,8 +20,8 @@ import { curveMainnetSDK } from '../utils';
     function: `${PACKAGES.mainnet.address.toString()}::volatile_pool::commit_parameters`,
     functionArguments: [
       pool.address.toString(),
-      10000000n,
-      22000000n,
+      20000000n,
+      30000000n,
       BigInt(volatileData.fees.adminFee),
       BigInt(volatileData.fees.gammaFee),
       BigInt(volatileData.rebalancingParams.extraProfit),
@@ -31,5 +32,5 @@ import { curveMainnetSDK } from '../utils';
 
   const transactionResponse = await executeTx({ data });
 
-  logSuccess('apply-fee', transactionResponse.hash);
+  logSuccess('commit-volatile-fee', transactionResponse.hash);
 })();

@@ -7,7 +7,7 @@ import { executeTx } from '@interest-protocol/movement-utils';
   const data = {
     function: `${PACKAGES.mainnet.address.toString()}::volatile_pool::apply_parameters`,
     functionArguments: [
-      WHITELISTED_CURVE_LP_COINS.MOVE_WETHe_VOLATILE.toString(),
+      WHITELISTED_CURVE_LP_COINS.USDCe_WETHe_VOLATILE.toString(),
     ],
   } as any;
 

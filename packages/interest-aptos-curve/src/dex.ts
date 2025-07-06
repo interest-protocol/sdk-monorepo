@@ -9,13 +9,19 @@ import { Network, Package } from '@interest-protocol/movement-core-sdk';
 import { all, pathOr, propOr } from 'ramda';
 import invariant from 'tiny-invariant';
 
-import { FUNGIBLE_ASSETS, PACKAGES, TYPES } from './constants';
+import {
+  FUNGIBLE_ASSETS,
+  LENS_CONTRACT_MAINNET,
+  PACKAGES,
+  TYPES,
+} from './constants';
 import {
   AddLiquidityArgs,
   AddRewardFaArgs,
   AssertNewVolatilePoolArgs,
   ConstructorArgs,
   FaPayload,
+  GetAccountFarmsDataArgs,
   GetFaPrimaryStoreArgs,
   GetFarmAccountArgs,
   GetPoolAddressArgs,
@@ -503,6 +509,42 @@ export class InterestCurve {
         ),
       })),
     };
+  }
+
+  public async getAccountFarmsData({
+    user,
+    farms,
+    rewardFas,
+  }: GetAccountFarmsDataArgs) {
+    invariant(
+      this.network === Network.MAINNET,
+      'Get account farms data is only supported on mainnet'
+    );
+
+    invariant(
+      farms.length === rewardFas.length,
+      'Farms and reward fas must be the same length'
+    );
+
+    if (farms.length == 0) return [];
+
+    const payload: InputViewFunctionData = {
+      function: `${LENS_CONTRACT_MAINNET.toString()}::lens::get_sender_farms_data`,
+      functionArguments: [farms, rewardFas, user],
+    };
+
+    const data = await this.#client.view({ payload });
+
+    invariant(data.length > 0, 'Data is empty');
+
+    const amounts = data[0] as string[];
+    const rewards = data[1] as string[];
+
+    return farms.map((farm, index) => ({
+      farm,
+      amount: BigInt(amounts[index]),
+      rewards: BigInt(rewards[index]),
+    }));
   }
 
   public stake({

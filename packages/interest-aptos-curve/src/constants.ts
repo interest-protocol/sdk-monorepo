@@ -27,6 +27,10 @@ export const PACKAGES = {
   },
 } as Record<Network, Package>;
 
+export const LENS_CONTRACT_MAINNET = AccountAddress.from(
+  '0x50f43a0f96f71a249f85bd58b9c89161085ab6bffa00d1f302517639ea9ba679'
+);
+
 export const TYPES = {
   [Network.MAINNET]: {
     PAIRED_COIN_TYPE: '0x1::coin::PairedCoinType',

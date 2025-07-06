@@ -346,6 +346,12 @@ export interface GetFarmAccountArgs {
   rewardFas: string[];
 }
 
+export interface GetAccountFarmsDataArgs {
+  user: string;
+  farms: string[];
+  rewardFas: string[];
+}
+
 // ===  FARM END ===
 
 // ===  LP FA METADATA START ===
