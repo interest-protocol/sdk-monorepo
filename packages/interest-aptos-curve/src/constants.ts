@@ -28,7 +28,7 @@ export const PACKAGES = {
 } as Record<Network, Package>;
 
 export const LENS_CONTRACT_MAINNET = AccountAddress.from(
-  '0x50f43a0f96f71a249f85bd58b9c89161085ab6bffa00d1f302517639ea9ba679'
+  '0x0e0551538a69c20f71b8f6284d656f33ff45a68a6c20da2d626d0fe23b920427'
 );
 
 export const TYPES = {

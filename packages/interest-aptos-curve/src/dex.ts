@@ -26,6 +26,7 @@ import {
   GetFarmAccountArgs,
   GetPoolAddressArgs,
   GetPoolPageArgs,
+  HarvestAllArgs,
   HarvestArgs,
   InterestCurvePool,
   NewFarmArgs,
@@ -616,6 +617,31 @@ export class InterestCurve {
     return {
       function: `${this.#package.address.toString()}::${this.#interfaceModule}::harvest`,
       functionArguments: [farm, rewardFa, recipient],
+    };
+  }
+
+  public harvestAll({
+    farms,
+    rewardFas,
+    recipient,
+  }: HarvestAllArgs): InputGenerateTransactionPayloadData {
+    invariant(
+      farms.length === rewardFas.length,
+      'Farms and reward fas must be the same length'
+    );
+
+    invariant(
+      this.network === Network.MAINNET,
+      'Harvest all is only supported on mainnet'
+    );
+    invariant(
+      AccountAddress.isValid({ input: recipient }).valid,
+      'Recipient is invalid'
+    );
+
+    return {
+      function: `${LENS_CONTRACT_MAINNET.toString()}::lens::harvest_all`,
+      functionArguments: [farms, rewardFas, recipient],
     };
   }
 

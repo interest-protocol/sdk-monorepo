@@ -128,6 +128,12 @@ export interface HarvestArgs {
   recipient: string;
 }
 
+export interface HarvestAllArgs {
+  farms: string[];
+  rewardFas: string[];
+  recipient: string;
+}
+
 export interface QuoteSwapArgs {
   pool: string;
   faIn: string;
