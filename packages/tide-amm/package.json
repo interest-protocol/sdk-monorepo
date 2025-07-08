@@ -45,7 +45,7 @@
     "tsup": "^8.3.6"
   },
   "dependencies": {
-    "@interest-protocol/acl-sdk": "^2.0.0",
+    "@interest-protocol/acl-sdk": "^3.0.0",
     "@interest-protocol/lib": "workspace:*",
     "@interest-protocol/sui-core-sdk": "workspace:*",
     "@mysten/sui": "^1.21.2",
