@@ -1,21 +1,30 @@
 {
+  "extends": "@interest-protocol/typescript-config/base.json",
   "compilerOptions": {
-    "target": "es2020",
+    "target": "ESNext",
+    "lib": ["esnext"],
     "module": "esnext",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
     "declaration": true,
-    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "allowJs": true,
     "sourceMap": true,
-    "outDir": "dist",
-    "rootDir": "src",
-    "strict": true,
-    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "moduleResolution": "node",
+    "declarationMap": true,
+    "composite": true,
     "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
     "paths": {
-      "@interest-protocol/*": ["../*/dist"]
+      "@/lib": ["./src/lib/index.ts"],
+      "@/constants": ["./src/constants.ts"],
+      "@/math": ["./src/math/index.ts"],
+      "@/types": ["./src/types.ts"],
+      "@/entities": ["./src/entities/index.ts"],
+      "@/utils": ["./src/utils.ts"]
     }
   },
-  "@interest-protocol/*": ["../*/src"],
+  "include": ["src/**/*.ts", "types/**/*.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

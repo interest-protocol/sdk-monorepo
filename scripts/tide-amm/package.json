@@ -18,9 +18,9 @@
     "vitest": "^0.34.4"
   },
   "dependencies": {
-    "@interest-protocol/tide-amm": "workspace:*",
     "@interest-protocol/logger": "workspace:*",
     "@interest-protocol/sui-utils": "workspace:*",
+    "@interest-protocol/tide-amm": "workspace:*",
     "@mysten/sui": "^1.29.1",
     "decimal.js": "^10.5.0",
     "ramda": "^0.30.1",

@@ -1,19 +1,15 @@
-import { logSuccess } from '@interest-protocol/logger';
 import { executeTx } from '@interest-protocol/sui-utils';
-import { SUPER_ADMIN, TideAclSdk } from '@interest-protocol/tide-amm';
-import invariant from 'tiny-invariant';
+import { Roles, SUPER_ADMIN, TideAclSdk } from '@interest-protocol/tide-amm';
 
-const recipient =
-  '0x0db8426f6207d23dc75352be968894e986d156d017ba1a217fcb521effcde94f';
+const admin =
+  '0x1f3f49d0dad4c8afe411f6b61b1136692b0fb1f48b1bdb851fdc03c3b4de1411';
 
 (async () => {
-  invariant(recipient, 'recipient is required');
   const tx = TideAclSdk.addRole({
-    admin: recipient,
-    role: Roles.Manager,
+    admin: admin,
+    role: Roles.Oracle,
+    superAdmin: SUPER_ADMIN,
   });
 
-  const result = await executeTx(tx as any);
-
-  logSuccess('new-admin', result);
+  await executeTx(tx as any);
 })();
