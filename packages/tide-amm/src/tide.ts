@@ -22,8 +22,10 @@ import {
   SetMaxPricesArgs,
   SetMaxUpdateDelayMsArgs,
   SetPricesArgs,
+  SetVirtualXLiquidityArgs,
   ShareArgs,
   SwapArgs,
+  TidePool,
   UnpauseXtoYArgs,
   UnpauseYtoXArgs,
   WithdrawArgs,
@@ -34,6 +36,8 @@ const TideAclSdk = makeTideAclSdk();
 
 export class TideSdk extends SuiCoreSDK {
   #suiClient: SuiClient;
+
+  public static PRECISION = BigInt(1e18);
 
   constructor(data: SdkConstructorArgs | null | undefined = {}) {
     super();
@@ -258,6 +262,26 @@ export class TideSdk extends SuiCoreSDK {
     return tx2;
   }
 
+  public setVirtualXLiquidity({
+    tx = new Transaction(),
+    pool,
+    virtualLiquidityX,
+    admin,
+  }: SetVirtualXLiquidityArgs) {
+    const { authWitness, tx: tx2 } = this.#getAdminWitness(tx, admin);
+
+    tx2.moveCall({
+      target: `${TIDE_AMM_PACKAGE}::tide_amm::set_virtual_x_liquidity`,
+      arguments: [
+        this.sharedObject(tx, pool),
+        tx.pure.u256(virtualLiquidityX),
+        authWitness,
+      ],
+    });
+
+    return tx2;
+  }
+
   public async deposit({
     tx = new Transaction(),
     pool,
@@ -401,7 +425,7 @@ export class TideSdk extends SuiCoreSDK {
       [bcs.u64(), bcs.u64(), bcs.u64()],
     ]);
 
-    invariant(result[0], 'Quote pump devInspectAndGetReturnValues failed');
+    invariant(result[0], 'Quote devInspectAndGetReturnValues failed');
 
     const [amountIn, amountOut, fee] = result[0].map((value: string) =>
       BigInt(value)
@@ -423,6 +447,67 @@ export class TideSdk extends SuiCoreSDK {
     });
 
     return parseTidePool(pool);
+  }
+
+  async getBalances(pool: string | TidePool) {
+    if (typeof pool === 'string') {
+      pool = await this.getPool(pool);
+    }
+
+    const tx = new Transaction();
+
+    tx.moveCall({
+      target: `${TIDE_AMM_PACKAGE}::tide_amm::balances`,
+      arguments: [this.sharedObject(tx, pool.objectId)],
+      typeArguments: [pool.coinXType, pool.coinYType],
+    });
+
+    const result = await devInspectAndGetReturnValues(this.#suiClient, tx, [
+      [bcs.u64(), bcs.u64()],
+    ]);
+
+    invariant(result[0], 'Balances devInspectAndGetReturnValues failed');
+
+    const [balanceX, balanceY] = result[0].map((value: string) =>
+      BigInt(value)
+    );
+
+    return {
+      balanceX,
+      balanceY,
+    };
+  }
+
+  async virtualBalances(pool: string | TidePool) {
+    if (typeof pool === 'string') {
+      pool = await this.getPool(pool);
+    }
+
+    const tx = new Transaction();
+
+    tx.moveCall({
+      target: `${TIDE_AMM_PACKAGE}::tide_amm::virtual_balances`,
+      arguments: [this.sharedObject(tx, pool.objectId)],
+      typeArguments: [pool.coinXType, pool.coinYType],
+    });
+
+    const result = await devInspectAndGetReturnValues(this.#suiClient, tx, [
+      [bcs.u64(), bcs.u64()],
+    ]);
+
+    invariant(
+      result[0],
+      'Virtual balances devInspectAndGetReturnValues failed'
+    );
+
+    const [balanceX, balanceY] = result[0].map((value: string) =>
+      BigInt(value)
+    );
+
+    return {
+      balanceX,
+      balanceY,
+    };
   }
 
   #getAdminWitness(tx: Transaction, admin: string) {

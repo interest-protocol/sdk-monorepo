@@ -11,7 +11,7 @@ import { curveMainnetSDK } from '../utils';
       name: 'IPX wBTCe/mBTC Stable',
       symbol: 'IPX s-wBTCe/mBTC',
       iconUri:
-        'https://api.interestlabs.io/movement/lp/0x11a9500b4eaae0375dea274403bc9a508122c19139f586ba50aea6433e9ff70a.png',
+        'https://api.interestlabs.io/movement/lp/0x02e519bd6512e477af16ab99cddd26da6d7a75fed9d2a4bfa1fec6963e1a6a42.png',
       projectUri: 'https://www.interest.xyz/',
     }),
   });

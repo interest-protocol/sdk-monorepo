@@ -98,6 +98,11 @@ export interface SetPricesArgs extends MaybeTx, AdminGated {
   priceY: U64;
 }
 
+export interface SetVirtualXLiquidityArgs extends MaybeTx, AdminGated {
+  pool: SharedObject;
+  virtualLiquidityX: U64;
+}
+
 export interface SwapArgs extends MaybeTx {
   pool: TidePool | string;
   amount: U64;
