@@ -326,8 +326,8 @@ export class TideSdk extends SuiCoreSDK {
       target: `${TIDE_AMM_PACKAGE}::tide_amm::withdraw`,
       arguments: [
         this.sharedObject(tx, pool.objectId),
-        tx.pure.u256(amountX),
-        tx.pure.u256(amountY),
+        tx.pure.u64(amountX),
+        tx.pure.u64(amountY),
         authWitness,
       ],
       typeArguments: [pool.coinXType, pool.coinYType],
@@ -492,7 +492,7 @@ export class TideSdk extends SuiCoreSDK {
     });
 
     const result = await devInspectAndGetReturnValues(this.#suiClient, tx, [
-      [bcs.u64(), bcs.u64()],
+      [bcs.u256(), bcs.u256()],
     ]);
 
     invariant(

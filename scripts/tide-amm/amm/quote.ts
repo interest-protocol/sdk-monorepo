@@ -22,7 +22,7 @@ const PRECISION = BigInt(10 ** 18);
 
   const quote = await sdk.quote({
     pool: MOCK_SUI_MOCK_USDC_POOL,
-    amount: 1_000,
+    amount: 1n * 1_000_000_000n,
     xToY: true,
   });
 

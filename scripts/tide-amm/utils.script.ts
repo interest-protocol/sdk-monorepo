@@ -18,10 +18,10 @@ export const MOCK_SUI_TYPE = `${TIDE_COINS_PACKAGE}::mock_sui::MOCK_SUI`;
 export const MOCK_USDC_TYPE = `${TIDE_COINS_PACKAGE}::mock_usdc::MOCK_USDC`;
 
 export const MOCK_SUI_MOCK_USDC_POOL =
-  '0x1ac0ae03dc0ba1c7da44735d552297c7aec9098ed3942719e147b501cadb217a';
+  '0xb0e3e44538c45f1b07a71ac71b2e55b90fa9606018d341c047663364c2546704';
 
 export const JOSE_ADMIN =
-  '0xce8d4a16004aaeec7c6fffcc1c83f355c77c3526d24f95e4149442990b4bce66';
+  '0x3b8bccabcad2800e54ab4131d9b80234ae3400e5a9fcae4595c8a5a8c5df8346';
 
 export const DEATH_ADMIN =
   '0x1f3f49d0dad4c8afe411f6b61b1136692b0fb1f48b1bdb851fdc03c3b4de1411';

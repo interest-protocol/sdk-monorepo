@@ -1,12 +1,11 @@
 import { executeTx } from '@interest-protocol/sui-utils';
 import { TideSdk } from '@interest-protocol/tide-amm';
 
-import { MOCK_SUI_MOCK_USDC_POOL } from '../utils.script';
+import { JOSE_ADMIN, MOCK_SUI_MOCK_USDC_POOL } from '../utils.script';
 
 const sdk = new TideSdk();
 
-const admin =
-  '0xce8d4a16004aaeec7c6fffcc1c83f355c77c3526d24f95e4149442990b4bce66';
+const admin = JOSE_ADMIN;
 
 const PRECISION = BigInt(10 ** 18);
 

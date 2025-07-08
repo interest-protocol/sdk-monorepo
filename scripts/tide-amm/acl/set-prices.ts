@@ -7,10 +7,13 @@ const sdk = new TideSdk();
 
 const admin = JOSE_ADMIN;
 
+const PRECISION = BigInt(1e18);
+
 (async () => {
-  const tx = sdk.setMaxUpdateDelayMs({
+  const tx = sdk.setPrices({
     pool: MOCK_SUI_MOCK_USDC_POOL,
-    maxUpdateDelayMs: 10_000,
+    priceX: 5n * PRECISION,
+    priceY: PRECISION,
     admin,
   });
 

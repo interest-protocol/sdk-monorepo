@@ -8,9 +8,9 @@ const sdk = new TideSdk();
 const admin = JOSE_ADMIN;
 
 (async () => {
-  const tx = sdk.setMaxUpdateDelayMs({
+  const tx = sdk.setFeeY({
     pool: MOCK_SUI_MOCK_USDC_POOL,
-    maxUpdateDelayMs: 10_000,
+    feeY: 0.0004 * 1e6,
     admin,
   });
 

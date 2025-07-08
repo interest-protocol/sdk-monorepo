@@ -25,7 +25,7 @@ const PRECISION = BigInt(1e18);
   } = await sdk.swap({
     tx,
     pool: MOCK_SUI_MOCK_USDC_POOL,
-    amount: 1_000,
+    amount: 1n * 1_000_000_000n,
     xToY: true,
   });
 
