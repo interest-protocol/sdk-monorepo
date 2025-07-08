@@ -7,9 +7,10 @@ import { curveMainnetSDK } from '../utils';
 (async () => {
   const data = curveMainnetSDK.newStablePoolWithFas({
     metadatas: [
-      WHITELISTED_FAS.USDCe.toString(),
-      WHITELISTED_FAS.MUSD.toString(),
+      WHITELISTED_FAS.WBTCe.toString(),
+      WHITELISTED_FAS.MBTC.toString(),
     ],
+    initialA: 800n,
   });
 
   const transactionResponse = await executeTx({ data });

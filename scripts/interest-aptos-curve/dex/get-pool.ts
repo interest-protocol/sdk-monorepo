@@ -5,7 +5,7 @@ import { curveMainnetSDK } from '../utils';
 
 (async () => {
   const data = await curveMainnetSDK.getPool(
-    WHITELISTED_CURVE_LP_COINS.MUSD_USDCe_STABLE.toString()
+    WHITELISTED_CURVE_LP_COINS.WBTCe_MBTC_STABLE.toString()
   );
 
   logSuccess('get-pool', data);

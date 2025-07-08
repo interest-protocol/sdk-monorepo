@@ -168,6 +168,9 @@ export const WHITELISTED_CURVE_LP_COINS = {
   MUSD_USDCe_STABLE: AccountAddress.from(
     '0x11a9500b4eaae0375dea274403bc9a508122c19139f586ba50aea6433e9ff70a'
   ),
+  WBTCe_MBTC_STABLE: AccountAddress.from(
+    '0x02e519bd6512e477af16ab99cddd26da6d7a75fed9d2a4bfa1fec6963e1a6a42'
+  ),
 };
 
 export const FUNGIBLE_ASSETS = {
@@ -204,6 +207,13 @@ export const FUNGIBLE_ASSETS = {
     symbol: 'MOVE-WETHe Volatile',
     name: 'MOVE-WETHe Volatile',
     address: WHITELISTED_CURVE_LP_COINS.MOVE_WETHe_VOLATILE,
+    iconUri: '',
+    decimals: 9,
+  },
+  [WHITELISTED_CURVE_LP_COINS.WBTCe_MBTC_STABLE.toString()]: {
+    symbol: 'WBTCe-MBTC Stable',
+    name: 'WBTCe-MBTC Stable',
+    address: WHITELISTED_CURVE_LP_COINS.WBTCe_MBTC_STABLE,
     iconUri: '',
     decimals: 9,
   },
@@ -257,6 +267,14 @@ export const MAINNET_POOLS = {
     ),
     name: 'MUSD-USDCe Stable',
     fas: [WHITELISTED_FAS.MUSD, WHITELISTED_FAS.USDCe],
+  },
+  [WHITELISTED_CURVE_LP_COINS.WBTCe_MBTC_STABLE.toString()]: {
+    isStable: true,
+    address: AccountAddress.from(
+      '0x02e519bd6512e477af16ab99cddd26da6d7a75fed9d2a4bfa1fec6963e1a6a42'
+    ),
+    name: 'WBTCe-MBTC Stable',
+    fas: [WHITELISTED_FAS.WBTCe, WHITELISTED_FAS.MBTC],
   },
 };
 

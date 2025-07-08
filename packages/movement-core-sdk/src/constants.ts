@@ -55,6 +55,9 @@ export const WHITELISTED_FAS = {
   MUSD: AccountAddress.from(
     '0xdd84125d1ebac8f1ecb2819801417fc392325e672be111ec03830c34d6ff82dd'
   ),
+  MBTC: AccountAddress.from(
+    '0x0b7400b60e249c92b6b97717e29915474d90eec3e8c510bf5675628367d39e35'
+  ),
 };
 
 export const FUNGIBLE_ASSETS_METADATA = {
@@ -99,5 +102,12 @@ export const FUNGIBLE_ASSETS_METADATA = {
     address: WHITELISTED_FAS.MUSD,
     iconUri: 'https://api.mirage.money/assets/mUSD.svg',
     decimals: 8,
+  },
+  [WHITELISTED_FAS.MBTC.toString()]: {
+    symbol: 'mBTC',
+    name: 'mBTC',
+    address: WHITELISTED_FAS.MBTC,
+    iconUri: 'https://assets.echo-protocol.xyz/mbtc.svg',
+    decimals: 10,
   },
 };
