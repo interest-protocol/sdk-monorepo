@@ -16,3 +16,6 @@ export const TIDE_COINS_PACKAGE =
 export const MOCK_SUI_TYPE = `${TIDE_COINS_PACKAGE}::mock_sui::MOCK_SUI`;
 
 export const MOCK_USDC_TYPE = `${TIDE_COINS_PACKAGE}::mock_usdc::MOCK_USDC`;
+
+export const MOCK_SUI_MOCK_USDC_POOL =
+  '0x1ac0ae03dc0ba1c7da44735d552297c7aec9098ed3942719e147b501cadb217a';
