@@ -12,6 +12,9 @@ export class SDK extends SuiCoreSDK {
   package: string;
   client: SuiClient;
 
+  public static ACL_PACKAGE =
+    '0xb877fe150db8e9af55c399b4e49ba8afe658bd05317cb378c940344851125e9a';
+
   constructor(data: SdkConstructorArgs) {
     super();
     this.#rpcUrl = data.fullNodeUrl;
@@ -20,7 +23,7 @@ export class SDK extends SuiCoreSDK {
     this.otw = data.otw;
     this.aclObjectId = data.aclObjectId;
     this.aclInitialSharedVersion = data.aclInitialSharedVersion;
-    this.package = data.package;
+    this.package = data.package || SDK.ACL_PACKAGE;
   }
 
   public env() {

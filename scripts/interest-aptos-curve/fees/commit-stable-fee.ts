@@ -12,8 +12,8 @@ import { account } from '@interest-protocol/movement-utils';
     data: {
       function: `${PACKAGES.mainnet.address.toString()}::stable_pool::commit_fee`,
       functionArguments: [
-        WHITELISTED_CURVE_LP_COINS.USDCe_USDTe_STABLE.toString(),
-        50_000_000_000_000n,
+        WHITELISTED_CURVE_LP_COINS.WBTCe_MBTC_STABLE.toString(),
+        100000000000000n,
         200000000000000000n,
       ],
     },

@@ -9,7 +9,7 @@ export interface SdkConstructorArgs {
   otw: string;
   aclObjectId: string;
   aclInitialSharedVersion: string;
-  package: string;
+  package?: string;
 }
 
 export interface NewAdminArgs extends MaybeTx {
