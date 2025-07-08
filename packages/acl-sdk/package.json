@@ -15,11 +15,8 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "version": "4.0.0",
+  "version": "6.0.0",
   "description": "acl sdk",
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "prebuild": "rm -rf dist",
     "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
@@ -41,5 +38,13 @@
     "@mysten/sui": "^1.29.1",
     "@polymedia/suitcase-core": "^0.0.36",
     "tiny-invariant": "^1.3.3"
+  },
+  "publishConfig": {
+    "access": "public",
+    "dependencies": {
+      "@mysten/sui": "^1.29.1",
+      "@polymedia/suitcase-core": "^0.0.36",
+      "tiny-invariant": "^1.3.3"
+    }
   }
 }
