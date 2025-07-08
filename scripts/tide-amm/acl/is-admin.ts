@@ -1,5 +1,7 @@
 import { logSuccess } from '@interest-protocol/logger';
-import { TideAclSdk } from '@interest-protocol/tide-amm';
+import { makeTideAclSdk } from '@interest-protocol/tide-amm';
+
+const TideAclSdk = makeTideAclSdk();
 
 (async () => {
   const isAdmin = await TideAclSdk.isAdmin({

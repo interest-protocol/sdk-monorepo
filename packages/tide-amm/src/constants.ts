@@ -22,12 +22,9 @@ export const REGISTRY_OBJECT = ({ mutable }: { mutable: boolean }) => ({
 export const SUPER_ADMIN =
   '0x5319825dd13fb92b52b19759d2d9a2eb756def54e03265f140b911da45012c4b';
 
-export const INTEREST_ACL_PACKAGE =
-  '0xb877fe150db8e9af55c399b4e49ba8afe658bd05317cb378c940344851125e9a';
-
 export const TIDE_AMM_OTW = `${TIDE_AMM_PACKAGE}::tide_amm::TIDE_AMM`;
 
 export enum Roles {
-  Manager,
+  Manager = 1,
   Oracle,
 }

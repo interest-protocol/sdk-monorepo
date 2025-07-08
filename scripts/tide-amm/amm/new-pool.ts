@@ -1,8 +1,8 @@
 import { executeTx } from '@interest-protocol/sui-utils';
 import {
+  makeTideAclSdk,
   REGISTRY_OBJECT,
   TIDE_AMM_PACKAGE,
-  TideAclSdk,
 } from '@interest-protocol/tide-amm';
 import { Transaction } from '@mysten/sui/transactions';
 import { coinWithBalance } from '@mysten/sui/transactions';
@@ -13,6 +13,8 @@ import {
   MOCK_USDC_COIN_METADATA,
   MOCK_USDC_TYPE,
 } from '../utils.script';
+
+const TideAclSdk = makeTideAclSdk();
 
 (async () => {
   const tx = new Transaction();

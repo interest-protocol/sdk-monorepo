@@ -1,6 +1,8 @@
 import { logSuccess } from '@interest-protocol/logger';
 import { executeTx, keypair } from '@interest-protocol/sui-utils';
-import { SUPER_ADMIN, TideAclSdk } from '@interest-protocol/tide-amm';
+import { makeTideAclSdk, SUPER_ADMIN } from '@interest-protocol/tide-amm';
+
+const TideAclSdk = makeTideAclSdk();
 
 (async () => {
   const tx = TideAclSdk.newAdminAndTransfer({
