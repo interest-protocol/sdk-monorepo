@@ -5,16 +5,16 @@ import {
   SUPER_ADMIN,
 } from '@interest-protocol/tide-amm';
 
-import { JOSE_ADMIN } from '../utils.script';
+import { DEATH_ADMIN } from '../utils.script';
 
 const TideAclSdk = makeTideAclSdk();
 
-const admin = JOSE_ADMIN;
+const admin = DEATH_ADMIN;
 
 (async () => {
   const tx = TideAclSdk.addRole({
     admin,
-    role: Roles.Manager,
+    role: Roles.Oracle,
     superAdmin: SUPER_ADMIN,
   });
 

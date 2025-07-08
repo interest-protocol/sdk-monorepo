@@ -7,7 +7,7 @@ const sdk = new TideSdk();
 
 const admin = JOSE_ADMIN;
 
-const PRECISION = BigInt(1e18);
+const PRECISION = TideSdk.PRECISION;
 
 (async () => {
   const tx = sdk.setPrices({

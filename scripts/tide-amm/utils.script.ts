@@ -24,4 +24,4 @@ export const JOSE_ADMIN =
   '0x3b8bccabcad2800e54ab4131d9b80234ae3400e5a9fcae4595c8a5a8c5df8346';
 
 export const DEATH_ADMIN =
-  '0x1f3f49d0dad4c8afe411f6b61b1136692b0fb1f48b1bdb851fdc03c3b4de1411';
+  '0x67f5427df86e619e4c838a8777add4ab71986b95fd0138db984f3037ec22d0d4';
