@@ -46,3 +46,15 @@ export interface FinishSuperAdminTransferArgs extends MaybeTx {
 export interface IsAdminArgs {
   admin: string;
 }
+
+export interface AddRoleArgs extends MaybeTx {
+  superAdmin: ObjectInput;
+  admin: string;
+  role: number;
+}
+
+export interface RemoveRoleArgs extends MaybeTx {
+  superAdmin: ObjectInput;
+  admin: string;
+  role: number;
+}

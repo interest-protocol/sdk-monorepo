@@ -19,5 +19,6 @@
     { "path": "./packages/logger" },
     { "path": "./packages/v3-core" }
   ,
-    { "path": "./packages/aptos-v3" }]
+    { "path": "./packages/aptos-v3" },
+    { "path": "./packages/tide-amm" }]
 }

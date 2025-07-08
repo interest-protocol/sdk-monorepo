@@ -5,12 +5,14 @@ import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import invariant from 'tiny-invariant';
 
 import {
+  AddRoleArgs,
   DestroyAdminArgs,
   DestroySuperAdminArgs,
   FinishSuperAdminTransferArgs,
   IsAdminArgs,
   NewAdminAndTransferArgs,
   NewAdminArgs,
+  RemoveRoleArgs,
   RevokeAdminArgs,
   SdkConstructorArgs,
   StartSuperAdminTransferArgs,
@@ -198,5 +200,57 @@ export class AclSDK extends SDK {
     );
 
     return result[0][0];
+  }
+
+  public addRole({
+    tx = new Transaction(),
+    superAdmin,
+    admin,
+    role,
+  }: AddRoleArgs) {
+    tx.moveCall({
+      package: this.package,
+      module: 'access_control',
+      function: 'add_role',
+      arguments: [
+        tx.sharedObjectRef({
+          objectId: this.aclObjectId,
+          initialSharedVersion: this.aclInitialSharedVersion,
+          mutable: true,
+        }),
+        this.ownedObject(tx, superAdmin),
+        tx.pure.address(admin),
+        tx.pure.u8(role),
+      ],
+      typeArguments: [this.otw],
+    });
+
+    return tx;
+  }
+
+  public removeRole({
+    tx = new Transaction(),
+    superAdmin,
+    admin,
+    role,
+  }: RemoveRoleArgs) {
+    tx.moveCall({
+      package: this.package,
+      module: 'access_control',
+      function: 'remove_role',
+      arguments: [
+        tx.sharedObjectRef({
+          objectId: this.aclObjectId,
+          initialSharedVersion: this.aclInitialSharedVersion,
+          mutable: true,
+        }),
+        this.ownedObject(tx, superAdmin),
+        tx.pure.address(admin),
+        tx.pure.u8(role),
+      ],
+      typeArguments: [this.otw],
+    });
+
+    return tx;
   }
 }
