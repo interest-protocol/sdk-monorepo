@@ -1,4 +1,3 @@
-import { logSuccess } from '@interest-protocol/logger';
 import { executeTx } from '@interest-protocol/sui-utils';
 import { sleep } from '@interest-protocol/sui-utils';
 import { TideSdk } from '@interest-protocol/tide-amm';

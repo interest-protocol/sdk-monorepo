@@ -16,13 +16,15 @@ export enum Fees {
   VOLATILE = 2_500,
   CORRELATED = 500,
   STABLE = 100,
+  RESERVE = 1,
 }
 
 export const FEE_TICK_SPACING = {
   [Fees.EXOTIC]: 200,
-  [Fees.VOLATILE]: 60,
+  [Fees.VOLATILE]: 50,
   [Fees.CORRELATED]: 10,
   [Fees.STABLE]: 1,
+  [Fees.RESERVE]: 1,
 };
 
 export const PACKAGES = {
