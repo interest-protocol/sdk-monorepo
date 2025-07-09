@@ -32,10 +32,9 @@ import {
 } from './tide.types';
 import { parseTidePool } from './utils';
 
-const TideAclSdk = makeTideAclSdk();
-
 export class TideSdk extends SuiCoreSDK {
-  #suiClient: SuiClient;
+  suiClient: SuiClient;
+  tideAclSdk: ReturnType<typeof makeTideAclSdk>;
 
   public static PRECISION = BigInt(1e18);
 
@@ -47,9 +46,11 @@ export class TideSdk extends SuiCoreSDK {
         data && data.fullNodeUrl ? data.fullNodeUrl : getFullnodeUrl('mainnet'),
     };
 
-    this.#suiClient = new SuiClient({
+    this.suiClient = new SuiClient({
       url: data.fullNodeUrl!,
     });
+
+    this.tideAclSdk = makeTideAclSdk(data.fullNodeUrl!);
   }
 
   public async newPool({
@@ -62,10 +63,10 @@ export class TideSdk extends SuiCoreSDK {
     const { authWitness, tx: tx2 } = this.#getAdminWitness(tx, admin);
 
     const [xMetadata, yMetadata] = await Promise.all([
-      this.#suiClient.getCoinMetadata({
+      this.suiClient.getCoinMetadata({
         coinType: xType,
       }),
-      this.#suiClient.getCoinMetadata({
+      this.suiClient.getCoinMetadata({
         coinType: yType,
       }),
     ]);
@@ -421,7 +422,7 @@ export class TideSdk extends SuiCoreSDK {
       ],
     });
 
-    const result = await devInspectAndGetReturnValues(this.#suiClient, tx, [
+    const result = await devInspectAndGetReturnValues(this.suiClient, tx, [
       [bcs.u64(), bcs.u64(), bcs.u64()],
     ]);
 
@@ -439,7 +440,7 @@ export class TideSdk extends SuiCoreSDK {
   }
 
   async getPool(poolId: string) {
-    const pool = await this.#suiClient.getObject({
+    const pool = await this.suiClient.getObject({
       id: poolId,
       options: {
         showContent: true,
@@ -462,7 +463,7 @@ export class TideSdk extends SuiCoreSDK {
       typeArguments: [pool.coinXType, pool.coinYType],
     });
 
-    const result = await devInspectAndGetReturnValues(this.#suiClient, tx, [
+    const result = await devInspectAndGetReturnValues(this.suiClient, tx, [
       [bcs.u64(), bcs.u64()],
     ]);
 
@@ -491,7 +492,7 @@ export class TideSdk extends SuiCoreSDK {
       typeArguments: [pool.coinXType, pool.coinYType],
     });
 
-    const result = await devInspectAndGetReturnValues(this.#suiClient, tx, [
+    const result = await devInspectAndGetReturnValues(this.suiClient, tx, [
       [bcs.u256(), bcs.u256()],
     ]);
 
@@ -513,7 +514,7 @@ export class TideSdk extends SuiCoreSDK {
   #getAdminWitness(tx: Transaction, admin: string) {
     this.assertObjectId(admin);
 
-    return TideAclSdk.signIn({
+    return this.tideAclSdk.signIn({
       tx,
       admin,
     });
