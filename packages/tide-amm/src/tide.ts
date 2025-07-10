@@ -12,22 +12,20 @@ import {
   AddBlacklistArgs,
   DepositArgs,
   NewArgs,
-  PauseXtoYArgs,
-  PauseYtoXArgs,
   QuoteArgs,
   RemoveBlacklistArgs,
   SdkConstructorArgs,
   SetFeeXArgs,
   SetFeeYArgs,
-  SetMaxPricesArgs,
+  SetMaxAgeArgs,
+  SetMaxDeviationPercentageArgs,
   SetMaxUpdateDelayMsArgs,
-  SetPricesArgs,
+  SetPauseXtoYArgs,
+  SetPauseYtoXArgs,
   SetVirtualXLiquidityArgs,
   ShareArgs,
   SwapArgs,
   TidePool,
-  UnpauseXtoYArgs,
-  UnpauseYtoXArgs,
   WithdrawArgs,
 } from './tide.types';
 import { parseTidePool } from './utils';
@@ -147,25 +145,19 @@ export class TideSdk extends SuiCoreSDK {
     return tx2;
   }
 
-  public setMaxPrices({
+  public setPauseXtoY({
     tx = new Transaction(),
     pool,
-    maxPriceX,
-    maxPriceY,
-    minPriceX,
-    minPriceY,
+    paused,
     admin,
-  }: SetMaxPricesArgs) {
+  }: SetPauseXtoYArgs) {
     const { authWitness, tx: tx2 } = this.#getAdminWitness(tx, admin);
 
     tx2.moveCall({
-      target: `${TIDE_AMM_PACKAGE}::tide_amm::set_max_prices`,
+      target: `${TIDE_AMM_PACKAGE}::tide_amm::set_pause_x_y`,
       arguments: [
         this.sharedObject(tx, pool),
-        tx.pure.u256(maxPriceX),
-        tx.pure.u256(maxPriceY),
-        tx.pure.u256(minPriceX),
-        tx.pure.u256(minPriceY),
+        tx.pure.bool(paused),
         authWitness,
       ],
     });
@@ -173,45 +165,21 @@ export class TideSdk extends SuiCoreSDK {
     return tx2;
   }
 
-  public pauseXtoY({ tx = new Transaction(), pool, admin }: PauseXtoYArgs) {
+  public setPauseYtoX({
+    tx = new Transaction(),
+    pool,
+    paused,
+    admin,
+  }: SetPauseYtoXArgs) {
     const { authWitness, tx: tx2 } = this.#getAdminWitness(tx, admin);
 
     tx2.moveCall({
-      target: `${TIDE_AMM_PACKAGE}::tide_amm::pause_x_y`,
-      arguments: [this.sharedObject(tx, pool), authWitness],
-    });
-
-    return tx2;
-  }
-
-  public pauseYtoX({ tx = new Transaction(), pool, admin }: PauseYtoXArgs) {
-    const { authWitness, tx: tx2 } = this.#getAdminWitness(tx, admin);
-
-    tx2.moveCall({
-      target: `${TIDE_AMM_PACKAGE}::tide_amm::pause_y_x`,
-      arguments: [this.sharedObject(tx, pool), authWitness],
-    });
-
-    return tx2;
-  }
-
-  public unpauseXtoY({ tx = new Transaction(), pool, admin }: UnpauseXtoYArgs) {
-    const { authWitness, tx: tx2 } = this.#getAdminWitness(tx, admin);
-
-    tx2.moveCall({
-      target: `${TIDE_AMM_PACKAGE}::tide_amm::unpause_x_y`,
-      arguments: [this.sharedObject(tx, pool), authWitness],
-    });
-
-    return tx2;
-  }
-
-  public unpauseYtoX({ tx = new Transaction(), pool, admin }: UnpauseYtoXArgs) {
-    const { authWitness, tx: tx2 } = this.#getAdminWitness(tx, admin);
-
-    tx2.moveCall({
-      target: `${TIDE_AMM_PACKAGE}::tide_amm::unpause_y_x`,
-      arguments: [this.sharedObject(tx, pool), authWitness],
+      target: `${TIDE_AMM_PACKAGE}::tide_amm::set_pause_y_x`,
+      arguments: [
+        this.sharedObject(tx, pool),
+        tx.pure.bool(paused),
+        authWitness,
+      ],
     });
 
     return tx2;
@@ -283,6 +251,45 @@ export class TideSdk extends SuiCoreSDK {
     return tx2;
   }
 
+  public setMaxAge({
+    tx = new Transaction(),
+    pool,
+    maxAge,
+    admin,
+  }: SetMaxAgeArgs) {
+    const { authWitness, tx: tx2 } = this.#getAdminWitness(tx, admin);
+
+    tx2.moveCall({
+      target: `${TIDE_AMM_PACKAGE}::tide_amm::set_max_age`,
+      arguments: [
+        this.sharedObject(tx, pool),
+        tx.pure.u64(maxAge),
+        authWitness,
+      ],
+    });
+
+    return tx2;
+  }
+  public setMaxDeviationPercentage({
+    tx = new Transaction(),
+    pool,
+    maxDeviationPercentage,
+    admin,
+  }: SetMaxDeviationPercentageArgs) {
+    const { authWitness, tx: tx2 } = this.#getAdminWitness(tx, admin);
+
+    tx2.moveCall({
+      target: `${TIDE_AMM_PACKAGE}::tide_amm::set_max_deviation_percentage`,
+      arguments: [
+        this.sharedObject(tx, pool),
+        tx.pure.u256(maxDeviationPercentage),
+        authWitness,
+      ],
+    });
+
+    return tx2;
+  }
+
   public async deposit({
     tx = new Transaction(),
     pool,
@@ -339,29 +346,6 @@ export class TideSdk extends SuiCoreSDK {
       coinY,
       tx: tx2,
     };
-  }
-
-  public setPrices({
-    tx = new Transaction(),
-    pool,
-    priceX,
-    priceY,
-    admin,
-  }: SetPricesArgs) {
-    const { authWitness, tx: tx2 } = this.#getAdminWitness(tx, admin);
-
-    tx2.moveCall({
-      target: `${TIDE_AMM_PACKAGE}::tide_amm::set_prices`,
-      arguments: [
-        this.sharedObject(tx, pool),
-        tx.object.clock(),
-        tx.pure.u256(priceX),
-        tx.pure.u256(priceY),
-        authWitness,
-      ],
-    });
-
-    return tx2;
   }
 
   public async swap({ tx = new Transaction(), pool, amount, xToY }: SwapArgs) {

@@ -13,7 +13,7 @@ import { account } from '@interest-protocol/movement-utils';
       function: `${PACKAGES.mainnet.address.toString()}::stable_pool::commit_fee`,
       functionArguments: [
         WHITELISTED_CURVE_LP_COINS.WBTCe_MBTC_STABLE.toString(),
-        100000000000000n,
+        50000000000000n,
         200000000000000000n,
       ],
     },

@@ -40,28 +40,24 @@ export interface SetMaxUpdateDelayMsArgs extends MaybeTx, AdminGated {
   maxUpdateDelayMs: U64;
 }
 
-export interface SetMaxPricesArgs extends MaybeTx, AdminGated {
+export interface SetPauseXtoYArgs extends MaybeTx, AdminGated {
   pool: SharedObject;
-  maxPriceX: U64;
-  maxPriceY: U64;
-  minPriceX: U64;
-  minPriceY: U64;
+  paused: boolean;
 }
 
-export interface PauseXtoYArgs extends MaybeTx, AdminGated {
+export interface SetPauseYtoXArgs extends MaybeTx, AdminGated {
   pool: SharedObject;
+  paused: boolean;
 }
 
-export interface PauseYtoXArgs extends MaybeTx, AdminGated {
+export interface SetMaxAgeArgs extends MaybeTx, AdminGated {
   pool: SharedObject;
+  maxAge: U64;
 }
 
-export interface UnpauseXtoYArgs extends MaybeTx, AdminGated {
+export interface SetMaxDeviationPercentageArgs extends MaybeTx, AdminGated {
   pool: SharedObject;
-}
-
-export interface UnpauseYtoXArgs extends MaybeTx, AdminGated {
-  pool: SharedObject;
+  maxDeviationPercentage: U64;
 }
 
 export interface AddBlacklistArgs extends MaybeTx, AdminGated {
@@ -86,18 +82,6 @@ export interface WithdrawArgs extends MaybeTx, AdminGated {
   amountY: U64;
 }
 
-interface Price {
-  max: bigint;
-  min: bigint;
-  value: bigint;
-}
-
-export interface SetPricesArgs extends MaybeTx, AdminGated {
-  pool: SharedObject;
-  priceX: U64;
-  priceY: U64;
-}
-
 export interface SetVirtualXLiquidityArgs extends MaybeTx, AdminGated {
   pool: SharedObject;
   virtualLiquidityX: U64;
@@ -119,17 +103,21 @@ export interface TidePool {
   objectId: string;
   version: string;
   digest: string;
+  coinXType: string;
+  coinYType: string;
   decimalsX: bigint;
   decimalsY: bigint;
   feeX: bigint;
   feeY: bigint;
+  maxAge: number;
+  maxDeviationPercentage: bigint;
   lastUpdateMs: bigint;
   maxUpdateDelayMs: bigint;
   paused: boolean;
-  priceX: Price;
-  priceY: Price;
-  poolVersion: number;
   virtualXLiquidity: bigint;
-  coinXType: string;
-  coinYType: string;
+  xyPaused: boolean;
+  yxPaused: boolean;
+  feedX: string;
+  feedY: string;
+  packageVersion: number;
 }

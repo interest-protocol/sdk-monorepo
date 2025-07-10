@@ -4,14 +4,13 @@ import {
   WHITELISTED_CURVE_LP_COINS,
 } from '@interest-protocol/interest-aptos-curve';
 import { logSuccess } from '@interest-protocol/logger';
-import { bardockClient } from '@interest-protocol/movement-core-sdk';
 import { executeTx } from '@interest-protocol/movement-utils';
 
 import { curveMainnetSDK } from '../utils';
 
 (async () => {
   const pool = await curveMainnetSDK.getPool(
-    WHITELISTED_CURVE_LP_COINS.USDTe_MOVE_VOLATILE.toString()
+    WHITELISTED_CURVE_LP_COINS.USDCe_MOVE_VOLATILE.toString()
   );
 
   const volatileData = pool.data as VolatilePool;
@@ -21,7 +20,7 @@ import { curveMainnetSDK } from '../utils';
     functionArguments: [
       pool.address.toString(),
       20000000n,
-      30000000n,
+      25000000n,
       BigInt(volatileData.fees.adminFee),
       BigInt(volatileData.fees.gammaFee),
       BigInt(volatileData.rebalancingParams.extraProfit),
