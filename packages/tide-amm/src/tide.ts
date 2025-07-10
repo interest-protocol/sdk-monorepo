@@ -5,6 +5,7 @@ import { getFullnodeUrl } from '@mysten/sui/client';
 import { coinWithBalance, Transaction } from '@mysten/sui/transactions';
 import { normalizeSuiAddress } from '@mysten/sui/utils';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
+import { HermesClient } from '@pythnetwork/hermes-client';
 import {
   SuiPriceServiceConnection,
   SuiPythClient,
@@ -44,6 +45,7 @@ export class TideSdk extends SuiCoreSDK {
   tideAclSdk: ReturnType<typeof makeTideAclSdk>;
 
   public static PRECISION = BigInt(1e18);
+  public static PRECISION_DECIMALS = 18;
 
   constructor(data: SdkConstructorArgs | null | undefined = {}) {
     super();
@@ -527,6 +529,32 @@ export class TideSdk extends SuiCoreSDK {
     };
   }
 
+  async getPrices(pool: string | TidePool) {
+    if (typeof pool === 'string') {
+      pool = await this.getPool(pool);
+    }
+
+    const priceIds = [pool.feedX, pool.feedY];
+
+    const hermesClient = this.#getHermesClient();
+    const priceUpdates = await hermesClient.getLatestPriceUpdates(priceIds);
+
+    const prices = priceUpdates.parsed?.map(({ price }) => {
+      const powValue =
+        price.expo > 0 ? 18 + Math.abs(price.expo) : 18 - Math.abs(price.expo);
+
+      return BigInt(price.price) * 10n ** BigInt(powValue);
+    });
+
+    invariant(prices?.[0] && prices?.[1], 'Prices is null');
+
+    return {
+      priceX: prices[0],
+      priceY: prices[1],
+      precision: TideSdk.PRECISION,
+    };
+  }
+
   #getPriceUpdateData(pool: TidePool) {
     const connection = this.#getSuiServiceConnection();
 
@@ -539,6 +567,10 @@ export class TideSdk extends SuiCoreSDK {
         binary: true,
       },
     });
+  }
+
+  #getHermesClient() {
+    return new HermesClient('https://hermes.pyth.network', {});
   }
 
   async #getPythPriceInfoObjects(tx: Transaction, pool: TidePool) {

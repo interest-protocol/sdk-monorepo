@@ -13,11 +13,11 @@ import {
   const sdk = new TideSdk();
 
   const coinX = coinWithBalance({
-    balance: 10_000_000n * 1_000_000_000n,
+    balance: 100n * 1_000_000_000n,
     type: MOCK_SUI_TYPE,
   });
   const coinY = coinWithBalance({
-    balance: 10_000_000n * 1_000_000n,
+    balance: 500n * 1_000_000n,
     type: MOCK_USDC_TYPE,
   });
 

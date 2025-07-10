@@ -8,8 +8,8 @@ import { ADMIN_TO_UPDATE, MOCK_SUI_MOCK_USDC_POOL } from '../utils.script';
 
   const { tx, coinX, coinY } = await sdk.withdraw({
     pool: MOCK_SUI_MOCK_USDC_POOL,
-    amountX: 10n * 1_000_000_000n,
-    amountY: 10n * 1_000_000n,
+    amountX: 9999991000000000n,
+    amountY: 9999986770488n,
     admin: ADMIN_TO_UPDATE,
   });
 

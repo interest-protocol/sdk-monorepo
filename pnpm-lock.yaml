@@ -506,6 +506,9 @@ importers:
       '@polymedia/suitcase-core':
         specifier: ^0.0.36
         version: 0.0.36(@mysten/sui@1.35.0(typescript@5.8.3))
+      '@pythnetwork/hermes-client':
+        specifier: ^2.0.0
+        version: 2.0.0(axios@1.9.0)
       '@pythnetwork/pyth-sui-js':
         specifier: ^2.1.0
         version: 2.1.0(typescript@5.8.3)
