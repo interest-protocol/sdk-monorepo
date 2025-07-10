@@ -40,3 +40,11 @@ export const PYTH_STATE_ID =
 
 export const WORMHOLE_STATE_ID =
   '0xaeab97f96cf9877fee2883315d459552b2b921edc16d7ceac6eab944dd88919c';
+
+export enum RebalanceAction {
+  None,
+  Add,
+  Remove,
+}
+
+export const BASIS_POINTS = 10_000n;

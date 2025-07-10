@@ -14,6 +14,7 @@ import invariant from 'tiny-invariant';
 
 import { makeTideAclSdk } from './acl';
 import {
+  BASIS_POINTS,
   PYTH_STATE_ID,
   REGISTRY_OBJECT,
   TIDE_AMM_PACKAGE,
@@ -34,11 +35,12 @@ import {
   SetPauseYtoXArgs,
   SetVirtualXLiquidityArgs,
   ShareArgs,
+  ShouldRebalanceArgs,
   SwapArgs,
   TidePool,
   WithdrawArgs,
 } from './tide.types';
-import { parseTidePool } from './utils';
+import { calculateRebalanceAction, parseTidePool } from './utils';
 
 export class TideSdk extends SuiCoreSDK {
   suiClient: SuiClient;
@@ -553,6 +555,29 @@ export class TideSdk extends SuiCoreSDK {
       priceY: prices[1],
       precision: TideSdk.PRECISION,
     };
+  }
+
+  async shouldRebalance({
+    pool,
+    thresholdBasisPoints,
+    desiredAmount,
+  }: ShouldRebalanceArgs) {
+    invariant(
+      BigInt(desiredAmount) > 0n,
+      'Desired amount must be greater than 0'
+    );
+    invariant(
+      thresholdBasisPoints > 0n && thresholdBasisPoints <= BASIS_POINTS,
+      'Threshold basis points must be greater than 0'
+    );
+
+    const balances = await this.getBalances(pool);
+
+    return calculateRebalanceAction({
+      currentAmount: balances.balanceX,
+      desiredAmount,
+      threshold: thresholdBasisPoints,
+    });
   }
 
   #getPriceUpdateData(pool: TidePool) {

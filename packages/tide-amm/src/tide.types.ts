@@ -115,3 +115,15 @@ export interface TidePool {
   feedY: string;
   packageVersion: number;
 }
+
+export interface CalculateRebalanceActionArgs {
+  currentAmount: bigint;
+  desiredAmount: bigint;
+  threshold: bigint;
+}
+
+export interface ShouldRebalanceArgs {
+  desiredAmount: bigint;
+  pool: string;
+  thresholdBasisPoints: bigint;
+}
