@@ -18,6 +18,8 @@ export interface NewArgs extends MaybeTx, AdminGated {
   xType: string;
   yType: string;
   virtualLiquidity: U64;
+  feedX: string;
+  feedY: string;
 }
 
 export interface ShareArgs {
@@ -33,11 +35,6 @@ export interface SetFeeXArgs extends MaybeTx, AdminGated {
 export interface SetFeeYArgs extends MaybeTx, AdminGated {
   pool: SharedObject;
   feeY: U64;
-}
-
-export interface SetMaxUpdateDelayMsArgs extends MaybeTx, AdminGated {
-  pool: SharedObject;
-  maxUpdateDelayMs: U64;
 }
 
 export interface SetPauseXtoYArgs extends MaybeTx, AdminGated {
@@ -111,9 +108,6 @@ export interface TidePool {
   feeY: bigint;
   maxAge: number;
   maxDeviationPercentage: bigint;
-  lastUpdateMs: bigint;
-  maxUpdateDelayMs: bigint;
-  paused: boolean;
   virtualXLiquidity: bigint;
   xyPaused: boolean;
   yxPaused: boolean;

@@ -3,11 +3,21 @@ import { bcs } from '@mysten/sui/bcs';
 import { SuiClient } from '@mysten/sui/client';
 import { getFullnodeUrl } from '@mysten/sui/client';
 import { coinWithBalance, Transaction } from '@mysten/sui/transactions';
+import { normalizeSuiAddress } from '@mysten/sui/utils';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
+import {
+  SuiPriceServiceConnection,
+  SuiPythClient,
+} from '@pythnetwork/pyth-sui-js';
 import invariant from 'tiny-invariant';
 
 import { makeTideAclSdk } from './acl';
-import { REGISTRY_OBJECT, TIDE_AMM_PACKAGE } from './constants';
+import {
+  PYTH_STATE_ID,
+  REGISTRY_OBJECT,
+  TIDE_AMM_PACKAGE,
+  WORMHOLE_STATE_ID,
+} from './constants';
 import {
   AddBlacklistArgs,
   DepositArgs,
@@ -19,7 +29,6 @@ import {
   SetFeeYArgs,
   SetMaxAgeArgs,
   SetMaxDeviationPercentageArgs,
-  SetMaxUpdateDelayMsArgs,
   SetPauseXtoYArgs,
   SetPauseYtoXArgs,
   SetVirtualXLiquidityArgs,
@@ -56,8 +65,20 @@ export class TideSdk extends SuiCoreSDK {
     xType,
     yType,
     virtualLiquidity,
+    feedX,
+    feedY,
     tx = new Transaction(),
   }: NewArgs) {
+    this.assertObjectId(admin);
+    this.assertNotZeroAddress(feedX);
+    this.assertNotZeroAddress(feedY);
+
+    invariant(xType !== yType, 'xType and yType must be different');
+    invariant(
+      BigInt(virtualLiquidity) > 0n,
+      'virtualLiquidity must be greater than 0'
+    );
+
     const { authWitness, tx: tx2 } = this.#getAdminWitness(tx, admin);
 
     const [xMetadata, yMetadata] = await Promise.all([
@@ -80,6 +101,8 @@ export class TideSdk extends SuiCoreSDK {
         tx2.object(xMetadata.id),
         tx2.object(yMetadata.id),
         tx2.pure.u256(virtualLiquidity),
+        tx2.pure.address(feedX),
+        tx2.pure.address(feedY),
         authWitness,
       ],
     });
@@ -118,28 +141,6 @@ export class TideSdk extends SuiCoreSDK {
     tx2.moveCall({
       target: `${TIDE_AMM_PACKAGE}::tide_amm::set_fee_y`,
       arguments: [this.sharedObject(tx, pool), tx.pure.u256(feeY), authWitness],
-    });
-
-    return tx2;
-  }
-
-  public setMaxUpdateDelayMs({
-    tx = new Transaction(),
-    pool,
-    maxUpdateDelayMs,
-    admin,
-  }: SetMaxUpdateDelayMsArgs) {
-    this.assertObjectId(admin);
-
-    const { authWitness, tx: tx2 } = this.#getAdminWitness(tx, admin);
-
-    tx2.moveCall({
-      target: `${TIDE_AMM_PACKAGE}::tide_amm::set_max_update_delay_ms`,
-      arguments: [
-        this.sharedObject(tx, pool),
-        tx.pure.u64(maxUpdateDelayMs),
-        authWitness,
-      ],
     });
 
     return tx2;
@@ -353,6 +354,9 @@ export class TideSdk extends SuiCoreSDK {
       pool = await this.getPool(pool);
     }
 
+    const [priceInfoObjectIdX, priceInfoObjectIdY] =
+      await this.#getPythPriceInfoObjects(tx, pool);
+
     const coinIn = coinWithBalance({
       type: xToY ? pool.coinXType : pool.coinYType,
       balance: BigInt(amount),
@@ -363,6 +367,8 @@ export class TideSdk extends SuiCoreSDK {
       arguments: [
         this.sharedObject(tx, pool.objectId),
         tx.object.clock(),
+        tx.object(priceInfoObjectIdX),
+        tx.object(priceInfoObjectIdY),
         coinIn,
       ],
       typeArguments: [
@@ -393,11 +399,16 @@ export class TideSdk extends SuiCoreSDK {
 
     const tx = new Transaction();
 
+    const [priceInfoObjectIdX, priceInfoObjectIdY] =
+      await this.#getPythPriceInfoObjects(tx, pool);
+
     tx.moveCall({
       target: `${TIDE_AMM_PACKAGE}::tide_amm::quote`,
       arguments: [
         this.sharedObject(tx, pool.objectId),
         tx.object.clock(),
+        tx.object(priceInfoObjectIdX),
+        tx.object(priceInfoObjectIdY),
         tx.pure.u64(amount),
       ],
       typeArguments: [
@@ -406,20 +417,29 @@ export class TideSdk extends SuiCoreSDK {
       ],
     });
 
-    const result = await devInspectAndGetReturnValues(this.suiClient, tx, [
-      [bcs.u64(), bcs.u64(), bcs.u64()],
-    ]);
+    const result = await this.suiClient.devInspectTransactionBlock({
+      transactionBlock: tx,
+      sender: normalizeSuiAddress('0x0'),
+    });
 
-    invariant(result[0], 'Quote devInspectAndGetReturnValues failed');
+    const lastExecutionTx = result.results?.[result.results.length - 1];
 
-    const [amountIn, amountOut, fee] = result[0].map((value: string) =>
-      BigInt(value)
+    invariant(lastExecutionTx, 'Last tx returned values is null');
+
+    const lastTxReturnedValues = lastExecutionTx.returnValues;
+    invariant(lastTxReturnedValues, 'Last tx returned values is null');
+
+    invariant(
+      lastTxReturnedValues[0] &&
+        lastTxReturnedValues[1] &&
+        lastTxReturnedValues[2],
+      'Last tx returned values is null'
     );
 
     return {
-      amountIn,
-      amountOut,
-      fee,
+      amountIn: bcs.u64().parse(Uint8Array.from(lastTxReturnedValues[0][0])),
+      amountOut: bcs.u64().parse(Uint8Array.from(lastTxReturnedValues[1][0])),
+      fee: bcs.u64().parse(Uint8Array.from(lastTxReturnedValues[2][0])),
     };
   }
 
@@ -470,29 +490,77 @@ export class TideSdk extends SuiCoreSDK {
 
     const tx = new Transaction();
 
+    const [priceInfoObjectIdX, priceInfoObjectIdY] =
+      await this.#getPythPriceInfoObjects(tx, pool);
+
     tx.moveCall({
       target: `${TIDE_AMM_PACKAGE}::tide_amm::virtual_balances`,
-      arguments: [this.sharedObject(tx, pool.objectId)],
+      arguments: [
+        this.sharedObject(tx, pool.objectId),
+        tx.object.clock(),
+        tx.object(priceInfoObjectIdX),
+        tx.object(priceInfoObjectIdY),
+      ],
       typeArguments: [pool.coinXType, pool.coinYType],
     });
 
-    const result = await devInspectAndGetReturnValues(this.suiClient, tx, [
-      [bcs.u256(), bcs.u256()],
-    ]);
+    const result = await this.suiClient.devInspectTransactionBlock({
+      transactionBlock: tx,
+      sender: normalizeSuiAddress('0x0'),
+    });
+
+    const lastExecutionTx = result.results?.[result.results.length - 1];
+
+    invariant(lastExecutionTx, 'Last tx returned values is null');
+
+    const lastTxReturnedValues = lastExecutionTx.returnValues;
+    invariant(lastTxReturnedValues, 'Last tx returned values is null');
 
     invariant(
-      result[0],
-      'Virtual balances devInspectAndGetReturnValues failed'
-    );
-
-    const [balanceX, balanceY] = result[0].map((value: string) =>
-      BigInt(value)
+      lastTxReturnedValues[0] && lastTxReturnedValues[1],
+      'Last tx returned values is null'
     );
 
     return {
-      balanceX,
-      balanceY,
+      balanceX: bcs.u256().parse(Uint8Array.from(lastTxReturnedValues[0][0])),
+      balanceY: bcs.u256().parse(Uint8Array.from(lastTxReturnedValues[1][0])),
     };
+  }
+
+  #getPriceUpdateData(pool: TidePool) {
+    const connection = this.#getSuiServiceConnection();
+
+    return connection.getPriceFeedsUpdateData([pool.feedX, pool.feedY]);
+  }
+
+  #getSuiServiceConnection() {
+    return new SuiPriceServiceConnection('https://hermes.pyth.network', {
+      priceFeedRequestConfig: {
+        binary: true,
+      },
+    });
+  }
+
+  async #getPythPriceInfoObjects(tx: Transaction, pool: TidePool) {
+    const priceUpdateData = await this.#getPriceUpdateData(pool);
+    const pythClient = this.#getPythClient();
+
+    const priceInfoObjectIds = await pythClient.updatePriceFeeds(
+      tx,
+      priceUpdateData,
+      [pool.feedX, pool.feedY]
+    );
+
+    invariant(
+      priceInfoObjectIds.length === 2,
+      'Price info object IDs length is not 2'
+    );
+
+    return priceInfoObjectIds;
+  }
+
+  #getPythClient() {
+    return new SuiPythClient(this.suiClient, PYTH_STATE_ID, WORMHOLE_STATE_ID);
   }
 
   #getAdminWitness(tx: Transaction, admin: string) {

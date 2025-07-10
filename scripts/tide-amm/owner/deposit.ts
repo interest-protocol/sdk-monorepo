@@ -3,7 +3,7 @@ import { TideSdk } from '@interest-protocol/tide-amm';
 import { coinWithBalance } from '@mysten/sui/transactions';
 
 import {
-  JOSE_ADMIN,
+  ADMIN_TO_UPDATE,
   MOCK_SUI_MOCK_USDC_POOL,
   MOCK_SUI_TYPE,
   MOCK_USDC_TYPE,
@@ -25,7 +25,7 @@ import {
     pool: MOCK_SUI_MOCK_USDC_POOL,
     coinX,
     coinY,
-    admin: JOSE_ADMIN,
+    admin: ADMIN_TO_UPDATE,
   });
 
   await executeTx(tx);

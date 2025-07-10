@@ -15,7 +15,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "tide-amm package",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -43,6 +43,7 @@
     "@interest-protocol/sui-core-sdk": "workspace:*",
     "@mysten/sui": "^1.21.2",
     "@polymedia/suitcase-core": "^0.0.36",
+    "@pythnetwork/pyth-sui-js": "^2.1.0",
     "ramda": "^0.30.1",
     "tiny-invariant": "^1.3.3"
   },
@@ -53,7 +54,8 @@
       "@polymedia/suitcase-core": "^0.0.36",
       "ramda": "^0.30.1",
       "tiny-invariant": "^1.3.3",
-      "@interest-protocol/acl-sdk": "^6.1.0"
+      "@interest-protocol/acl-sdk": "^6.1.0",
+      "@pythnetwork/pyth-sui-js": "^2.1.0"
     }
   }
 }

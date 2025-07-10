@@ -1,17 +1,15 @@
 import { executeTx } from '@interest-protocol/sui-utils';
 import { TideSdk } from '@interest-protocol/tide-amm';
 
-import { JOSE_ADMIN, MOCK_SUI_MOCK_USDC_POOL } from '../utils.script';
-
-const sdk = new TideSdk();
-
-const admin = JOSE_ADMIN;
+import { ADMIN_TO_UPDATE, MOCK_SUI_MOCK_USDC_POOL } from '../utils.script';
 
 (async () => {
-  const tx = sdk.setFeeY({
+  const sdk = new TideSdk();
+
+  const tx = await sdk.setMaxAge({
     pool: MOCK_SUI_MOCK_USDC_POOL,
-    feeY: 0.0004 * 1e6,
-    admin,
+    maxAge: 60,
+    admin: ADMIN_TO_UPDATE,
   });
 
   await executeTx(tx);

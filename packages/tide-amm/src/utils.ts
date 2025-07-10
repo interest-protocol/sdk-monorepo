@@ -1,5 +1,5 @@
 import { SuiObjectResponse } from '@mysten/sui/client';
-import { normalizeStructTag } from '@mysten/sui/utils';
+import { normalizeStructTag, normalizeSuiObjectId } from '@mysten/sui/utils';
 import { pathOr } from 'ramda';
 import invariant from 'tiny-invariant';
 
@@ -23,36 +23,17 @@ export const parseTidePool = (pool: SuiObjectResponse): TidePool => {
     decimalsY: BigInt(pathOr(0, ['fields', 'decimals_y'], data.content)),
     feeX: BigInt(pathOr(0, ['fields', 'fee_x'], data.content)),
     feeY: BigInt(pathOr(0, ['fields', 'fee_y'], data.content)),
-    lastUpdateMs: BigInt(pathOr(0, ['fields', 'last_update_ms'], data.content)),
-    maxUpdateDelayMs: BigInt(
-      pathOr(0, ['fields', 'max_update_delay_ms'], data.content)
+    maxAge: Number(pathOr(0, ['fields', 'max_age'], data.content)),
+    maxDeviationPercentage: BigInt(
+      pathOr(0, ['fields', 'max_deviation_percentage'], data.content)
     ),
-    paused: pathOr(false, ['fields', 'paused'], data.content),
-    priceX: {
-      max: BigInt(
-        pathOr(0, ['fields', 'price_x', 'fields', 'max'], data.content)
-      ),
-      min: BigInt(
-        pathOr(0, ['fields', 'price_x', 'fields', 'min'], data.content)
-      ),
-      value: BigInt(
-        pathOr(0, ['fields', 'price_x', 'fields', 'value'], data.content)
-      ),
-    },
-    priceY: {
-      max: BigInt(
-        pathOr(0, ['fields', 'price_y', 'fields', 'max'], data.content)
-      ),
-      min: BigInt(
-        pathOr(0, ['fields', 'price_y', 'fields', 'min'], data.content)
-      ),
-      value: BigInt(
-        pathOr(0, ['fields', 'price_y', 'fields', 'value'], data.content)
-      ),
-    },
-    poolVersion: Number(pathOr(0, ['fields', 'version'], data.content)),
+    packageVersion: Number(pathOr(0, ['fields', 'version'], data.content)),
     virtualXLiquidity: BigInt(
       pathOr(0, ['fields', 'virtual_x_liquidity'], data.content)
     ),
-  } as any;
+    feedX: normalizeSuiObjectId(pathOr('', ['fields', 'feed_x'], data.content)),
+    feedY: normalizeSuiObjectId(pathOr('', ['fields', 'feed_y'], data.content)),
+    xyPaused: pathOr(false, ['fields', 'x_y_paused'], data.content),
+    yxPaused: pathOr(false, ['fields', 'y_x_paused'], data.content),
+  };
 };

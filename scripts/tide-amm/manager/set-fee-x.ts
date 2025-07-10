@@ -1,16 +1,16 @@
 import { executeTx } from '@interest-protocol/sui-utils';
 import { TideSdk } from '@interest-protocol/tide-amm';
 
-import { JOSE_ADMIN, MOCK_SUI_MOCK_USDC_POOL } from '../utils.script';
+import { ADMIN_TO_UPDATE, MOCK_SUI_MOCK_USDC_POOL } from '../utils.script';
 
 const sdk = new TideSdk();
 
-const admin = JOSE_ADMIN;
+const admin = ADMIN_TO_UPDATE;
 
 (async () => {
   const tx = sdk.setFeeX({
     pool: MOCK_SUI_MOCK_USDC_POOL,
-    feeX: 0.0005 * 1e9,
+    feeX: 0.001 * 1e9,
     admin,
   });
 
