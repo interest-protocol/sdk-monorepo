@@ -15,15 +15,12 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "version": "6.2.0",
+  "version": "7.0.0",
   "description": "acl sdk",
   "scripts": {
-    "prebuild": "rm -rf dist",
-    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
-    "build:types": "tsc --project tsconfig.json",
-    "build:tsup": "tsup './src/index.ts' --format esm,cjs --sourcemap",
-    "build": "pnpm run clean && pnpm run build:tsup && pnpm run build:types",
-    "dev": "tsc --watch"
+    "prebuild": "rimraf dist",
+    "build": "rollup -c rollup.config.js",
+    "build:types": "tsc --emitDeclarationOnly"
   },
   "keywords": [],
   "license": "ISC",
