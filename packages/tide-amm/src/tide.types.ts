@@ -1,5 +1,4 @@
 import {
-  MaybeTx,
   OwnedObject,
   SharedObject,
   U64,
@@ -12,6 +11,10 @@ export interface SdkConstructorArgs {
 
 interface AdminGated {
   admin: string;
+}
+
+interface MaybeTx {
+  tx?: Transaction;
 }
 
 export interface NewArgs extends MaybeTx, AdminGated {
