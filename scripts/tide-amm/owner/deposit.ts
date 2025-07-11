@@ -1,28 +1,24 @@
 import { executeTx } from '@interest-protocol/sui-utils';
 import { TideSdk } from '@interest-protocol/tide-amm';
 import { coinWithBalance } from '@mysten/sui/transactions';
+import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 
-import {
-  ADMIN_TO_UPDATE,
-  MOCK_SUI_MOCK_USDC_POOL,
-  MOCK_SUI_TYPE,
-  MOCK_USDC_TYPE,
-} from '../utils.script';
+import { ADMIN_TO_UPDATE, SUI_USDC_POOL, USDC_TYPE } from '../utils.script';
 
 (async () => {
   const sdk = new TideSdk();
 
   const coinX = coinWithBalance({
-    balance: 100n * 1_000_000_000n,
-    type: MOCK_SUI_TYPE,
+    balance: 5n * 1_000_000_000n,
+    type: SUI_TYPE_ARG,
   });
   const coinY = coinWithBalance({
-    balance: 500n * 1_000_000n,
-    type: MOCK_USDC_TYPE,
+    balance: 20n * 1_000_000n,
+    type: USDC_TYPE,
   });
 
   const tx = await sdk.deposit({
-    pool: MOCK_SUI_MOCK_USDC_POOL,
+    pool: SUI_USDC_POOL,
     coinX,
     coinY,
     admin: ADMIN_TO_UPDATE,

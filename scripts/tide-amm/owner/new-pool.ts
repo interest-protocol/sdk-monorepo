@@ -1,12 +1,12 @@
 import { executeTx } from '@interest-protocol/sui-utils';
 import { TideSdk } from '@interest-protocol/tide-amm';
+import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 
 import {
   ADMIN_TO_UPDATE,
-  MOCK_SUI_TYPE,
-  MOCK_USDC_TYPE,
   PRICE_FEED_SUI_USD,
   PRICE_FEED_USDC_USD,
+  USDC_TYPE,
 } from '../utils.script';
 
 (async () => {
@@ -14,8 +14,8 @@ import {
 
   const { tx, pool } = await sdk.newPool({
     admin: ADMIN_TO_UPDATE,
-    xType: MOCK_SUI_TYPE,
-    yType: MOCK_USDC_TYPE,
+    xType: SUI_TYPE_ARG,
+    yType: USDC_TYPE,
     virtualLiquidity: 1_000_000n * TideSdk.PRECISION,
     feedX: PRICE_FEED_SUI_USD,
     feedY: PRICE_FEED_USDC_USD,

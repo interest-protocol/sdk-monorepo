@@ -23,8 +23,6 @@ export const MOCK_SUI_MOCK_USDC_POOL =
 const JOSE_ADMIN =
   '0x854e37e97268aae4fa33628b9f18c6167fdef326eefc7af4d0f818283a34f23f';
 
-const DEATH_ADMIN = '';
-
 export const ADMIN_TO_UPDATE = JOSE_ADMIN;
 
 export const PRICE_FEED_SUI_USD =
@@ -32,3 +30,9 @@ export const PRICE_FEED_SUI_USD =
 
 export const PRICE_FEED_USDC_USD =
   '0xeaa020c61cc479712813461ce153894a96a6c00b21ed0cfc2798d1f9a9e9c94a';
+
+export const USDC_TYPE =
+  '0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC';
+
+export const SUI_USDC_POOL =
+  '0x208330127845e6be5a6292b6fbe078e7b8a28b4cdb3087e1e5c016cbbc9a16ff';
