@@ -1,6 +1,7 @@
 const resolve = require('@rollup/plugin-node-resolve');
 const commonjs = require('@rollup/plugin-commonjs');
 const typescript = require('@rollup/plugin-typescript');
+const replace = require('@rollup/plugin-replace');
 const pkg = require('./package.json');
 
 // Get workspace dependencies
@@ -35,6 +36,7 @@ module.exports = {
       file: 'dist/index.js',
       format: 'cjs',
       sourcemap: true,
+      exports: 'auto',
     },
     {
       file: 'dist/index.mjs',
@@ -44,15 +46,42 @@ module.exports = {
   ],
   external: allExternalDeps,
   plugins: [
-    resolve({
-      extensions: ['.ts', '.tsx', '.js', '.jsx'],
-      // Critical for bundling workspace dependencies
-      preserveSymlinks: false,
+    // Add replace plugin FIRST to transform problematic patterns
+    replace({
+      preventAssignment: true,
+      values: {
+        // Transform common dynamic require patterns
+        'require(moduleName)': 'import(moduleName)',
+        'require(name)': 'import(name)',
+        'require(path)': 'import(path)',
+        // Handle specific patterns you might have
+        "require('crypto')": "import('crypto')",
+        "require('fs')": "import('fs')",
+        "require('path')": "import('path')",
+        // Environment variables
+        'process.env.NODE_ENV': JSON.stringify('production'),
+      },
+      delimiters: ['', ''],
     }),
-    commonjs(),
+
+    resolve({
+      extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs'],
+      preserveSymlinks: false,
+      preferBuiltins: false,
+      exportConditions: ['node', 'default', 'module', 'import'],
+    }),
+
+    commonjs({
+      transformMixedEsModules: true,
+      ignoreDynamicRequires: false,
+      requireReturnsDefault: 'auto',
+      dynamicRequireTargets: ['node_modules/**/*.js', 'src/**/*.js'],
+    }),
+
     typescript({
       tsconfig: './tsconfig.json',
       declaration: true,
+      declarationDir: 'dist',
     }),
   ],
 };
