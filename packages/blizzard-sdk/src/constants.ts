@@ -362,7 +362,7 @@ export const INNER_LST_TREASURY_CAP = {
 
 export const TYPES = {
   WWAL: `${PACKAGES.WWAL.original}::wwal::WWAL`,
-  BLIZZARD: `${PACKAGES.BLIZZARD.original}::blizzard::Blizzard`,
+  BLIZZARD: `${PACKAGES.BLIZZARD.original}::blizzard::BLIZZARD`,
   WAL: `${PACKAGES.WAL.original}::wal::WAL`,
   STAKED_WAL: `${PACKAGES.WALRUS.original}::staked_wal::StakedWal`,
   BLIZZARD_STAKE_NFT: `${PACKAGES.BLIZZARD.original}::blizzard_stake_nft::BlizzardStakeNFT`,

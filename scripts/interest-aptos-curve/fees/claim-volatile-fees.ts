@@ -2,6 +2,7 @@ import {
   PACKAGES,
   WHITELISTED_CURVE_LP_COINS,
 } from '@interest-protocol/interest-aptos-curve';
+import { logSuccess } from '@interest-protocol/logger';
 import { movementMainnetClient } from '@interest-protocol/movement-core-sdk';
 import { account } from '@interest-protocol/movement-utils';
 
@@ -13,7 +14,7 @@ import { TREASURY_ADDRESS } from '../utils';
     data: {
       function: `${PACKAGES.mainnet.address.toString()}::interest_curve_entry::claim_volatile_admin`,
       functionArguments: [
-        WHITELISTED_CURVE_LP_COINS.MOVE_WETHe_VOLATILE.toString(),
+        WHITELISTED_CURVE_LP_COINS.USDCe_MOVE_VOLATILE.toString(),
         TREASURY_ADDRESS.toString(),
       ],
     },
@@ -33,5 +34,8 @@ import { TREASURY_ADDRESS } from '../utils';
     transactionHash: submittedTx.hash,
   });
 
-  console.log(transactionResponse);
+  logSuccess(
+    `Claimed volatile fees for ${WHITELISTED_CURVE_LP_COINS.MOVE_WETHe_VOLATILE}`,
+    transactionResponse
+  );
 })();

@@ -2,6 +2,7 @@ import {
   PACKAGES,
   WHITELISTED_CURVE_LP_COINS,
 } from '@interest-protocol/interest-aptos-curve';
+import { logSuccess } from '@interest-protocol/logger';
 import {
   movementMainnetClient,
   WHITELISTED_FAS,
@@ -17,7 +18,7 @@ import { TREASURY_ADDRESS } from '../utils';
       function: `${PACKAGES.mainnet.address.toString()}::interest_curve_entry::claim_stable_admin`,
       functionArguments: [
         WHITELISTED_CURVE_LP_COINS.USDCe_USDTe_STABLE,
-        WHITELISTED_FAS.USDCe.toString(),
+        WHITELISTED_FAS.USDTe.toString(),
         TREASURY_ADDRESS.toString(),
       ],
     },
@@ -37,5 +38,8 @@ import { TREASURY_ADDRESS } from '../utils';
     transactionHash: submittedTx.hash,
   });
 
-  console.log(transactionResponse);
+  logSuccess(
+    `Claimed stable fees for ${WHITELISTED_CURVE_LP_COINS.USDCe_USDTe_STABLE}`,
+    transactionResponse
+  );
 })();

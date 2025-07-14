@@ -16,7 +16,7 @@ import {
     admin: ADMIN_TO_UPDATE,
     xType: SUI_TYPE_ARG,
     yType: USDC_TYPE,
-    virtualLiquidity: 1_000_000n * TideSdk.PRECISION,
+    virtualLiquidity: 2_500_000n * TideSdk.PRECISION,
     feedX: PRICE_FEED_SUI_USD,
     feedY: PRICE_FEED_USDC_USD,
   });

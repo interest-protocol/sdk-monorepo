@@ -9,11 +9,11 @@ import { ADMIN_TO_UPDATE, SUI_USDC_POOL, USDC_TYPE } from '../utils.script';
   const sdk = new TideSdk();
 
   const coinX = coinWithBalance({
-    balance: 5n * 1_000_000_000n,
+    balance: 3_000n * 1_000_000_000n,
     type: SUI_TYPE_ARG,
   });
   const coinY = coinWithBalance({
-    balance: 20n * 1_000_000n,
+    balance: 13_000n * 1_000_000n,
     type: USDC_TYPE,
   });
 

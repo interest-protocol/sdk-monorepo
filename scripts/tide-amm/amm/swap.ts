@@ -9,8 +9,8 @@ const sdk = new TideSdk();
 (async () => {
   const { tx, extraCoinIn, coinOut } = await sdk.swap({
     pool: SUI_USDC_POOL,
-    amount: 10n * 100_000n,
-    xToY: false,
+    amount: 10n * 1_000_000_000n,
+    xToY: true,
   });
 
   invariant(extraCoinIn, 'extraCoinIn is null');

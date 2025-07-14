@@ -1,32 +1,32 @@
 import { normalizeSuiObjectId } from '@mysten/sui/utils';
 
 export const TIDE_AMM_PACKAGE =
-  '0xb573a182eeeb7d3badb985eebe7905258fd357f1346c71942d613bc44fc38457';
+  '0x863370f42741e28dbe3293276c3477ffa8ef5137c24ccb4c7eeee2eafeb570c0';
 
 export const TIDE_ACL_OBJECT = ({ mutable }: { mutable: boolean }) => ({
   objectId: normalizeSuiObjectId(
-    '0xf8bfb58ba57fd8f4c10510dd90ede423e854444b651cf7a561692bd3f20c5c27'
+    '0x9027a6eba0e22cb90f0930799fbc1ea540ae222eb1aee83ed8d9d2a49f05a53f'
   ),
-  initialSharedVersion: '584368629',
+  initialSharedVersion: '589253478',
   mutable,
 });
 
 export const REGISTRY_OBJECT = ({ mutable }: { mutable: boolean }) => ({
   objectId: normalizeSuiObjectId(
-    '0xfbdeae754e4797c7be8adbf78dd5ff5496728375dd3e9cd3fb999ab86ca532fb'
+    '0xc2a2f9fe2b29f0714e52efa24c71d92a395bd97e030d6d0ba213f05af2e2361e'
   ),
-  initialSharedVersion: '584368629',
+  initialSharedVersion: '589253478',
   mutable,
 });
 
 export const SUPER_ADMIN =
-  '0x85ca0d2dcd1ca9e01b6beb8ad3e3e1fbbfab32bee23d05a9b0c022aee6ec78ea';
+  '0x55c3824a7812b7d7c2a623eb21d9ce71df904876c09dd41830e7427f24d24c38';
 
 export const TIDE_UPGRADE_CAP =
-  '0x2c09758c93c4bd1810ea7dffda006900b507c6a55c482b980d058db5065fe756';
+  '0xdf819195d8620ef7b2e2bbeedbf233424a909e8988952f8091e1e02112462264';
 
 export const PUBLISHER =
-  '0x4ed98202a7eaaf876e108cd2aaff0a303c48a3c08f5cb44a7ecc556177c6f686';
+  '0xc82e7e22440b7e2cd0a9dfb459f000e160cd8c24a2f951d82bf85971a26a9f1b';
 
 export const TIDE_AMM_OTW = `${TIDE_AMM_PACKAGE}::tide_amm::TIDE_AMM`;
 
