@@ -12,28 +12,29 @@ import { getEnv } from '../utils.script';
   });
 
   const memezTreasury = normalizeSuiAddress(Treasuries.MEMEZ);
+  const xPumpTreasury = normalizeSuiAddress(Treasuries.XPUMP);
 
   const tx2 = configSdk.setFees({
     authWitness,
     tx: tx as any,
-    configurationKey: configKeys.MEMEZ,
+    configurationKey: configKeys.XPUMP,
     values: [
       // last index is the creator fee nominal
       [10_000, 0n],
       // last index is the swap fee in bps
-      [10_000n, 0n],
-      [10_000n, 0n],
+      [3_000n, 7_000n, 30n],
+      [3_000n, 7_000n, 30n],
       // last index is the migration fee bps
-      [10_000n, 500n],
-      // Allow values
+      [3_000n, 7_000n, 500n],
+      // Allocations
       [10_000n, 0n],
       // Vesting period
       [0n],
     ],
     recipients: [
       [memezTreasury],
-      [memezTreasury],
-      [memezTreasury],
+      [memezTreasury, xPumpTreasury],
+      [memezTreasury, xPumpTreasury],
       [memezTreasury],
     ],
   });

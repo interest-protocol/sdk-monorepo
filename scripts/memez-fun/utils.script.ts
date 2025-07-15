@@ -11,18 +11,21 @@ import {
   SHARED_OBJECTS,
   TestMigratorSDK,
   TYPES,
+  XPumpMigratorSDK,
 } from '@interest-protocol/memez-fun-sdk';
 import { Network } from '@interest-protocol/sui-core-sdk';
 import { executeTx, keypair, suiClient } from '@interest-protocol/sui-utils';
 import { getFullnodeUrl } from '@mysten/sui/client';
 
 const TEST_POOL_ID =
-  '0xbc0fb2558938521434dd528427e9585c420af83b44277b325fe8a2987c897b15';
+  '0x5a4c19202ea2db33bd4cd6c539e60b5221cc96997614fc9f762de9fbdcd8038a';
 
 const TEST_STABLE_POOL_ID =
   '0xf53fd73af2d033c1c8d82a385ce983b6d24d0c722cf564317d85fbecdeb833b0';
 
 const recrdMigratorSdk = new RecrdMigratorSDK();
+
+const xPumpMigratorSdk = new XPumpMigratorSDK();
 
 export const getEnv = async () => {
   const network =
@@ -52,6 +55,7 @@ export const getEnv = async () => {
     testnetStablePoolId: TEST_STABLE_POOL_ID,
     testnetPoolId: TEST_POOL_ID,
     recrdMigratorSdk,
+    xPumpMigratorSdk,
     POW_10_9: 10n ** 9n,
   };
 };
