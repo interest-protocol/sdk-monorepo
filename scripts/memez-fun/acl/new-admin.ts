@@ -8,5 +8,5 @@ import { getEnv } from '../utils.script';
     recipient: keypair.toSuiAddress(),
   });
 
-  await executeTx(tx);
+  await executeTx(tx as any);
 })();

@@ -19,7 +19,7 @@ import { getEnv } from '../utils.script';
     authWitness,
     key: `${packages.MEMEZ_FUN.original}::memez_config::FeesKey<${configKeys.MEMEZ}>`,
     model: types.MEMEZ_FEE,
-    tx,
+    tx: tx as any,
   });
 
   await executeTx(tx2);

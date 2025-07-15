@@ -23,3 +23,26 @@ export interface RecrdMigrateArgs extends MaybeTx {
   quoteCoinType: string;
   ipxMemeCoinTreasury: string;
 }
+
+export interface XPumpSetRewardValueArgs extends MaybeTx {
+  rewardValue: U64;
+}
+
+export interface XPumpSetTreasuryArgs extends MaybeTx {
+  treasury: string;
+}
+
+export interface XPumpSetInitializePriceArgs extends MaybeTx {
+  price: U64;
+}
+
+export interface XPumpRegisterPoolArgs extends MaybeTx {
+  memeCoinTreasuryCap: string;
+}
+
+export interface XPumpMigrateArgs extends MaybeTx {
+  migrator: TransactionResult;
+  memeCoinType: string;
+  quoteCoinType: string;
+  ipxMemeCoinTreasury: string;
+}

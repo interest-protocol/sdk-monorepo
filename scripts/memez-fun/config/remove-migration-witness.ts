@@ -18,7 +18,7 @@ import { getEnv } from '../utils.script';
     authWitness,
     configKey: configKeys.MEMEZ,
     migratorWitness: migratorWitnesses.TEST,
-    tx,
+    tx: tx as any,
   });
 
   await executeTx(tx2);

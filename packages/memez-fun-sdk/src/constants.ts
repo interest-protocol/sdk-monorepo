@@ -21,9 +21,9 @@ export enum Modules {
 // TODO: Need to be updated
 export enum Treasuries {
   RECRD = '0xe551156357c05fb323f188087ceb34b723aa82aa464541ac791b8a72594fbd4c',
-  MEMEZ = '0xdd224f2287f0b38693555c6077abe85fcb4aa13e355ad54bc167611896b007e6',
+  MEMEZ = '0x5b2aec3521419fe055b6753b15cbad845ec1dca852b75ad0b13b569f2329f82d',
   NEXA = '0x4',
-  XPUMP = '0x5',
+  XPUMP = '0x881d835c410f33a1decd8067ce04f6c2ec63eaca196235386b44d315c2152797',
 }
 
 export enum Progress {
@@ -266,7 +266,7 @@ export const CONFIG_KEYS = {
     NEXA: `${PACKAGES[Network.MAINNET].MEMEZ_WITNESS.original}::memez_witness::Nexa`,
     MEMEZ: `${PACKAGES[Network.MAINNET].MEMEZ_WITNESS.original}::memez_witness::Memez`,
     XPUMP:
-      '0x9877fd4cade7740a391e4bb25c81bbe4763a905dd3f26608e9d53e9cd5f14c06::xpump::MemezConfigKey',
+      '0x5afcb4c691bd3af2eb5de4c416b2ed501e843e81209f83ce6928bc3a10d0205c::xpump::ConfigKey',
   },
 } as const;
 
@@ -300,3 +300,6 @@ export const CETUS_POOLS = {
   ),
   initialSharedVersion: '1574190',
 };
+
+export const CETUS_BURNER_MANAGER =
+  '0x1d94aa32518d0cb00f9de6ed60d450c9a2090761f326752ffad06b2e9404f845';

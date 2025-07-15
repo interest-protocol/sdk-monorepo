@@ -14,7 +14,7 @@ import { getEnv } from '../utils.script';
     authWitness,
     configKey: configKeys.MEMEZ,
     quoteCoinType: SUI_TYPE_ARG,
-    tx,
+    tx: tx as any,
   });
 
   await executeTx(tx2);
