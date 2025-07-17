@@ -151,9 +151,28 @@ export interface PendingFeesArgs {
   interestLp: string;
 }
 
+export interface GetTicksArgs {
+  pool: string;
+  firstTick: number;
+  numberOfTicks: number;
+}
+
 export interface InterestLpReward {
   growth_inside_last_x64: string;
   rewards_owed: string;
+}
+
+export interface Tick {
+  feeGrowthOutside0X64: string;
+  feeGrowthOutside1X64: string;
+  initialized: boolean;
+  liquidityGross: string;
+  liquidityNet: string;
+  rewardGrowthsOutsideX64: string[];
+  secondsOutside: string;
+  secondsPerLiquidityOutsideX64: string;
+  tickCumulativeOutside: string;
+  value: string;
 }
 
 export interface InterestLpResource {

@@ -4,9 +4,11 @@ import {
   InputEntryFunctionData,
   InputViewFunctionData,
   MoveResource,
+  MoveValue,
 } from '@aptos-labs/ts-sdk';
 import { Network } from '@interest-protocol/movement-core-sdk';
 import { MAX_TICK, MaxUint64, MIN_TICK } from '@interest-protocol/v3-core';
+import { pathOr } from 'ramda';
 import invariant from 'tiny-invariant';
 
 import {
@@ -27,6 +29,7 @@ import {
   CollectRewardArgs,
   ConstructorArgs,
   DecreaseLiquidityFasArgs,
+  GetTicksArgs,
   InitializeRewardArgs,
   InterestLpResource,
   NewLPAndAddLiquidityFasArgs,
@@ -39,7 +42,11 @@ import {
   UpdateEndTimestampArgs,
 } from './dex.types';
 import { CurrentTokenOwnershipsV2AggregateNode } from './gql.types';
-import { formatInterestLpResource, getDefaultConstructorArgs } from './utils';
+import {
+  formatInterestLpResource,
+  getDefaultConstructorArgs,
+  parseTicks,
+} from './utils';
 
 export class InterestV3 {
   client: Aptos;
@@ -479,6 +486,52 @@ export class InterestV3 {
     const data = await this.client.view({ payload });
 
     return data[0] as number;
+  }
+
+  async headTick(pool: string) {
+    this.#isValidAddress(pool);
+
+    const payload: InputViewFunctionData = {
+      function: `${this.#packages.PROTOCOL.toString()}::${MODULES.LENS.toString()}::head_tick_key`,
+      functionArguments: [pool],
+    };
+
+    const data = await this.client.view({ payload });
+
+    const sign = data[0] as boolean;
+    const number = data[1] as number;
+
+    return sign ? number : -number;
+  }
+  async getTicks({ pool, firstTick, numberOfTicks }: GetTicksArgs) {
+    this.#isValidAddress(pool);
+
+    const [isPositiveFirstTick, firstTickAbs] = this.#numberToTuple(firstTick);
+
+    const payload: InputViewFunctionData = {
+      function: `${this.#packages.PROTOCOL.toString()}::${MODULES.LENS.toString()}::get_ticks`,
+      functionArguments: [
+        pool,
+        isPositiveFirstTick,
+        firstTickAbs,
+        numberOfTicks,
+      ],
+    };
+
+    const data = await this.client.view({ payload });
+
+    const signOptional = pathOr([], ['vec'], data[1]);
+    const valueOptional = pathOr([], ['vec'], data[2]);
+
+    const sign =
+      signOptional.length > 0 ? (signOptional[0] as unknown as boolean) : null;
+    const value =
+      valueOptional.length > 0 ? (valueOptional[0] as unknown as number) : null;
+
+    return {
+      ticks: parseTicks(data[0] as MoveValue[]),
+      nextTick: sign === null || value === null ? null : sign ? value : -value,
+    };
   }
 
   #numberToTuple(number: number): [boolean, number] {
