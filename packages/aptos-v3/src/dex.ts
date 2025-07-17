@@ -468,8 +468,21 @@ export class InterestV3 {
       });
   }
 
+  async totalTicks(pool: string) {
+    this.#isValidAddress(pool);
+
+    const payload: InputViewFunctionData = {
+      function: `${this.#packages.PROTOCOL.toString()}::${MODULES.LENS.toString()}::total_ticks`,
+      functionArguments: [pool],
+    };
+
+    const data = await this.client.view({ payload });
+
+    return data[0] as number;
+  }
+
   #numberToTuple(number: number): [boolean, number] {
-    return [number >= 0, Math.abs(number)];
+    return [number >= 0, Math.abs(Math.floor(number))];
   }
 
   #isValidTickRange(lowerTick: number, upperTick: number) {

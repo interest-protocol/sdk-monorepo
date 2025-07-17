@@ -5,6 +5,7 @@ export enum MODULES {
   CONFIG = 'interest_v3_config',
   POOL = 'interest_v3_pool',
   INTERFACE = 'v3_interface',
+  LENS = 'interest_v3_lens',
 }
 
 export const FEE_DENOMINATOR = 1_000_000;

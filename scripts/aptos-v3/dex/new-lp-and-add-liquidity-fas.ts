@@ -13,8 +13,8 @@ import { interestV3, POW_10_6, POW_10_8, TEST_POOLS } from '../utils.script';
     pool: TEST_POOLS.bardock.WETH_USDC,
     amount0: wethAmount,
     amount1: usdcAmount,
-    lowerTick: MIN_TICK,
-    upperTick: MAX_TICK,
+    lowerTick: MIN_TICK / 3,
+    upperTick: MAX_TICK / 2,
     recipient: account.accountAddress.toString(),
   });
 
