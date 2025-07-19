@@ -17,18 +17,10 @@
   },
   "version": "0.1.0",
   "description": "v3-core package",
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
-    "prebuild": "rm -rf dist",
-    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
-    "build:types": "tsc --project tsconfig.json",
-    "build:tsup": "tsup './src/index.ts' --format esm,cjs --sourcemap",
-    "build": "pnpm run clean && pnpm run build:tsup && pnpm run build:types",
-    "dev": "tsc --watch",
-    "test": "jest --no-watchman",
-    "test:watch": "jest --watch --no-watchman"
+    "prebuild": "rimraf dist",
+    "build": "rollup -c rollup.config.js",
+    "build:types": "tsc --emitDeclarationOnly"
   },
   "keywords": [],
   "license": "ISC",
@@ -52,5 +44,16 @@
     "decimal.js-light": "^2.5.1",
     "tiny-invariant": "^1.3.3",
     "toformat": "^2.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "dependencies": {
+      "big.js": "^7.0.1",
+      "bignumber.js": "^9.3.0",
+      "decimal.js": "^10.5.0",
+      "decimal.js-light": "^2.5.1",
+      "tiny-invariant": "^1.3.3",
+      "toformat": "^2.0.0"
+    }
   }
 }
