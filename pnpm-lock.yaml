@@ -78,11 +78,11 @@ importers:
         specifier: workspace:*
         version: link:../sui-core-sdk
       '@mysten/sui':
-        specifier: ^1.29.1
-        version: 1.35.0(typescript@5.8.3)
+        specifier: ^1.36.0
+        version: 1.36.0(typescript@5.8.3)
       '@polymedia/suitcase-core':
         specifier: ^0.0.36
-        version: 0.0.36(@mysten/sui@1.35.0(typescript@5.8.3))
+        version: 0.0.36(@mysten/sui@1.36.0(typescript@5.8.3))
       tiny-invariant:
         specifier: ^1.3.3
         version: 1.3.3
@@ -162,10 +162,10 @@ importers:
         version: link:../sui-core-sdk
       '@mysten/sui':
         specifier: ^1.21.2
-        version: 1.35.0(typescript@5.8.3)
+        version: 1.36.0(typescript@5.8.3)
       '@polymedia/suitcase-core':
         specifier: ^0.0.36
-        version: 0.0.36(@mysten/sui@1.35.0(typescript@5.8.3))
+        version: 0.0.36(@mysten/sui@1.36.0(typescript@5.8.3))
       decimal.js:
         specifier: ^10.5.0
         version: 10.5.0
@@ -242,10 +242,10 @@ importers:
         version: link:../sui-core-sdk
       '@mysten/sui':
         specifier: ^1.21.2
-        version: 1.35.0(typescript@5.8.3)
+        version: 1.36.0(typescript@5.8.3)
       '@polymedia/suitcase-core':
         specifier: ^0.0.36
-        version: 0.0.36(@mysten/sui@1.35.0(typescript@5.8.3))
+        version: 0.0.36(@mysten/sui@1.36.0(typescript@5.8.3))
       ramda:
         specifier: ^0.30.1
         version: 0.30.1
@@ -330,12 +330,6 @@ importers:
       '@interest-protocol/acl-sdk':
         specifier: workspace:*
         version: link:../acl-sdk
-      '@interest-protocol/lib':
-        specifier: workspace:*
-        version: link:../lib
-      '@interest-protocol/sui-core-sdk':
-        specifier: workspace:*
-        version: link:../sui-core-sdk
       '@mysten/sui':
         specifier: ^1.36.0
         version: 1.36.0(typescript@5.8.3)
@@ -443,7 +437,7 @@ importers:
     dependencies:
       '@mysten/sui':
         specifier: ^1.29.1
-        version: 1.35.0(typescript@5.8.3)
+        version: 1.36.0(typescript@5.8.3)
       ramda:
         specifier: ^0.30.1
         version: 0.30.1
@@ -477,7 +471,7 @@ importers:
         version: link:../logger
       '@mysten/sui':
         specifier: ^1.29.1
-        version: 1.35.0(typescript@5.8.3)
+        version: 1.36.0(typescript@5.8.3)
     devDependencies:
       '@interest-protocol/prettier-config':
         specifier: workspace:*
@@ -511,10 +505,10 @@ importers:
         version: link:../sui-core-sdk
       '@mysten/sui':
         specifier: ^1.21.2
-        version: 1.35.0(typescript@5.8.3)
+        version: 1.36.0(typescript@5.8.3)
       '@polymedia/suitcase-core':
         specifier: ^0.0.36
-        version: 0.0.36(@mysten/sui@1.35.0(typescript@5.8.3))
+        version: 0.0.36(@mysten/sui@1.36.0(typescript@5.8.3))
       '@pythnetwork/hermes-client':
         specifier: ^2.0.0
         version: 2.0.0(axios@1.9.0)
@@ -673,7 +667,7 @@ importers:
         version: link:../../packages/sui-utils
       '@mysten/sui':
         specifier: ^1.29.1
-        version: 1.35.0(typescript@5.8.3)
+        version: 1.36.0(typescript@5.8.3)
       decimal.js:
         specifier: ^10.5.0
         version: 10.5.0
@@ -774,7 +768,7 @@ importers:
         version: link:../../packages/sui-utils
       '@mysten/sui':
         specifier: ^1.29.1
-        version: 1.35.0(typescript@5.8.3)
+        version: 1.36.0(typescript@5.8.3)
       tiny-invariant:
         specifier: ^1.3.3
         version: 1.3.3
@@ -811,7 +805,7 @@ importers:
         version: link:../../packages/sui-utils
       '@mysten/sui':
         specifier: ^1.29.1
-        version: 1.35.0(typescript@5.8.3)
+        version: 1.36.0(typescript@5.8.3)
       bn.js:
         specifier: ^5.2.2
         version: 5.2.2
@@ -860,7 +854,7 @@ importers:
         version: 0.14.2(@jest/transform@29.7.0)(@jest/types@29.6.3)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))(typescript@5.8.3)
       '@cetusprotocol/cetus-sui-clmm-sdk':
         specifier: ^5.3.4
-        version: 5.3.4(@mysten/bcs@1.6.4)(@mysten/sui@1.35.0(typescript@5.8.3))
+        version: 5.3.4(@mysten/bcs@1.6.4)(@mysten/sui@1.36.0(typescript@5.8.3))
       '@interest-protocol/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -875,10 +869,10 @@ importers:
         version: link:../../packages/v3-core
       '@mmt-finance/clmm-sdk':
         specifier: 1.3.10-beta.1
-        version: 1.3.10-beta.1(@mysten/sui@1.35.0(typescript@5.8.3))(axios@1.9.0)(bn.js@5.2.2)(decimal.js@10.5.0)
+        version: 1.3.10-beta.1(@mysten/sui@1.36.0(typescript@5.8.3))(axios@1.9.0)(bn.js@5.2.2)(decimal.js@10.5.0)
       '@mysten/sui':
         specifier: ^1.29.1
-        version: 1.35.0(typescript@5.8.3)
+        version: 1.36.0(typescript@5.8.3)
       '@pythnetwork/hermes-client':
         specifier: ^2.0.0
         version: 2.0.0(axios@1.9.0)
@@ -2280,22 +2274,12 @@ packages:
     resolution: {integrity: sha512-H9vwztj5OAqHg9GockCQC06k1natgcxWQSRpQcPJf6i5+MWBzfKkRtxGbjQf0X2ihii0ffLZCRGbYV2f2bjNCQ==}
     engines: {node: '>=18'}
 
-  '@mysten/bcs@1.6.3':
-    resolution: {integrity: sha512-QQ6u0U7a4+/o6rZ9tALTeGYMdf6V5z/HkRI/mhD5/fSr80DJoGzOWpFszcN/fhJpKb36vBaSQUMpS7yNQ10xBQ==}
-
   '@mysten/bcs@1.6.4':
     resolution: {integrity: sha512-HBBrqMtnVp5vy12efJYhj/HnOYGu+x5SqRQpnOJEHEkxypGZ01WNFoCNw7USzDSyJvPauhqdzUXzR+lYM1D5/g==}
-
-  '@mysten/sui@1.35.0':
-    resolution: {integrity: sha512-za0+SiEFtjAjk0sJ8P9Q/X/m2E/YrXQ/UNsotEwb/eCqPyGS8A9Mrxkhm/iIgR1+AAl1OWUWCrqgJVe7u2i61A==}
-    engines: {node: '>=18'}
 
   '@mysten/sui@1.36.0':
     resolution: {integrity: sha512-BHJatlqZir4pD1SRBjxh+SGg0BOTX1y9OxgX66e8rhEqZj33TztwpsSG2s+luLD+ugXDBAWt18/1Bk4/D1SwSg==}
     engines: {node: '>=18'}
-
-  '@mysten/utils@0.1.0':
-    resolution: {integrity: sha512-nFxqArh4cr629elLsIk7UZmx5dFVshblwrfwaG7Dm2L/ii2C65bhK5tdTs6UiC3K0tCr8q8svrgzXyF9L0CN/A==}
 
   '@mysten/utils@0.1.1':
     resolution: {integrity: sha512-jvhJC6/2la1QHltukQXzfyTZ+VVHxe187JjPx+mEXRUWyAo6jCSdioOQJIfaGu4K4i+37KeiydXRwV/bq/7UJQ==}
@@ -2502,9 +2486,6 @@ packages:
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
-
-  '@scure/base@1.2.5':
-    resolution: {integrity: sha512-9rE6EOVeIQzt5TSu4v+K523F8u6DhBsoZWPGKlnCshhlDhy0kJzUX4V+tr2dWmzF1GdekvThABoEQBGBQI7xZw==}
 
   '@scure/base@1.2.6':
     resolution: {integrity: sha512-g/nm5FgUa//MCj1gV09zTJTaM6KBAHqLN907YVQqf7zC49+DcO4B1so4ZX07Ef10Twr6nuqYEH9GEggFXA4Fmg==}
@@ -6195,7 +6176,7 @@ snapshots:
       '@babel/preset-env': 7.28.0(@babel/core@7.27.1)
       '@babel/preset-typescript': 7.27.1(@babel/core@7.27.1)
       '@jest/globals': 29.7.0
-      '@mysten/sui': 1.35.0(typescript@5.8.3)
+      '@mysten/sui': 1.36.0(typescript@5.8.3)
       '@pythnetwork/pyth-sui-js': 2.1.0(typescript@5.8.3)
       '@types/jest': 29.5.14
       '@types/json-bigint': 1.0.4
@@ -6221,29 +6202,6 @@ snapshots:
       - supports-color
       - ts-node
       - utf-8-validate
-
-  '@cetusprotocol/cetus-sui-clmm-sdk@5.3.4(@mysten/bcs@1.6.4)(@mysten/sui@1.35.0(typescript@5.8.3))':
-    dependencies:
-      '@mysten/bcs': 1.6.4
-      '@mysten/sui': 1.35.0(typescript@5.8.3)
-      '@suchipi/femver': 1.0.0
-      '@syntsugar/cc-graph': 0.1.1
-      '@types/bn.js': 5.1.6
-      axios: 1.9.0
-      bn.js: 5.2.2
-      cors: 2.8.5
-      decimal.js: 10.5.0
-      dotenv: 16.5.0
-      isomorphic-fetch: 3.0.0
-      js-base64: 3.7.7
-      js-sha3: 0.8.0
-      superstruct: 1.0.4
-      tiny-invariant: 1.3.3
-      tweetnacl: 1.0.3
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - debug
-      - encoding
 
   '@cetusprotocol/cetus-sui-clmm-sdk@5.3.4(@mysten/bcs@1.6.4)(@mysten/sui@1.36.0(typescript@5.8.3))':
     dependencies:
@@ -6777,9 +6735,9 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@mmt-finance/clmm-sdk@1.3.10-beta.1(@mysten/sui@1.35.0(typescript@5.8.3))(axios@1.9.0)(bn.js@5.2.2)(decimal.js@10.5.0)':
+  '@mmt-finance/clmm-sdk@1.3.10-beta.1(@mysten/sui@1.36.0(typescript@5.8.3))(axios@1.9.0)(bn.js@5.2.2)(decimal.js@10.5.0)':
     dependencies:
-      '@mysten/sui': 1.35.0(typescript@5.8.3)
+      '@mysten/sui': 1.36.0(typescript@5.8.3)
       '@syntsugar/cc-graph': 0.1.1
       axios: 1.9.0
       bn.js: 5.2.2
@@ -6801,34 +6759,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@mysten/bcs@1.6.3':
-    dependencies:
-      '@mysten/utils': 0.1.0
-      '@scure/base': 1.2.6
-
   '@mysten/bcs@1.6.4':
     dependencies:
       '@mysten/utils': 0.1.1
       '@scure/base': 1.2.6
-
-  '@mysten/sui@1.35.0(typescript@5.8.3)':
-    dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.11.0)
-      '@mysten/bcs': 1.6.3
-      '@mysten/utils': 0.1.0
-      '@noble/curves': 1.9.1
-      '@noble/hashes': 1.8.0
-      '@scure/base': 1.2.6
-      '@scure/bip32': 1.7.0
-      '@scure/bip39': 1.6.0
-      gql.tada: 1.8.10(graphql@16.11.0)(typescript@5.8.3)
-      graphql: 16.11.0
-      poseidon-lite: 0.2.1
-      valibot: 0.36.0
-    transitivePeerDependencies:
-      - '@gql.tada/svelte-support'
-      - '@gql.tada/vue-support'
-      - typescript
 
   '@mysten/sui@1.36.0(typescript@5.8.3)':
     dependencies:
@@ -6848,10 +6782,6 @@ snapshots:
       - '@gql.tada/svelte-support'
       - '@gql.tada/vue-support'
       - typescript
-
-  '@mysten/utils@0.1.0':
-    dependencies:
-      '@scure/base': 1.2.6
 
   '@mysten/utils@0.1.1':
     dependencies:
@@ -6877,10 +6807,6 @@ snapshots:
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
-
-  '@polymedia/suitcase-core@0.0.36(@mysten/sui@1.35.0(typescript@5.8.3))':
-    dependencies:
-      '@mysten/sui': 1.35.0(typescript@5.8.3)
 
   '@polymedia/suitcase-core@0.0.36(@mysten/sui@1.36.0(typescript@5.8.3))':
     dependencies:
@@ -6914,7 +6840,7 @@ snapshots:
 
   '@pythnetwork/pyth-sui-js@2.1.0(typescript@5.8.3)':
     dependencies:
-      '@mysten/sui': 1.35.0(typescript@5.8.3)
+      '@mysten/sui': 1.36.0(typescript@5.8.3)
       '@pythnetwork/price-service-client': 1.9.0
       buffer: 6.0.3
     transitivePeerDependencies:
@@ -7041,15 +6967,13 @@ snapshots:
 
   '@rtsao/scc@1.1.0': {}
 
-  '@scure/base@1.2.5': {}
-
   '@scure/base@1.2.6': {}
 
   '@scure/bip32@1.7.0':
     dependencies:
       '@noble/curves': 1.9.1
       '@noble/hashes': 1.8.0
-      '@scure/base': 1.2.5
+      '@scure/base': 1.2.6
 
   '@scure/bip39@1.6.0':
     dependencies:
