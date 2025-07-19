@@ -4,9 +4,12 @@ export interface USDCSuiPoolLiquidity {
   fee: number;
   currentTick: string;
   currentSqrtPrice: string;
+  suiBalance: string;
+  usdcBalance: string;
+  price: string;
   suiLiquidity: string;
   usdcLiquidity: string;
-  price: string;
+  isSuiX: boolean;
 }
 
 export interface GetAmountsForLiquidityParams {
