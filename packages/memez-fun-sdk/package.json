@@ -49,7 +49,7 @@
   "publishConfig": {
     "access": "public",
     "dependencies": {
-      "@interest-protocol/acl-sdk": "2.0.0",
+      "@interest-protocol/acl-sdk": "7.1.0",
       "@cetusprotocol/cetus-sui-clmm-sdk": "^7.0.0",
       "@mysten/sui": "^1.36.0",
       "@polymedia/suitcase-core": "^0.0.36",
