@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@interest-protocol/sui-core-sdk": "workspace:*",
-    "@mysten/sui": "^1.21.2",
+    "@mysten/sui": "^1.36.0",
     "@polymedia/suitcase-core": "^0.0.36",
     "decimal.js": "^10.5.0",
     "ramda": "^0.30.1",
