@@ -73,9 +73,9 @@ const CETUS_SUI_USDC_POOL_ID =
   // 5% lower
   const tideFee = fees[0]! * 0.95;
 
-  // 10% higher
+  // 25% higher
   const tideLiquidityTvl = Math.ceil(
-    tvlLiquidity[tvlLiquidity.length - 1]! * 1.1
+    tvlLiquidity[tvlLiquidity.length - 1]! * 1.25
   );
 
   logSuccess({
