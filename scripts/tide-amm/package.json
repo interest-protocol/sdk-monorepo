@@ -26,7 +26,7 @@
     "@interest-protocol/tide-amm": "workspace:*",
     "@interest-protocol/v3-core": "workspace:*",
     "@mmt-finance/clmm-sdk": "1.3.10-beta.1",
-    "@mysten/sui": "^1.29.1",
+    "@mysten/sui": "^1.36.2",
     "@pythnetwork/hermes-client": "^2.0.0",
     "bn.js": "^5.2.2",
     "decimal.js": "^10.5.0",

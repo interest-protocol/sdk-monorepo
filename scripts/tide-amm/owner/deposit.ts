@@ -9,20 +9,21 @@ import { ADMIN_TO_UPDATE, SUI_USDC_POOL, USDC_TYPE } from '../utils.script';
   const sdk = new TideSdk();
 
   const coinX = coinWithBalance({
-    balance: 3_000n * 1_000_000_000n,
+    balance: 3_010n * 1_000_000_000n,
     type: SUI_TYPE_ARG,
   });
+
   const coinY = coinWithBalance({
-    balance: 13_000n * 1_000_000n,
+    balance: 13_791n * 1_000_000n,
     type: USDC_TYPE,
   });
 
-  const tx = await sdk.deposit({
+  const tx2 = await sdk.deposit({
     pool: SUI_USDC_POOL,
     coinX,
     coinY,
     admin: ADMIN_TO_UPDATE,
   });
 
-  await executeTx(tx);
+  await executeTx(tx2);
 })();

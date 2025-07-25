@@ -39,6 +39,6 @@
   },
   "dependencies": {
     "@interest-protocol/logger": "workspace:*",
-    "@mysten/sui": "^1.29.1"
+    "@mysten/sui": "^1.36.1"
   }
 }
