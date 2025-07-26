@@ -18,11 +18,9 @@ export enum Modules {
   STABLE_CONFIG = 'memez_stable_config',
 }
 
-// TODO: Need to be updated
 export enum Treasuries {
   RECRD = '0xe551156357c05fb323f188087ceb34b723aa82aa464541ac791b8a72594fbd4c',
   MEMEZ = '0x5b2aec3521419fe055b6753b15cbad845ec1dca852b75ad0b13b569f2329f82d',
-  NEXA = '0x4',
   XPUMP = '0x881d835c410f33a1decd8067ce04f6c2ec63eaca196235386b44d315c2152797',
 }
 
@@ -82,14 +80,18 @@ export const PACKAGES = {
         '0x32ffaa298a6d6528864bf2b32acfcb7976a95e26dcc24e40e2535c0551b9d68a'
       ),
     },
+    XPUMP_MIGRATOR: {
+      original: normalizeSuiAddress('0x0'),
+      latest: normalizeSuiAddress('0x0'),
+    },
   },
   [Network.MAINNET]: {
     MEMEZ_FUN: {
       original: normalizeSuiAddress(
-        '0x22804e0f2d5fd6aa41847469c05dec3abfc3a3482483a02db795e951e2396872'
+        '0x77ad40b0364cc5d95406f55d7353bbccaf4284bce12b3ce4bf66de28ebaabc6d'
       ),
       latest: normalizeSuiAddress(
-        '0x22804e0f2d5fd6aa41847469c05dec3abfc3a3482483a02db795e951e2396872'
+        '0x77ad40b0364cc5d95406f55d7353bbccaf4284bce12b3ce4bf66de28ebaabc6d'
       ),
     },
     MEMEZ: {
@@ -132,6 +134,14 @@ export const PACKAGES = {
         '0xb877fe150db8e9af55c399b4e49ba8afe658bd05317cb378c940344851125e9a'
       ),
     },
+    XPUMP_MIGRATOR: {
+      original: normalizeSuiAddress(
+        '0x3b09948e386bd895c627aafebdeb0560854125a0672ade7a64495447ec5701b3'
+      ),
+      latest: normalizeSuiAddress(
+        '0x3b09948e386bd895c627aafebdeb0560854125a0672ade7a64495447ec5701b3'
+      ),
+    },
   },
 } as const;
 
@@ -158,6 +168,8 @@ export const OWNED_OBJECTS = {
     MEMEZ_UPGRADE_CAP: normalizeSuiObjectId(
       '0x43461df272d965d153d50789af15adc03359433e54eb522d0e484630789c16ee'
     ),
+    XPUMP_MIGRATOR_UPGRADE_CAP: normalizeSuiObjectId('0x0'),
+    XPUMP_MIGRATOR_ADMIN: normalizeSuiObjectId('0x0'),
   },
   [Network.MAINNET]: {
     MEMEZ_SUPER_ADMIN: normalizeSuiObjectId(
@@ -167,7 +179,7 @@ export const OWNED_OBJECTS = {
       '0x0c1c3cf5dea0a302153192fac4d0767c0fa8f21b7724f85290c148c8f1187896'
     ),
     MEMEZ_FUN_UPGRADE_CAP: normalizeSuiObjectId(
-      '0x137a3529311ae8f9f3450fff3dee24a6a9f42d03e824fb27d1b399519f481012'
+      '0xbd5609736c4e1932d78d278a0082012d4355353316f34b2340d0d3dcc5926e8f'
     ),
     TEST_MEMEZ_MIGRATOR_UPGRADE_CAP: normalizeSuiObjectId(
       '0x291d1a741c839a34ed1da1b9b84205388f847076147fa869c8a5cfd5c6949df5'
@@ -180,6 +192,12 @@ export const OWNED_OBJECTS = {
     ),
     MEMEZ_UPGRADE_CAP: normalizeSuiObjectId(
       '0xc9f835866b57147f8b7e1f847e2a2a25f29315c200c89cdc4e34f51f5c1f85d6'
+    ),
+    XPUMP_MIGRATOR_UPGRADE_CAP: normalizeSuiObjectId(
+      '0xe8e05b334c8222157e620fc817baf735dbad2e8168be9290a139d022e2a61faa'
+    ),
+    XPUMP_MIGRATOR_ADMIN: normalizeSuiObjectId(
+      '0x27d8adab56f8b1296c108f88b17ff4a8c7f603a1a2ce3f0daeb4aab3ba528b22'
     ),
   },
 } as const;
@@ -207,6 +225,11 @@ export const SHARED_OBJECTS = {
       initialSharedVersion: '395367301',
       mutable,
     }),
+    XPUMP_MIGRATOR_CONFIG: ({ mutable }: { mutable: boolean }) => ({
+      objectId: normalizeSuiObjectId('0x0'),
+      initialSharedVersion: '0',
+      mutable,
+    }),
   },
   [Network.MAINNET]: {
     ACL: ({ mutable }: { mutable: boolean }) => ({
@@ -218,16 +241,23 @@ export const SHARED_OBJECTS = {
     }),
     VERSION: ({ mutable }: { mutable: boolean }) => ({
       objectId: normalizeSuiObjectId(
-        '0x2d44769a013d090adf50842f76030ee68b1672ec6ed7c279e61145b96311d2c6'
+        '0xb428c542bd80a6f1f2eb500b7135d7ab1b9cdc27e465b1f486fdb5b000951491'
       ),
-      initialSharedVersion: '549909167',
+      initialSharedVersion: '596402896',
       mutable,
     }),
     CONFIG: ({ mutable }: { mutable: boolean }) => ({
       objectId: normalizeSuiObjectId(
-        '0xc5c1393287ff3612c2055d2ed9b1e28377835d656d77a959c0097068cabe8bcb'
+        '0x55f27db9b8a42da8b5802be03018123a80bb270349e7034a7d1ba514f77c2c89'
       ),
-      initialSharedVersion: '549909167',
+      initialSharedVersion: '596402896',
+      mutable,
+    }),
+    XPUMP_MIGRATOR_CONFIG: ({ mutable }: { mutable: boolean }) => ({
+      objectId: normalizeSuiObjectId(
+        '0x6d6300fc47a3fff33da0a30a2284fc73d2942af5b424203a7324e97cf8746022'
+      ),
+      initialSharedVersion: '596402900',
       mutable,
     }),
   },
@@ -303,3 +333,10 @@ export const CETUS_POOLS = {
 
 export const CETUS_BURNER_MANAGER =
   '0x1d94aa32518d0cb00f9de6ed60d450c9a2090761f326752ffad06b2e9404f845';
+
+export const BLUEFIN_CONFIG = {
+  objectId: normalizeSuiObjectId(
+    '0x03db251ba509a8d5d8777b6338836082335d93eecbdd09a11e190a1cff51c352'
+  ),
+  initialSharedVersion: '406496849',
+};

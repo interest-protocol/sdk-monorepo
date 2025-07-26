@@ -68,6 +68,11 @@ export class MemezBaseSDK extends SuiCoreSDK {
       'You must provide network for this specific network'
     );
 
+    invariant(
+      data.network === Network.MAINNET,
+      'Memez SDK 8.0.0 is only supported on mainnet'
+    );
+
     this.rpcUrl = data.fullNodeUrl;
     this.network = data.network;
     this.packages = PACKAGES[data.network];
