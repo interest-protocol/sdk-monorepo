@@ -1,3 +1,4 @@
+import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 import invariant from 'tiny-invariant';
 
 import { getEnv } from '../utils.script';
@@ -9,6 +10,7 @@ import { getEnv } from '../utils.script';
     pumpSdk,
     keypair,
     testnetPoolId,
+
     xPumpMigratorSdk,
   } = await getEnv();
 
@@ -20,11 +22,14 @@ import { getEnv } from '../utils.script';
     pool: testnetPoolId,
   });
 
+  const fee = tx.splitCoins(tx.gas, [0n]);
+
   const { tx: tx2, suiCoin } = await xPumpMigratorSdk.migrate({
     tx,
     migrator,
     memeCoinType: pool.memeCoinType,
-    quoteCoinType: pool.quoteCoinType,
+    feeCoinType: SUI_TYPE_ARG,
+    feeCoin: fee,
     ipxMemeCoinTreasury: pool.ipxMemeCoinTreasury,
   });
 

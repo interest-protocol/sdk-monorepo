@@ -19,12 +19,14 @@
     "vitest": "^0.34.4"
   },
   "dependencies": {
-    "@interest-protocol/logger": "workspace:*",
+    "@cetusprotocol/cetus-sui-clmm-sdk": "^5.4.0",
     "@interest-protocol/acl-sdk": "workspace:*",
+    "@interest-protocol/logger": "workspace:*",
     "@interest-protocol/memez-fun-sdk": "workspace:*",
     "@interest-protocol/sui-core-sdk": "workspace:*",
     "@interest-protocol/sui-utils": "workspace:*",
-    "@mysten/sui": "^1.29.1",
+    "@mysten/sui": "^1.36.2",
+    "@polymedia/suitcase-core": "^0.0.36",
     "bn.js": "^5.2.2",
     "decimal.js": "^10.5.0",
     "ramda": "^0.30.1",

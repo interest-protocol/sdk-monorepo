@@ -22,8 +22,8 @@ import { getEnv } from '../utils.script';
       // last index is the creator fee nominal
       [10_000, 0n],
       // last index is the swap fee in bps
-      [3_000n, 7_000n, 30n],
-      [3_000n, 7_000n, 30n],
+      [3_000n, 7_000n, 100n],
+      [3_000n, 7_000n, 100n],
       // last index is the migration fee bps
       [3_000n, 7_000n, 500n],
       // Allocations

@@ -3,13 +3,10 @@ import {
   ConfigSDK,
   makeMemezAclSdk,
   MemezPumpSDK,
-  MemezStableSDK,
   MIGRATOR_WITNESSES,
   OWNED_OBJECTS,
   PACKAGES,
-  RecrdMigratorSDK,
   SHARED_OBJECTS,
-  TestMigratorSDK,
   TYPES,
   XPumpMigratorSDK,
 } from '@interest-protocol/memez-fun-sdk';
@@ -18,12 +15,7 @@ import { executeTx, keypair, suiClient } from '@interest-protocol/sui-utils';
 import { getFullnodeUrl } from '@mysten/sui/client';
 
 const TEST_POOL_ID =
-  '0x5a4c19202ea2db33bd4cd6c539e60b5221cc96997614fc9f762de9fbdcd8038a';
-
-const TEST_STABLE_POOL_ID =
-  '0xf53fd73af2d033c1c8d82a385ce983b6d24d0c722cf564317d85fbecdeb833b0';
-
-const recrdMigratorSdk = new RecrdMigratorSDK();
+  '0xff43a2ae63a2b2613b4e07d9f07422b0b9984308c297532330869740f5341387';
 
 const xPumpMigratorSdk = new XPumpMigratorSDK();
 
@@ -40,8 +32,6 @@ export const getEnv = async () => {
     aclSdk: makeMemezAclSdk(payload),
     configSdk: new ConfigSDK(payload),
     pumpSdk: new MemezPumpSDK(payload),
-    stableSdk: new MemezStableSDK(payload),
-    testMigratorSdk: new TestMigratorSDK(payload),
     suiClient,
     executeTx,
     network,
@@ -52,9 +42,7 @@ export const getEnv = async () => {
     configKeys: CONFIG_KEYS[network],
     packages: PACKAGES[network],
     keypair,
-    testnetStablePoolId: TEST_STABLE_POOL_ID,
     testnetPoolId: TEST_POOL_ID,
-    recrdMigratorSdk,
     xPumpMigratorSdk,
     POW_10_9: 10n ** 9n,
   };

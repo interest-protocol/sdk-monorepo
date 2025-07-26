@@ -3,7 +3,12 @@ import { Transaction } from '@mysten/sui/transactions';
 import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 import invariant from 'tiny-invariant';
 
-import { BLUEFIN_CONFIG, OWNED_OBJECTS, PACKAGES } from '../constants';
+import {
+  BLUEFIN_CONFIG,
+  OWNED_OBJECTS,
+  PACKAGES,
+  SHARED_OBJECTS,
+} from '../constants';
 import { MemezBaseSDK } from '../sdk';
 import { SdkConstructorArgs } from '../types/memez.types';
 import {
@@ -23,13 +28,7 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
 
   module = 'xpump_migrator';
 
-  witness = `${this.packageId}::${this.module}::Witness`;
-
-  xPumpConfig = {
-    objectId:
-      '0x18c566f7e85afa92accbd5058265cbbc4c13c22a740f430c45a41a542e4fa46c',
-    initialSharedVersion: '589857101',
-  };
+  witness = `${PACKAGES[Network.MAINNET].XPUMP_MIGRATOR.original}::${this.module}::Witness`;
 
   constructor(args: SdkConstructorArgs | undefined | null = null) {
     super(args);
@@ -49,11 +48,11 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
       module: this.module,
       function: 'set_reward_value',
       arguments: [
-        tx.sharedObjectRef({
-          objectId: this.xPumpConfig.objectId,
-          mutable: true,
-          initialSharedVersion: this.xPumpConfig.initialSharedVersion,
-        }),
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
         this.ownedObject(tx, this.adminId),
         tx.pure.u64(rewardValue),
       ],
@@ -73,11 +72,11 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
       module: this.module,
       function: 'set_treasury',
       arguments: [
-        tx.sharedObjectRef({
-          objectId: this.xPumpConfig.objectId,
-          mutable: true,
-          initialSharedVersion: this.xPumpConfig.initialSharedVersion,
-        }),
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
         this.ownedObject(tx, this.adminId),
         tx.pure.address(treasury),
       ],
@@ -99,11 +98,11 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
       module: this.module,
       function: 'set_initialize_price',
       arguments: [
-        tx.sharedObjectRef({
-          objectId: this.xPumpConfig.objectId,
-          mutable: true,
-          initialSharedVersion: this.xPumpConfig.initialSharedVersion,
-        }),
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
         this.ownedObject(tx, this.adminId),
         tx.pure.u128(price),
       ],
@@ -139,11 +138,11 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
       module: this.module,
       function: 'migrate',
       arguments: [
-        tx.sharedObjectRef({
-          objectId: this.xPumpConfig.objectId,
-          mutable: true,
-          initialSharedVersion: this.xPumpConfig.initialSharedVersion,
-        }),
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
         tx.sharedObjectRef({
           objectId: BLUEFIN_CONFIG.objectId,
           mutable: true,
@@ -177,11 +176,11 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
       module: this.module,
       function: 'collect_fee',
       arguments: [
-        tx.sharedObjectRef({
-          objectId: this.xPumpConfig.objectId,
-          mutable: true,
-          initialSharedVersion: this.xPumpConfig.initialSharedVersion,
-        }),
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
         tx.sharedObjectRef({
           objectId: BLUEFIN_CONFIG.objectId,
           mutable: false,

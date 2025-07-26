@@ -139,7 +139,7 @@ export const PACKAGES = {
         '0x3b09948e386bd895c627aafebdeb0560854125a0672ade7a64495447ec5701b3'
       ),
       latest: normalizeSuiAddress(
-        '0x3b09948e386bd895c627aafebdeb0560854125a0672ade7a64495447ec5701b3'
+        '0x66f5cbed78925decc17cb6ed737ed40b14cc5ed2c450e6a806889fa7f5be95fe'
       ),
     },
   },
@@ -266,9 +266,11 @@ export const SHARED_OBJECTS = {
 export const MIGRATOR_WITNESSES = {
   [Network.TESTNET]: {
     TEST: `${PACKAGES[Network.TESTNET].TEST_MEMEZ_MIGRATOR.original}::dummy::Witness`,
+    XPUMP: `${PACKAGES[Network.TESTNET].XPUMP_MIGRATOR.original}::xpump_migrator::Witness`,
   },
   [Network.MAINNET]: {
     TEST: `${PACKAGES[Network.MAINNET].TEST_MEMEZ_MIGRATOR.original}::dummy::Witness`,
+    XPUMP: `${PACKAGES[Network.MAINNET].XPUMP_MIGRATOR.original}::xpump_migrator::Witness`,
   },
 } as const;
 
