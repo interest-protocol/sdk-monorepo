@@ -5,7 +5,6 @@ import type {
   StructTag,
   U64,
 } from '@interest-protocol/sui-core-sdk';
-import { TransactionResult } from '@mysten/sui/transactions';
 
 import type { CONFIG_KEYS, MIGRATOR_WITNESSES } from '../constants';
 import type { SHARED_OBJECTS } from '../constants';
@@ -34,7 +33,7 @@ export interface MemezPool<T> {
   curveType: string;
   memeCoinType: string;
   quoteCoinType: string;
-  usesTokenStandard: boolean;
+  publicKey: string | null;
   ipxMemeCoinTreasury: string;
   metadata: Record<string, string>;
   migrationWitness: string;
@@ -69,24 +68,7 @@ export interface PumpState {
   allocation: Allocation;
 }
 
-export interface StableState {
-  memeReserve: bigint;
-  developerAllocation: bigint;
-  developerVestingPeriod: bigint;
-  memeLiquidityProvision: bigint;
-  migrationFee: number;
-  quoteRaiseAmount: bigint;
-  memeSaleAmount: bigint;
-  memeSwapFee: number;
-  quoteSwapFee: number;
-  memeBalance: bigint;
-  quoteBalance: bigint;
-  allocation: Allocation;
-}
-
 export type PumpPool = MemezPool<PumpState>;
-
-export type StablePool = MemezPool<StableState>;
 
 export interface AddMigrationWitnessArgs extends MaybeTx {
   authWitness: ObjectInput;
@@ -133,17 +115,6 @@ export interface MigrateArgs extends MaybeTx {
   pool: string | MemezPool<PumpState>;
 }
 
-export interface TestMigratorMigrateArgs extends MaybeTx {
-  migrator: TransactionResult;
-  memeCoinType: string;
-  quoteCoinType: string;
-}
-
-export interface KeepTokenArgs extends MaybeTx {
-  memeCoinType: string;
-  token: ObjectInput;
-}
-
 export interface GetFeesArgs {
   configurationKey: ConfigKey;
 }
@@ -185,4 +156,22 @@ export interface GetPoolMetadataArgs {
 export interface MakeMemezAclSdkArgs {
   network: Network;
   fullNodeUrl: string;
+}
+
+export interface SetPublicKeyArgs extends MaybeTx {
+  authWitness: ObjectInput;
+  configKey: ConfigKey;
+  publicKey: Uint8Array;
+}
+
+export interface SetMemeReferrerFeeArgs extends MaybeTx {
+  authWitness: ObjectInput;
+  configKey: ConfigKey;
+  fee: number;
+}
+
+export interface SetQuoteReferrerFeeArgs extends MaybeTx {
+  authWitness: ObjectInput;
+  configKey: ConfigKey;
+  fee: number;
 }

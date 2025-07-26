@@ -11,6 +11,9 @@ import {
   RemoveQuoteCoinArgs,
   SdkConstructorArgs,
   SetFeesArgs,
+  SetMemeReferrerFeeArgs,
+  SetPublicKeyArgs,
+  SetQuoteReferrerFeeArgs,
 } from './types/memez.types';
 
 export class ConfigSDK extends MemezBaseSDK {
@@ -150,6 +153,69 @@ export class ConfigSDK extends MemezBaseSDK {
         this.ownedObject(tx, authWitness),
       ],
       typeArguments: [normalizeStructTag(key), normalizeStructTag(model)],
+    });
+
+    return tx;
+  }
+
+  public setPublicKey({
+    tx = new Transaction(),
+    authWitness,
+    configKey,
+    publicKey,
+  }: SetPublicKeyArgs) {
+    tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.CONFIG,
+      function: 'set_public_key',
+      arguments: [
+        tx.sharedObjectRef(this.sharedObjects.CONFIG({ mutable: true })),
+        this.ownedObject(tx, authWitness),
+        tx.pure(publicKey),
+      ],
+      typeArguments: [normalizeStructTag(configKey)],
+    });
+
+    return tx;
+  }
+
+  public setMemeReferrerFee({
+    tx = new Transaction(),
+    authWitness,
+    configKey,
+    fee,
+  }: SetMemeReferrerFeeArgs) {
+    tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.CONFIG,
+      function: 'set_meme_referrer_fee',
+      arguments: [
+        tx.sharedObjectRef(this.sharedObjects.CONFIG({ mutable: true })),
+        this.ownedObject(tx, authWitness),
+        tx.pure.u64(Math.floor(fee)),
+      ],
+      typeArguments: [normalizeStructTag(configKey)],
+    });
+
+    return tx;
+  }
+
+  public setQuoteReferrerFee({
+    tx = new Transaction(),
+    authWitness,
+    configKey,
+    fee,
+  }: SetQuoteReferrerFeeArgs) {
+    tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.CONFIG,
+      function: 'set_quote_referrer_fee',
+      arguments: [
+        tx.sharedObjectRef(this.sharedObjects.CONFIG({ mutable: true })),
+        this.ownedObject(tx, authWitness),
+        tx.pure.u64(Math.floor(fee)),
+      ],
+      typeArguments: [normalizeStructTag(configKey)],
     });
 
     return tx;

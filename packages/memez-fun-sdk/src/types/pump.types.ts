@@ -22,7 +22,7 @@ export interface NewPumpPoolArgs extends MaybeTx {
   memeCoinTreasuryCap: string | ObjectRef;
   creationSuiFee?: ObjectInput;
   totalSupply?: U64;
-  useTokenStandard?: boolean;
+  isProtected?: boolean;
   devPurchaseData?: DevPurchaseData;
   metadata?: Record<string, string>;
   configurationKey: ConfigKey;
@@ -43,18 +43,8 @@ export interface NewUncheckedPumpPoolArgs extends NewPumpPoolArgs {
 export interface PumpArgs extends MaybeTx {
   pool: string | MemezPool<PumpState>;
   quoteCoin: ObjectInput;
-  minAmountOut?: U64;
-}
-
-export interface PumpTokenArgs extends MaybeTx {
-  pool: string | MemezPool<PumpState>;
-  quoteCoin: ObjectInput;
-  minAmountOut?: U64;
-}
-
-export interface DumpTokenArgs extends MaybeTx {
-  pool: string | MemezPool<PumpState>;
-  memeToken: ObjectInput;
+  referrer?: string | null;
+  signature?: Uint8Array | null;
   minAmountOut?: U64;
 }
 
@@ -62,6 +52,7 @@ export interface DumpArgs extends MaybeTx {
   pool: string | MemezPool<PumpState>;
   memeCoin: ObjectInput;
   minAmountOut?: U64;
+  referrer?: string | null;
 }
 
 export interface QuoteArgs {
@@ -84,9 +75,4 @@ export interface QuoteDumpReturnValues {
 
 export interface DistributeStakeHoldersAllocationArgs extends MaybeTx {
   pool: string | MemezPool<PumpState>;
-}
-
-export interface ToCoinArgs extends MaybeTx {
-  pool: string | MemezPool<PumpState>;
-  memeToken: ObjectInput;
 }

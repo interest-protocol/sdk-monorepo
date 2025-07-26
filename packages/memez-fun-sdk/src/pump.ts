@@ -17,20 +17,16 @@ import {
   MigrateArgs,
   PumpData,
   SdkConstructorArgs,
-  StableData,
 } from './types/memez.types';
 import {
   DistributeStakeHoldersAllocationArgs,
   DumpArgs,
-  DumpTokenArgs,
   NewPumpPoolArgs,
   NewUncheckedPumpPoolArgs,
   PumpArgs,
-  PumpTokenArgs,
   QuoteArgs,
   QuoteDumpReturnValues,
   QuotePumpReturnValues,
-  ToCoinArgs,
 } from './types/pump.types';
 
 export class MemezPumpSDK extends MemezBaseSDK {
@@ -56,7 +52,7 @@ export class MemezPumpSDK extends MemezBaseSDK {
    * @param args.memeCoinTreasuryCap - The meme coin treasury cap.
    * @param args.totalSupply - The total supply of the meme coin.
    * @param args.devPurchaseData - The developer purchase data object. It includes the developer address and the first purchase in Sui.
-   * @param args.useTokenStandard - Whether to use the token standard for the MemezPool.
+   * @param args.isProtected - Whether the requires a signature from the backend to submit pump txs.
    * @param args.metadata - A record of social metadata of the meme coin.
    * @param args.configurationKey - The configuration key to use for the MemezPool.
    * @param args.migrationWitness - The migration witness to use for the MemezPool.
@@ -76,7 +72,7 @@ export class MemezPumpSDK extends MemezBaseSDK {
     creationSuiFee = this.zeroSuiCoin(tx),
     memeCoinTreasuryCap,
     totalSupply = this.defaultSupply,
-    useTokenStandard = false,
+    isProtected = false,
     devPurchaseData = {
       developer: normalizeSuiAddress('0x0'),
       firstPurchase: this.zeroSuiCoin(tx),
@@ -152,10 +148,10 @@ export class MemezPumpSDK extends MemezBaseSDK {
         this.ownedObject(tx, memeCoinTreasuryCap),
         this.ownedObject(tx, creationSuiFee),
         pumpConfig,
-        tx.pure.bool(useTokenStandard),
         this.ownedObject(tx, firstPurchase),
         memezMetadata,
         tx.pure.vector('address', stakeHolders),
+        tx.pure.bool(isProtected),
         tx.pure.address(developer),
         this.getVersion(tx),
       ],
@@ -190,7 +186,7 @@ export class MemezPumpSDK extends MemezBaseSDK {
     creationSuiFee = this.zeroSuiCoin(tx),
     memeCoinTreasuryCap,
     totalSupply = this.defaultSupply,
-    useTokenStandard = false,
+    isProtected = false,
     devPurchaseData = {
       developer: normalizeSuiAddress('0x0'),
       firstPurchase: this.zeroSuiCoin(tx),
@@ -266,10 +262,10 @@ export class MemezPumpSDK extends MemezBaseSDK {
         this.ownedObject(tx, memeCoinTreasuryCap),
         this.ownedObject(tx, creationSuiFee),
         pumpConfig,
-        tx.pure.bool(useTokenStandard),
         this.ownedObject(tx, firstPurchase),
         memezMetadata,
         tx.pure.vector('address', stakeHolders),
+        tx.pure.bool(isProtected),
         tx.pure.address(developer),
         this.getVersion(tx),
       ],
@@ -305,6 +301,8 @@ export class MemezPumpSDK extends MemezBaseSDK {
     pool,
     quoteCoin,
     minAmountOut = 0n,
+    referrer = null,
+    signature = null,
   }: PumpArgs) {
     if (typeof pool === 'string') {
       invariant(
@@ -314,7 +312,9 @@ export class MemezPumpSDK extends MemezBaseSDK {
       pool = await this.getPumpPool(pool);
     }
 
-    invariant(!pool.usesTokenStandard, 'pool uses token standard');
+    if (pool.publicKey) {
+      invariant(signature, 'signature is required');
+    }
 
     const memeCoin = tx.moveCall({
       package: this.packages.MEMEZ_FUN.latest,
@@ -323,6 +323,8 @@ export class MemezPumpSDK extends MemezBaseSDK {
       arguments: [
         tx.object(pool.objectId),
         this.ownedObject(tx, quoteCoin),
+        tx.pure.option('address', referrer),
+        tx.pure.option('vector<u8>', signature ? Array.from(signature) : null),
         tx.pure.u64(minAmountOut),
         this.getVersion(tx),
       ],
@@ -331,54 +333,6 @@ export class MemezPumpSDK extends MemezBaseSDK {
 
     return {
       memeCoin,
-      tx,
-    };
-  }
-
-  /**
-   * Swaps Sui for the meme token using the Token Standard. This is for pools that use the Token Standard.
-   *
-   * @param args - An object containing the necessary arguments to pump the meme token into the pool.
-   * @param args.tx - Sui client Transaction class to chain move calls.
-   * @param args.pool - The objectId of the MemezPool or the full parsed pool.
-   * @param args.quoteCoin - The quote coin to sell for the meme token.
-   * @param args.minAmountOut - The minimum amount meme token expected to be received.
-   *
-   * @returns An object containing the meme token and the transaction.
-   * @returns values.memeToken - The meme token.
-   * @returns values.tx - The Transaction.
-   */
-  public async pumpToken({
-    tx = new Transaction(),
-    pool,
-    quoteCoin,
-    minAmountOut = 0n,
-  }: PumpTokenArgs) {
-    if (typeof pool === 'string') {
-      invariant(
-        isValidSuiObjectId(pool),
-        'pool must be a valid Sui objectId or MemezPool'
-      );
-      pool = await this.getPumpPool(pool);
-    }
-
-    invariant(pool.usesTokenStandard, 'pool uses token standard');
-
-    const memeToken = tx.moveCall({
-      package: this.packages.MEMEZ_FUN.latest,
-      module: this.modules.PUMP,
-      function: 'pump_token',
-      arguments: [
-        tx.object(pool.objectId),
-        this.ownedObject(tx, quoteCoin),
-        tx.pure.u64(minAmountOut),
-        this.getVersion(tx),
-      ],
-      typeArguments: [pool.memeCoinType, pool.quoteCoinType],
-    });
-
-    return {
-      memeToken,
       tx,
     };
   }
@@ -400,6 +354,7 @@ export class MemezPumpSDK extends MemezBaseSDK {
     tx = new Transaction(),
     pool,
     memeCoin,
+    referrer = null,
     minAmountOut = 0n,
   }: DumpArgs) {
     if (typeof pool === 'string') {
@@ -410,8 +365,6 @@ export class MemezPumpSDK extends MemezBaseSDK {
       pool = await this.getPumpPool(pool);
     }
 
-    invariant(!pool.usesTokenStandard, 'pool uses token standard');
-
     const quoteCoin = tx.moveCall({
       package: this.packages.MEMEZ_FUN.latest,
       module: this.modules.PUMP,
@@ -420,54 +373,7 @@ export class MemezPumpSDK extends MemezBaseSDK {
         tx.object(pool.objectId),
         tx.object(pool.ipxMemeCoinTreasury),
         this.ownedObject(tx, memeCoin),
-        tx.pure.u64(minAmountOut),
-        this.getVersion(tx),
-      ],
-      typeArguments: [pool.memeCoinType, pool.quoteCoinType],
-    });
-
-    return {
-      quoteCoin,
-      tx,
-    };
-  }
-
-  /**
-   * Swaps the meme token for Sui. This is for pools that use the Token Standard.
-   *
-   * @param args - An object containing the necessary arguments to dump the meme token into the pool.
-   * @param args.tx - Sui client Transaction class to chain move calls.
-   * @param args.pool - The objectId of the MemezPool or the full parsed pool.
-   * @param args.memeToken - The meme token to sell for Sui.
-   * @param args.minAmountOut - The minimum amount Sui expected to be received.
-   *
-   * @returns An object containing the Sui coin and the transaction.
-   * @returns values.quoteCoin - The quote coin.
-   * @returns values.tx - The Transaction.
-   */
-  public async dumpToken({
-    tx = new Transaction(),
-    pool,
-    memeToken,
-    minAmountOut = 0n,
-  }: DumpTokenArgs) {
-    if (typeof pool === 'string') {
-      invariant(
-        isValidSuiObjectId(pool),
-        'pool must be a valid Sui objectId or MemezPool'
-      );
-      pool = await this.getPumpPool(pool);
-    }
-    invariant(pool.usesTokenStandard, 'pool uses token standard');
-
-    const quoteCoin = tx.moveCall({
-      package: this.packages.MEMEZ_FUN.latest,
-      module: this.modules.PUMP,
-      function: 'dump_token',
-      arguments: [
-        tx.object(pool.objectId),
-        tx.object(pool.ipxMemeCoinTreasury),
-        this.ownedObject(tx, memeToken),
+        tx.pure.option('address', referrer),
         tx.pure.u64(minAmountOut),
         this.getVersion(tx),
       ],
@@ -505,43 +411,6 @@ export class MemezPumpSDK extends MemezBaseSDK {
       module: this.modules.PUMP,
       function: 'dev_purchase_claim',
       arguments: [tx.object(pool.objectId), this.getVersion(tx)],
-      typeArguments: [pool.memeCoinType, pool.quoteCoinType],
-    });
-
-    return {
-      memeCoin,
-      tx,
-    };
-  }
-
-  /**
-   * Converts a meme token to a meme coin. This is for pools that use the Token Standard. It can only be done after the pool migrates.
-   *
-   * @param args - An object containing the necessary arguments to convert a meme token to a meme coin.
-   * @param args.tx - Sui client Transaction class to chain move calls.
-   * @param args.pool - The objectId of the MemezPool or the full parsed pool.
-   * @param args.memeToken - The meme token to convert to a meme coin.
-   *
-   * @returns An object containing the meme coin and the transaction.
-   * @returns values.memeCoin - The meme coin.
-   * @returns values.tx - The Transaction.
-   */
-  public async toCoin({ tx = new Transaction(), memeToken, pool }: ToCoinArgs) {
-    if (typeof pool === 'string') {
-      invariant(
-        isValidSuiObjectId(pool),
-        'pool must be a valid Sui objectId or MemezPool'
-      );
-      pool = await this.getPumpPool(pool);
-    }
-
-    invariant(pool.usesTokenStandard, 'pool uses token standard');
-
-    const memeCoin = tx.moveCall({
-      package: this.packages.MEMEZ_FUN.latest,
-      module: this.modules.PUMP,
-      function: 'to_coin',
-      arguments: [tx.object(pool.objectId), this.ownedObject(tx, memeToken)],
       typeArguments: [pool.memeCoinType, pool.quoteCoinType],
     });
 
@@ -721,53 +590,6 @@ export class MemezPumpSDK extends MemezBaseSDK {
     );
 
     return { quoteAmountOut, memeFee, burnFee, quoteFee };
-  }
-
-  /**
-   * Gets the pump data for an integrator. The supply must coin the decimal houses. E.g. for Sui would be 1e9.
-   *
-   * @param args - An object containing the necessary arguments to get the pump data for an integrator.
-   * @param args.configurationKey - The configuration key to find an integrator's fee configuration.
-   * @param args.totalSupply - The total supply of the meme coin.
-   * @param args.quote - The quote type of the meme coin.
-   *
-   * @returns The pump data for the integrator.
-   */
-  public async getStableData({
-    configurationKey,
-    totalSupply,
-    quoteCoinType,
-  }: GetCurveDataArgs): Promise<StableData> {
-    const tx = new Transaction();
-
-    tx.moveCall({
-      package: this.packages.MEMEZ_FUN.latest,
-      module: this.modules.CONFIG,
-      function: 'get_stable',
-      arguments: [
-        tx.sharedObjectRef(this.sharedObjects.CONFIG({ mutable: false })),
-        tx.pure.u64(totalSupply),
-      ],
-      typeArguments: [
-        normalizeStructTag(quoteCoinType),
-        normalizeStructTag(configurationKey),
-      ],
-    });
-
-    const result = await devInspectAndGetReturnValues(this.client, tx, [
-      [bcs.vector(bcs.u64())],
-    ]);
-
-    invariant(result[0], 'Stable data devInspectAndGetReturnValues failed');
-
-    const [maxTargetQuoteLiquidity, liquidityProvision, memeSaleAmount] =
-      result[0][0].map((value: string) => BigInt(value));
-
-    return {
-      maxTargetQuoteLiquidity,
-      liquidityProvision,
-      memeSaleAmount,
-    };
   }
 
   /**

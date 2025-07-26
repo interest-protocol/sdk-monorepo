@@ -9,7 +9,6 @@ import {
   normalizeSuiAddress,
   normalizeSuiObjectId,
 } from '@mysten/sui/utils';
-import { SUI_FRAMEWORK_ADDRESS } from '@mysten/sui/utils';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import { pathOr } from 'ramda';
 import invariant from 'tiny-invariant';
@@ -19,17 +18,14 @@ import { MemezFees } from './structs';
 import {
   GetFeesArgs,
   GetPoolMetadataArgs,
-  KeepTokenArgs,
   MemezFunSharedObjects,
   MemezPool,
   PumpState,
   SdkConstructorArgs,
-  StableState,
 } from './types/memez.types';
-import { getSdkDefaultArgs, parsePumpPool, parseStablePool } from './utils';
+import { getSdkDefaultArgs, parsePumpPool } from './utils';
 
 const pumpPoolCache = new Map<string, MemezPool<PumpState>>();
-const stablePoolCache = new Map<string, MemezPool<StableState>>();
 const metadataCache = new Map<string, Record<string, string>>();
 
 export class MemezBaseSDK extends SuiCoreSDK {
@@ -123,35 +119,6 @@ export class MemezBaseSDK extends SuiCoreSDK {
     return result[0][0];
   }
 
-  /**
-   * Utility function to return the Token to the sender.
-   *
-   * @param args - An object containing the necessary arguments to keep the meme token in the pool.
-   * @param args.tx - Sui client Transaction class to chain move calls.
-   * @param args.memeCoinType - The type of the meme coin.
-   * @param args.token - The meme token to return to the sender.
-   *
-   * @returns An object containing the transaction.
-   * @returns values.tx - The Transaction.
-   */
-  public async keepToken({
-    tx = new Transaction(),
-    memeCoinType,
-    token,
-  }: KeepTokenArgs) {
-    tx.moveCall({
-      package: SUI_FRAMEWORK_ADDRESS,
-      module: 'token',
-      function: 'keep',
-      arguments: [this.ownedObject(tx, token)],
-      typeArguments: [memeCoinType],
-    });
-
-    return {
-      tx,
-    };
-  }
-
   getVersion(tx: Transaction) {
     return tx.moveCall({
       package: this.packages.MEMEZ_FUN.latest,
@@ -192,39 +159,6 @@ export class MemezBaseSDK extends SuiCoreSDK {
     });
 
     pumpPoolCache.set(pumpId, pool);
-
-    return pool;
-  }
-
-  /**
-   * Retrieves the Memez pool object from Sui and parses it.
-   *
-   * @param stableId - The objectId of the MemezPool.
-   *
-   * @returns A parsed MemezPool object.
-   */
-  public async getStablePool(stableId: string) {
-    stableId = normalizeSuiObjectId(stableId);
-
-    if (stablePoolCache.has(stableId)) {
-      return stablePoolCache.get(stableId)!;
-    }
-
-    const suiObject = await this.client.getObject({
-      id: stableId,
-      options: { showContent: true },
-    });
-
-    const pool = await parseStablePool(this.client, suiObject);
-
-    pool.metadata = await this.getPoolMetadata({
-      poolId: pool.objectId,
-      quoteCoinType: pool.quoteCoinType,
-      memeCoinType: pool.memeCoinType,
-      curveType: pool.curveType,
-    });
-
-    stablePoolCache.set(stableId, pool);
 
     return pool;
   }

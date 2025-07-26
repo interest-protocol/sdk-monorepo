@@ -1,37 +1,29 @@
 import { Network } from '@interest-protocol/sui-core-sdk';
 import { Transaction } from '@mysten/sui/transactions';
-import { isValidSuiAddress } from '@mysten/sui/utils';
+import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 import invariant from 'tiny-invariant';
 
-import {
-  CETUS_BURNER_MANAGER,
-  CETUS_GLOBAL_CONFIG,
-  CETUS_POOLS,
-} from '../constants';
+import { BLUEFIN_CONFIG, OWNED_OBJECTS, PACKAGES } from '../constants';
 import { MemezBaseSDK } from '../sdk';
 import { SdkConstructorArgs } from '../types/memez.types';
 import {
+  XPumpCollectFeeArgs,
   XPumpMigrateArgs,
-  XPumpRegisterPoolArgs,
   XPumpSetInitializePriceArgs,
   XPumpSetRewardValueArgs,
   XPumpSetTreasuryArgs,
 } from './migrators.types';
 
 export class XPumpMigratorSDK extends MemezBaseSDK {
-  packageId =
-    '0xfba336c793229cefbaa7c2e3ed9abeb970144c0eaceef46999c7ba7157fd8734';
+  packageId = PACKAGES[Network.MAINNET].XPUMP_MIGRATOR.latest;
 
-  adminId =
-    '0xaa7503c97dab460af13eda60b9af3ccc247cefd48e19da69ff0f0e2aa747fcf6';
+  adminId = OWNED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_ADMIN;
 
-  upgradeCap =
-    '0x600b76e704842b0d3dd23ab9224d28acf4d320c0f042e52aa2ee81f330f93775';
-
-  witness =
-    '0xfba336c793229cefbaa7c2e3ed9abeb970144c0eaceef46999c7ba7157fd8734::xpump_migrator::Witness';
+  upgradeCap = OWNED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_UPGRADE_CAP;
 
   module = 'xpump_migrator';
+
+  witness = `${this.packageId}::${this.module}::Witness`;
 
   xPumpConfig = {
     objectId:
@@ -122,57 +114,16 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
     };
   }
 
-  public async registerPool({
-    tx = new Transaction(),
-    memeCoinTreasuryCap,
-  }: XPumpRegisterPoolArgs) {
-    invariant(
-      isValidSuiAddress(memeCoinTreasuryCap),
-      'Invalid meme coin treasury cap'
-    );
-
-    const { memeCoinType } =
-      await this.getCoinMetadataAndType(memeCoinTreasuryCap);
-
-    tx.moveCall({
-      package: this.packageId,
-      module: this.module,
-      function: 'register_pool',
-      arguments: [
-        tx.sharedObjectRef({
-          objectId: this.xPumpConfig.objectId,
-          mutable: true,
-          initialSharedVersion: this.xPumpConfig.initialSharedVersion,
-        }),
-        tx.sharedObjectRef({
-          objectId: CETUS_GLOBAL_CONFIG.objectId,
-          mutable: false,
-          initialSharedVersion: CETUS_GLOBAL_CONFIG.initialSharedVersion,
-        }),
-        tx.sharedObjectRef({
-          objectId: CETUS_POOLS.objectId,
-          mutable: true,
-          initialSharedVersion: CETUS_POOLS.initialSharedVersion,
-        }),
-        this.ownedObject(tx, memeCoinTreasuryCap),
-      ],
-      typeArguments: [memeCoinType],
-    });
-
-    return {
-      tx,
-    };
-  }
-
   public async migrate({
     tx = new Transaction(),
     migrator,
     memeCoinType,
-    quoteCoinType,
+    feeCoinType,
+    feeCoin,
     ipxMemeCoinTreasury,
   }: XPumpMigrateArgs) {
     const quoteCoinMetadata = await this.client.getCoinMetadata({
-      coinType: quoteCoinType,
+      coinType: SUI_TYPE_ARG,
     });
 
     invariant(quoteCoinMetadata?.id, 'Invalid quote coin metadata');
@@ -193,28 +144,58 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
           mutable: true,
           initialSharedVersion: this.xPumpConfig.initialSharedVersion,
         }),
-        tx.object(CETUS_BURNER_MANAGER),
+        tx.sharedObjectRef({
+          objectId: BLUEFIN_CONFIG.objectId,
+          mutable: true,
+          initialSharedVersion: BLUEFIN_CONFIG.initialSharedVersion,
+        }),
         tx.object.clock(),
         tx.object(ipxMemeCoinTreasury),
-        tx.sharedObjectRef({
-          objectId: CETUS_GLOBAL_CONFIG.objectId,
-          mutable: false,
-          initialSharedVersion: CETUS_GLOBAL_CONFIG.initialSharedVersion,
-        }),
-        tx.sharedObjectRef({
-          objectId: CETUS_POOLS.objectId,
-          mutable: true,
-          initialSharedVersion: CETUS_POOLS.initialSharedVersion,
-        }),
         tx.object(quoteCoinMetadata.id),
         tx.object(memeCoinMetadata.id),
         migrator,
+        this.ownedObject(tx, feeCoin),
+      ],
+      typeArguments: [memeCoinType, feeCoinType],
+    });
+
+    return {
+      tx,
+      suiCoin,
+    };
+  }
+
+  public collectFee({
+    tx = new Transaction(),
+    bluefinPool,
+    memeCoinType,
+  }: XPumpCollectFeeArgs) {
+    this.assertObjectId(bluefinPool);
+
+    const [memeCoin, suiCoin] = tx.moveCall({
+      package: this.packageId,
+      module: this.module,
+      function: 'collect_fee',
+      arguments: [
+        tx.sharedObjectRef({
+          objectId: this.xPumpConfig.objectId,
+          mutable: true,
+          initialSharedVersion: this.xPumpConfig.initialSharedVersion,
+        }),
+        tx.sharedObjectRef({
+          objectId: BLUEFIN_CONFIG.objectId,
+          mutable: false,
+          initialSharedVersion: BLUEFIN_CONFIG.initialSharedVersion,
+        }),
+        tx.object(bluefinPool),
+        tx.object.clock(),
       ],
       typeArguments: [memeCoinType],
     });
 
     return {
       tx,
+      memeCoin,
       suiCoin,
     };
   }
