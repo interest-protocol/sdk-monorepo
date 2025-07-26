@@ -66,6 +66,8 @@ export interface PumpState {
   memeSwapFee: number;
   quoteSwapFee: number;
   allocation: Allocation;
+  memeReferrerFee: number;
+  quoteReferrerFee: number;
 }
 
 export type PumpPool = MemezPool<PumpState>;

@@ -272,6 +272,34 @@ export const parsePumpPool = async (
     devPurchase: BigInt(
       pathOr(0n, ['data', 'content', 'fields', 'dev_purchase'], stateObject)
     ),
+    memeReferrerFee: +pathOr(
+      '0',
+      [
+        'data',
+        'content',
+        'fields',
+        'constant_product',
+        'fields',
+        'meme_referrer_fee',
+        'fields',
+        'pos0',
+      ],
+      stateObject
+    ),
+    quoteReferrerFee: +pathOr(
+      0,
+      [
+        'data',
+        'content',
+        'fields',
+        'constant_product',
+        'fields',
+        'quote_referrer_fee',
+        'fields',
+        'pos0',
+      ],
+      stateObject
+    ),
   } as PumpState;
 
   const publicKey = pathOr(
