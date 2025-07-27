@@ -171,7 +171,7 @@ export class ConfigSDK extends MemezBaseSDK {
       arguments: [
         tx.sharedObjectRef(this.sharedObjects.CONFIG({ mutable: true })),
         this.ownedObject(tx, authWitness),
-        tx.pure(publicKey),
+        tx.pure.vector('u8', publicKey),
       ],
       typeArguments: [normalizeStructTag(configKey)],
     });

@@ -26,7 +26,7 @@ const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
       GitHub: 'https://github.com/meme',
       videoUrl: 'https://memez.gg',
     },
-
+    developer: recipient,
     memeCoinTreasuryCap: TREASURY_CAP,
     migrationWitness: migratorWitnesses.XPUMP,
     totalSupply: TOTAL_SUPPLY,
