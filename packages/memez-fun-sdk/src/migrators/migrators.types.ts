@@ -29,3 +29,10 @@ export interface XPumpCollectFeeArgs extends MaybeTx {
   bluefinPool: string;
   memeCoinType: string;
 }
+
+export interface XPumpMigrateToExistingPoolArgs extends MaybeTx {
+  pool: string;
+  ipxMemeCoinTreasury: string;
+  memeCoinType: string;
+  migrator: TransactionResult;
+}

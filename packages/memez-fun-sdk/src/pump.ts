@@ -4,7 +4,6 @@ import {
   isValidSuiAddress,
   isValidSuiObjectId,
   normalizeStructTag,
-  normalizeSuiAddress,
 } from '@mysten/sui/utils';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import invariant from 'tiny-invariant';
@@ -73,10 +72,8 @@ export class MemezPumpSDK extends MemezBaseSDK {
     memeCoinTreasuryCap,
     totalSupply = this.defaultSupply,
     isProtected = false,
-    devPurchaseData = {
-      developer: normalizeSuiAddress('0x0'),
-      firstPurchase: this.zeroSuiCoin(tx),
-    },
+    developer,
+    firstPurchase = this.zeroSuiCoin(tx),
     metadata = {},
     configurationKey,
     migrationWitness,
@@ -96,8 +93,6 @@ export class MemezPumpSDK extends MemezBaseSDK {
       'liquidityProvision must be between 0 and 10_000'
     );
 
-    const { developer, firstPurchase } = devPurchaseData;
-
     invariant(BigInt(totalSupply) > 0n, 'totalSupply must be greater than 0');
     invariant(
       isValidSuiAddress(developer),
@@ -108,6 +103,8 @@ export class MemezPumpSDK extends MemezBaseSDK {
       stakeHolders.every((stakeHolder) => isValidSuiAddress(stakeHolder)),
       'stakeHolders must be a valid Sui address'
     );
+
+    this.assertNotZeroAddress(developer);
 
     const { memeCoinType, coinMetadataId } =
       await this.getCoinMetadataAndType(memeCoinTreasuryCap);
@@ -187,10 +184,8 @@ export class MemezPumpSDK extends MemezBaseSDK {
     memeCoinTreasuryCap,
     totalSupply = this.defaultSupply,
     isProtected = false,
-    devPurchaseData = {
-      developer: normalizeSuiAddress('0x0'),
-      firstPurchase: this.zeroSuiCoin(tx),
-    },
+    developer,
+    firstPurchase = this.zeroSuiCoin(tx),
     metadata = {},
     configurationKey,
     migrationWitness,
@@ -212,7 +207,7 @@ export class MemezPumpSDK extends MemezBaseSDK {
       'liquidityProvision must be between 0 and 10_000'
     );
 
-    const { developer, firstPurchase } = devPurchaseData;
+    this.assertNotZeroAddress(developer);
 
     invariant(BigInt(totalSupply) > 0n, 'totalSupply must be greater than 0');
     invariant(

@@ -14,6 +14,7 @@ import { SdkConstructorArgs } from '../types/memez.types';
 import {
   XPumpCollectFeeArgs,
   XPumpMigrateArgs,
+  XPumpMigrateToExistingPoolArgs,
   XPumpSetInitializePriceArgs,
   XPumpSetRewardValueArgs,
   XPumpSetTreasuryArgs,
@@ -136,7 +137,7 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
     const suiCoin = tx.moveCall({
       package: this.packageId,
       module: this.module,
-      function: 'migrate',
+      function: 'migrate_to_new_pool',
       arguments: [
         tx.sharedObjectRef(
           SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
@@ -156,6 +157,53 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
         this.ownedObject(tx, feeCoin),
       ],
       typeArguments: [memeCoinType, feeCoinType],
+    });
+
+    return {
+      tx,
+      suiCoin,
+    };
+  }
+
+  public async migrateToExistingPool({
+    tx = new Transaction(),
+    pool,
+    ipxMemeCoinTreasury,
+    memeCoinType,
+    migrator,
+  }: XPumpMigrateToExistingPoolArgs) {
+    this.assertObjectId(pool);
+    this.assertObjectId(ipxMemeCoinTreasury);
+    this.assertObjectId(migrator);
+
+    const memeCoinMetadata = await this.client.getCoinMetadata({
+      coinType: memeCoinType,
+    });
+
+    invariant(memeCoinMetadata?.id, 'Invalid meme coin metadata');
+
+    const suiCoin = tx.moveCall({
+      package: this.packageId,
+      module: this.module,
+      function: 'migrate_to_existing_pool',
+      arguments: [
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
+        tx.sharedObjectRef({
+          objectId: BLUEFIN_CONFIG.objectId,
+          mutable: true,
+          initialSharedVersion: BLUEFIN_CONFIG.initialSharedVersion,
+        }),
+        tx.object(pool),
+        tx.object.clock(),
+        tx.object(ipxMemeCoinTreasury),
+        tx.object(memeCoinMetadata.id),
+        migrator,
+      ],
+      typeArguments: [memeCoinType],
     });
 
     return {

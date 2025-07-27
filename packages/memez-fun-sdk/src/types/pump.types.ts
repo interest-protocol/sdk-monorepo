@@ -13,17 +13,13 @@ import {
   PumpState,
 } from './memez.types';
 
-export interface DevPurchaseData {
-  developer: string;
-  firstPurchase: ObjectInput;
-}
-
 export interface NewPumpPoolArgs extends MaybeTx {
   memeCoinTreasuryCap: string | ObjectRef;
   creationSuiFee?: ObjectInput;
   totalSupply?: U64;
   isProtected?: boolean;
-  devPurchaseData?: DevPurchaseData;
+  developer: string;
+  firstPurchase?: ObjectInput;
   metadata?: Record<string, string>;
   configurationKey: ConfigKey;
   migrationWitness: MigratorWitness | string;
