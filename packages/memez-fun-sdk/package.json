@@ -15,7 +15,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "version": "9.0.1",
+  "version": "9.0.2",
   "description": "",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -46,7 +46,7 @@
   "publishConfig": {
     "access": "public",
     "dependencies": {
-      "@interest-protocol/acl-sdk": "7.1.0",
+      "@interest-protocol/acl-sdk": "7.2.0",
       "@cetusprotocol/cetus-sui-clmm-sdk": "^7.0.0",
       "@interest-protocol/sui-core-sdk": "0.0.1",
       "@mysten/sui": "^1.36.2",
