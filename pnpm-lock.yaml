@@ -330,8 +330,11 @@ importers:
       '@interest-protocol/acl-sdk':
         specifier: workspace:*
         version: link:../acl-sdk
+      '@interest-protocol/sui-core-sdk':
+        specifier: workspace:*
+        version: link:../sui-core-sdk
       '@mysten/sui':
-        specifier: ^1.36.0
+        specifier: ^1.36.2
         version: 1.36.2(typescript@5.8.3)
       '@polymedia/suitcase-core':
         specifier: ^0.0.36
@@ -436,7 +439,7 @@ importers:
   packages/sui-core-sdk:
     dependencies:
       '@mysten/sui':
-        specifier: ^1.36.0
+        specifier: ^1.36.2
         version: 1.36.2(typescript@5.8.3)
       ramda:
         specifier: ^0.30.1
