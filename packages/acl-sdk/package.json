@@ -15,7 +15,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "version": "7.1.0",
+  "version": "7.2.0",
   "description": "acl sdk",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -41,7 +41,8 @@
     "dependencies": {
       "@mysten/sui": "^1.36.0",
       "@polymedia/suitcase-core": "^0.0.36",
-      "tiny-invariant": "^1.3.3"
+      "tiny-invariant": "^1.3.3",
+      "@interest-protocol/sui-core-sdk": "0.0.1"
     }
   }
 }

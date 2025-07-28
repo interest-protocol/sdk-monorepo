@@ -48,6 +48,7 @@
     "dependencies": {
       "@interest-protocol/acl-sdk": "7.1.0",
       "@cetusprotocol/cetus-sui-clmm-sdk": "^7.0.0",
+      "@interest-protocol/sui-core-sdk": "0.0.1",
       "@mysten/sui": "^1.36.2",
       "@polymedia/suitcase-core": "^0.0.36",
       "ramda": "^0.30.1",
