@@ -136,10 +136,10 @@ export const PACKAGES = {
     },
     XPUMP_MIGRATOR: {
       original: normalizeSuiAddress(
-        '0xb9b3b4723d4a308d72e1fafb0c35cd14d235075c6552a663a43daf077a508f98'
+        '0xe460573262b56779740df2d91c13c5b41cffee99a3e64f5b5f6888d03a916c3c'
       ),
       latest: normalizeSuiAddress(
-        '0xb9b3b4723d4a308d72e1fafb0c35cd14d235075c6552a663a43daf077a508f98'
+        '0xe460573262b56779740df2d91c13c5b41cffee99a3e64f5b5f6888d03a916c3c'
       ),
     },
   },
@@ -194,10 +194,10 @@ export const OWNED_OBJECTS = {
       '0xff3bea66bb8a6f06ace5bfe1622a61589e387d85955b61a8107ecc5bff6fd16e'
     ),
     XPUMP_MIGRATOR_UPGRADE_CAP: normalizeSuiObjectId(
-      '0x1e2d332c203ad060951c94656ccda6de175958fe69b666b479de42cd1465a189'
+      '0x2997a51c330265ebf2c5f20900ae684507cd592522b3f3594b70ab950c6797b2'
     ),
     XPUMP_MIGRATOR_ADMIN: normalizeSuiObjectId(
-      '0x6f2fd4e45ed5da8a1cd681ddbf3a5925a7c669e3963974fb55ff7d337d1c2b14'
+      '0x8895c0f97e5ef8e1c179f915fee872ad417da4be75db55676e77a7ba82c9ef42'
     ),
   },
 } as const;
@@ -255,9 +255,9 @@ export const SHARED_OBJECTS = {
     }),
     XPUMP_MIGRATOR_CONFIG: ({ mutable }: { mutable: boolean }) => ({
       objectId: normalizeSuiObjectId(
-        '0xdcc59ee8fd0a18fe109b2867a36c4a00fef43b7e9b9091117f777c6496de8dc6'
+        '0x91793e68b1147600cb675aab13c8cceba1c9b02ac82ec8263fa0fb696fd12d7c'
       ),
-      initialSharedVersion: '597477047',
+      initialSharedVersion: '598282319',
       mutable,
     }),
   },
