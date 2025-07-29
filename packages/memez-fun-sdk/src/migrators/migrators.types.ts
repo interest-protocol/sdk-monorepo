@@ -28,6 +28,7 @@ export interface XPumpMigrateArgs extends MaybeTx {
 export interface XPumpCollectFeeArgs extends MaybeTx {
   bluefinPool: string;
   memeCoinType: string;
+  positionOwner: ObjectInput;
 }
 
 export interface XPumpMigrateToExistingPoolArgs extends MaybeTx {
@@ -35,4 +36,15 @@ export interface XPumpMigrateToExistingPoolArgs extends MaybeTx {
   ipxMemeCoinTreasury: string;
   memeCoinType: string;
   migrator: TransactionResult;
+}
+
+export interface XPumpGetPositionsArgs {
+  owner: string;
+  cursor?: string | null | undefined;
+  limit?: number | null | undefined;
+}
+
+export interface XPumpTreasuryCollectFeeArgs extends MaybeTx {
+  bluefinPool: string;
+  memeCoinType: string;
 }

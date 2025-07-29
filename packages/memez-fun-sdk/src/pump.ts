@@ -50,7 +50,8 @@ export class MemezPumpSDK extends MemezBaseSDK {
    * @param args.creationSuiFee - The Sui fee to use for the creation of the MemezPool.
    * @param args.memeCoinTreasuryCap - The meme coin treasury cap.
    * @param args.totalSupply - The total supply of the meme coin.
-   * @param args.devPurchaseData - The developer purchase data object. It includes the developer address and the first purchase in Sui.
+   * @param args.developer - The developer address. It will be eligible for fees after migration.
+   * @param args.firstPurchase - The first purchase in Sui.
    * @param args.isProtected - Whether the requires a signature from the backend to submit pump txs.
    * @param args.metadata - A record of social metadata of the meme coin.
    * @param args.configurationKey - The configuration key to use for the MemezPool.

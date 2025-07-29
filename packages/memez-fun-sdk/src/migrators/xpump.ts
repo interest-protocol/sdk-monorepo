@@ -13,11 +13,13 @@ import { MemezBaseSDK } from '../sdk';
 import { SdkConstructorArgs } from '../types/memez.types';
 import {
   XPumpCollectFeeArgs,
+  XPumpGetPositionsArgs,
   XPumpMigrateArgs,
   XPumpMigrateToExistingPoolArgs,
   XPumpSetInitializePriceArgs,
   XPumpSetRewardValueArgs,
   XPumpSetTreasuryArgs,
+  XPumpTreasuryCollectFeeArgs,
 } from './migrators.types';
 
 export class XPumpMigratorSDK extends MemezBaseSDK {
@@ -31,12 +33,14 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
 
   witness = `${PACKAGES[Network.MAINNET].XPUMP_MIGRATOR.original}::${this.module}::Witness`;
 
+  positionOwnerType = `${PACKAGES[Network.MAINNET].XPUMP_MIGRATOR.original}::${this.module}::PositionOwner`;
+
   constructor(args: SdkConstructorArgs | undefined | null = null) {
     super(args);
 
     invariant(
       this.network === Network.MAINNET,
-      'Recrd migrator is only available on mainnet'
+      'XPump migrator is only available on mainnet'
     );
   }
 
@@ -122,15 +126,16 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
     feeCoin,
     ipxMemeCoinTreasury,
   }: XPumpMigrateArgs) {
-    const quoteCoinMetadata = await this.client.getCoinMetadata({
-      coinType: SUI_TYPE_ARG,
-    });
+    const [quoteCoinMetadata, memeCoinMetadata] = await Promise.all([
+      this.client.getCoinMetadata({
+        coinType: SUI_TYPE_ARG,
+      }),
+      this.client.getCoinMetadata({
+        coinType: memeCoinType,
+      }),
+    ]);
 
     invariant(quoteCoinMetadata?.id, 'Invalid quote coin metadata');
-
-    const memeCoinMetadata = await this.client.getCoinMetadata({
-      coinType: memeCoinType,
-    });
 
     invariant(memeCoinMetadata?.id, 'Invalid meme coin metadata');
 
@@ -216,6 +221,7 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
     tx = new Transaction(),
     bluefinPool,
     memeCoinType,
+    positionOwner,
   }: XPumpCollectFeeArgs) {
     this.assertObjectId(bluefinPool);
 
@@ -236,6 +242,7 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
         }),
         tx.object(bluefinPool),
         tx.object.clock(),
+        this.ownedObject(tx, positionOwner),
       ],
       typeArguments: [memeCoinType],
     });
@@ -245,5 +252,57 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
       memeCoin,
       suiCoin,
     };
+  }
+
+  public treasuryCollectFee({
+    tx = new Transaction(),
+    bluefinPool,
+    memeCoinType,
+  }: XPumpTreasuryCollectFeeArgs) {
+    this.assertObjectId(bluefinPool);
+
+    tx.moveCall({
+      package: this.packageId,
+      module: this.module,
+      function: 'treasury_collect_fee',
+      arguments: [
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
+        tx.sharedObjectRef({
+          objectId: BLUEFIN_CONFIG.objectId,
+          mutable: false,
+          initialSharedVersion: BLUEFIN_CONFIG.initialSharedVersion,
+        }),
+        tx.object(bluefinPool),
+        tx.object.clock(),
+      ],
+      typeArguments: [memeCoinType],
+    });
+
+    return tx;
+  }
+
+  async getPositions({
+    owner,
+    cursor = null,
+    limit = 50,
+  }: XPumpGetPositionsArgs) {
+    const positions = await this.client.getOwnedObjects({
+      owner: owner,
+      options: {
+        showType: true,
+        showContent: true,
+      },
+      filter: {
+        StructType: this.positionOwnerType,
+      },
+      cursor,
+      limit,
+    });
+
+    return positions;
   }
 }
