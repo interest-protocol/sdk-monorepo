@@ -14,7 +14,7 @@ export enum Modules {
 }
 
 export const INNER_WALRUS_STAKING_ID =
-  '0x5849e7cdbdaad46b6c68a5462ed1fc58c302862785769b450c882679bc452999';
+  '0x16f1f9fcdf5a746da423d1ad055d88f88b24a9272ca8afb4c0dcf074ae6c730a';
 
 export const PACKAGES: Package = {
   WWAL: {
