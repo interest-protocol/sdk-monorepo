@@ -19,6 +19,7 @@ import {
   XPumpSetInitializePriceArgs,
   XPumpSetRewardValueArgs,
   XPumpSetTreasuryArgs,
+  XPumpSetTreasuryFeeArgs,
   XPumpTreasuryCollectFeeArgs,
 } from './migrators.types';
 
@@ -110,6 +111,30 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
         ),
         this.ownedObject(tx, this.adminId),
         tx.pure.u128(price),
+      ],
+    });
+
+    return {
+      tx,
+    };
+  }
+
+  public setTreasuryFee({
+    tx = new Transaction(),
+    fee,
+  }: XPumpSetTreasuryFeeArgs) {
+    tx.moveCall({
+      package: this.packageId,
+      module: this.module,
+      function: 'set_treasury_fee',
+      arguments: [
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
+        this.ownedObject(tx, this.adminId),
+        tx.pure.u64(fee),
       ],
     });
 
@@ -282,7 +307,9 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
       typeArguments: [memeCoinType],
     });
 
-    return tx;
+    return {
+      tx,
+    };
   }
 
   async getPositions({

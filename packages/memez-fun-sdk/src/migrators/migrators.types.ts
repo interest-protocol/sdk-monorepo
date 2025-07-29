@@ -17,6 +17,10 @@ export interface XPumpSetInitializePriceArgs extends MaybeTx {
   price: U64;
 }
 
+export interface XPumpSetTreasuryFeeArgs extends MaybeTx {
+  fee: number;
+}
+
 export interface XPumpMigrateArgs extends MaybeTx {
   migrator: TransactionResult;
   memeCoinType: string;
