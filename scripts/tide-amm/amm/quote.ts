@@ -8,7 +8,7 @@ const sdk = new TideSdk();
 (async () => {
   const quote = await sdk.quote({
     pool: SUI_USDC_POOL,
-    amount: 10n * 1_000_000_000n,
+    amount: 100n * 1_000_000_000n,
     xToY: true,
   });
 

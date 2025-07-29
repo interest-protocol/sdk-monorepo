@@ -78,15 +78,15 @@ export const PACKAGES: Package = {
       '0x29ba7f7bc53e776f27a6d1289555ded2f407b4b1a799224f06b26addbcd1c33d'
     ),
     latest: normalizeSuiAddress(
-      '0x29ba7f7bc53e776f27a6d1289555ded2f407b4b1a799224f06b26addbcd1c33d'
+      '0x1a6a6bfd4d6d2aa9af72f6804d9330873b44bfd0e1405005ae19587539fd2c58'
     ),
   },
   BLIZZARD_HOOKS: {
     original: normalizeSuiAddress(
-      '0x10a7c91b25090b81a4de1e3a3912c994feb446529a308b7aa549eea259b11842'
+      '0x2577491eda369564e2c1537215a213d87fa68dab7b6f5d7bb72f3b6857025614'
     ),
     latest: normalizeSuiAddress(
-      '0x10a7c91b25090b81a4de1e3a3912c994feb446529a308b7aa549eea259b11842'
+      '0x2577491eda369564e2c1537215a213d87fa68dab7b6f5d7bb72f3b6857025614'
     ),
   },
   WAL: {
@@ -102,15 +102,15 @@ export const PACKAGES: Package = {
       '0xfdc88f7d7cf30afab2f82e8380d11ee8f70efb90e863d1de8616fae1bb09ea77'
     ),
     latest: normalizeSuiAddress(
-      '0xfdc88f7d7cf30afab2f82e8380d11ee8f70efb90e863d1de8616fae1bb09ea77'
+      '0xfa65cb2d62f4d39e60346fb7d501c12538ca2bbc646eaa37ece2aec5f897814e'
     ),
   },
   BLIZZARD_UTILS: {
     original: normalizeSuiAddress(
-      '0x3e12a9b6dbe7997b441b5fd6cf5e953cf2f3521a8f353f33e7f297cf7dac0ecc'
+      '0x09c21cbfd644a670d9f0bb8348aaac859009c89ccda9193a7cfa2d74c029cf49'
     ),
     latest: normalizeSuiAddress(
-      '0x3e12a9b6dbe7997b441b5fd6cf5e953cf2f3521a8f353f33e7f297cf7dac0ecc'
+      '0x09c21cbfd644a670d9f0bb8348aaac859009c89ccda9193a7cfa2d74c029cf49'
     ),
   },
 } as const;

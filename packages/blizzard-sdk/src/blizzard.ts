@@ -20,6 +20,7 @@ import invariant from 'tiny-invariant';
 
 import {
   AddNodeArgs,
+  AddVersionArgs,
   BlizzardStaking,
   BurnLstArgs,
   BurnStakeNftArgs,
@@ -31,6 +32,7 @@ import {
   MintArgs,
   NewLSTArgs,
   RemoveNodeArgs,
+  RemoveVersionArgs,
   SdkConstructorArgs,
   SyncExchangeRateArgs,
   ToLstAtEpochArgs,
@@ -120,6 +122,58 @@ export class BlizzardSDK extends SuiCoreSDK {
         ),
       ],
     });
+  }
+
+  public async addVersion({
+    tx = new Transaction(),
+    version,
+    adminWitness,
+  }: AddVersionArgs) {
+    this.assertObjectId(adminWitness);
+
+    tx.moveCall({
+      package: this.packages.BLIZZARD.latest,
+      module: this.modules.AllowedVersions,
+      function: 'add',
+      arguments: [
+        this.sharedObject(
+          tx,
+          this.sharedObjects.BLIZZARD_AV({ mutable: true })
+        ),
+        adminWitness,
+        tx.pure.u64(version),
+      ],
+    });
+
+    return {
+      tx,
+    };
+  }
+
+  public async removeVersion({
+    tx = new Transaction(),
+    version,
+    adminWitness,
+  }: RemoveVersionArgs) {
+    this.assertObjectId(adminWitness);
+
+    tx.moveCall({
+      package: this.packages.BLIZZARD.latest,
+      module: this.modules.AllowedVersions,
+      function: 'remove',
+      arguments: [
+        this.sharedObject(
+          tx,
+          this.sharedObjects.BLIZZARD_AV({ mutable: true })
+        ),
+        adminWitness,
+        tx.pure.u64(version),
+      ],
+    });
+
+    return {
+      tx,
+    };
   }
 
   public async newLST({

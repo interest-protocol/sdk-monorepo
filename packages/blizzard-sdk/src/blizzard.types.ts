@@ -223,6 +223,16 @@ export interface ClaimFeesArgs extends MaybeTx {
   blizzardStaking: SharedObject;
 }
 
+export interface AddVersionArgs extends MaybeTx {
+  version: number;
+  adminWitness: TransactionResult;
+}
+
+export interface RemoveVersionArgs extends MaybeTx {
+  version: number;
+  adminWitness: TransactionResult;
+}
+
 // === ACL Types End ===
 
 // === Update Metadata ===

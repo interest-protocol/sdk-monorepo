@@ -9,14 +9,14 @@ import { blizzardSDK, MAX_BPS, POW_9 } from '../utils.script';
 (async () => {
   const txb = new Transaction();
 
-  const amount = POW_9 * 2n;
+  const amount = POW_9;
 
-  const fee = (amount * 1n) / MAX_BPS;
+  const fee = 0n;
 
   const amountMinusFee = amount - fee;
 
   const wal = coinWithBalance({
-    type: TYPES.PWAL,
+    type: TYPES.WWAL,
     balance: amount,
   })(txb);
 
@@ -26,7 +26,7 @@ import { blizzardSDK, MAX_BPS, POW_9 } from '../utils.script';
   } = await blizzardSDK.fcfs({
     tx: txb,
     value: amountMinusFee,
-    blizzardStaking: SHARED_OBJECTS.PWAL_STAKING({
+    blizzardStaking: SHARED_OBJECTS.WWAL_STAKING({
       mutable: true,
     }).objectId,
   });
@@ -39,7 +39,7 @@ import { blizzardSDK, MAX_BPS, POW_9 } from '../utils.script';
     tx,
     lstCoin: wal,
     withdrawIXs,
-    blizzardStaking: SHARED_OBJECTS.PWAL_STAKING({
+    blizzardStaking: SHARED_OBJECTS.WWAL_STAKING({
       mutable: true,
     }).objectId,
   });
