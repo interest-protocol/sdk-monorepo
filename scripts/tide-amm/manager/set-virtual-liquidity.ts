@@ -10,7 +10,7 @@ const admin = ADMIN_TO_UPDATE;
 (async () => {
   const tx = sdk.setVirtualXLiquidity({
     pool: SUI_USDC_POOL,
-    virtualLiquidityX: 50_000_000n * 10n ** 18n,
+    virtualLiquidityX: 7_000_000n * 10n ** 18n,
     admin,
   });
 

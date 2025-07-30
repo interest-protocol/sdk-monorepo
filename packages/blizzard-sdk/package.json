@@ -15,7 +15,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "blizzard sdk",
   "publishConfig": {
     "access": "public"
@@ -39,7 +39,7 @@
     "vitest": "^0.34.4"
   },
   "dependencies": {
-    "@interest-protocol/sui-core-sdk": "workspace:*",
+    "@interest-protocol/sui-core-sdk": "0.0.1",
     "@mysten/sui": "^1.36.0",
     "@polymedia/suitcase-core": "^0.0.36",
     "decimal.js": "^10.5.0",
