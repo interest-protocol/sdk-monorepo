@@ -319,6 +319,14 @@ export const FARMS = [
     stakeFa: WHITELISTED_CURVE_LP_COINS.USDCe_WETHe_VOLATILE.toString(),
     rewards: [WHITELISTED_FAS.MOVE.toString()],
   },
+  {
+    name: 'WBTCe-MBTC Stable FARM',
+    address: AccountAddress.from(
+      '0xd8c28cffb5c70da61e569d99517e153a19bdacca6db270effb20e2b6512f41cb'
+    ),
+    stakeFa: WHITELISTED_CURVE_LP_COINS.WBTCe_MBTC_STABLE.toString(),
+    rewards: [WHITELISTED_FAS.MOVE.toString()],
+  },
 ];
 
 export const BLACKLISTED_FARMS = [

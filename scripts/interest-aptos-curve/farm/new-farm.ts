@@ -11,7 +11,7 @@ import { curveMainnetSDK } from '../utils';
   const data = curveMainnetSDK.newFarm({
     startTimestamp: now + 30,
     rewardFas: [WHITELISTED_FAS.MOVE.toString()],
-    stakedFa: WHITELISTED_CURVE_LP_COINS.MOVE_WETHe_VOLATILE.toString(),
+    stakedFa: WHITELISTED_CURVE_LP_COINS.WBTCe_MBTC_STABLE.toString(),
   });
 
   const transactionResponse = await executeTx({ data });

@@ -17,12 +17,12 @@ export const ADMIN_OBJECT_ID =
 
 export const REBALANCE_THRESHOLD = 2_000n;
 
-export const TARGET_SUI_AMOUNT = 5n * 10n ** 9n;
+export const TARGET_SUI_AMOUNT = 6n * 10n ** 9n;
 
 export const SUI_USDC_POOL_ID =
   '0x208330127845e6be5a6292b6fbe078e7b8a28b4cdb3087e1e5c016cbbc9a16ff';
 
-export const SLIPPAGE = 0.2;
+export const SLIPPAGE = 0.1;
 
 // === Utils ===
 
