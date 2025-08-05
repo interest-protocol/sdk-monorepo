@@ -1,4 +1,3 @@
-import { returnIfDefinedOrThrow } from '@interest-protocol/lib';
 import { Network } from '@interest-protocol/sui-core-sdk';
 import {
   getFullnodeUrl,
@@ -56,26 +55,17 @@ export const getMemeCoinMarketCap = ({
 };
 
 export const parsePoolType = (x: string) => {
+  const match = x.match(/^[^<]+<([^,]+),\s*([^,]+),\s*([^>]+)>$/);
+
+  if (!match) {
+    throw new Error('Invalid pool type format');
+  }
+
   return {
     poolType: x,
-    curveType: normalizeStructTag(
-      returnIfDefinedOrThrow(
-        x.split('<')?.[1]?.split(',')?.[0],
-        'Curve Type Not Found when parsing pool'
-      )
-    ),
-    memeCoinType: normalizeStructTag(
-      returnIfDefinedOrThrow(
-        x.split('<')?.[1]?.split(',')?.[1]?.trim(),
-        'Meme Coin Type Not Found when parsing pool'
-      )
-    ),
-    quoteCoinType: normalizeStructTag(
-      returnIfDefinedOrThrow(
-        x.split('<')?.[1]?.split(',')?.[2]?.trim()?.slice(0, -1),
-        'Quote Coin Type Not Found when parsing pool'
-      )
-    ),
+    curveType: normalizeStructTag(match[1]),
+    memeCoinType: normalizeStructTag(match[2]),
+    quoteCoinType: normalizeStructTag(match[3]),
   };
 };
 
@@ -343,4 +333,20 @@ export const parsePumpPool = async (
     stateId,
     curveState,
   };
+};
+
+export const poolIdFromInnerStateId = async (
+  innerStateId: string,
+  suiClient: SuiClient
+) => {
+  const object = await suiClient.getObject({
+    id: innerStateId,
+    options: { showContent: true },
+  });
+
+  return pathOr(
+    '',
+    ['data', 'content', 'fields', 'constant_product', 'fields', 'memez_fun'],
+    object
+  );
 };
