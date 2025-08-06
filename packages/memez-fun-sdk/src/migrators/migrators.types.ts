@@ -52,3 +52,22 @@ export interface XPumpTreasuryCollectFeeArgs extends MaybeTx {
   bluefinPool: string;
   memeCoinType: string;
 }
+
+export interface XPumpNewPositionOwnerArgs extends MaybeTx {
+  memeCoinType: string;
+}
+
+export interface XPumpUpdatePositionOwnerArgs extends MaybeTx {
+  newPositionOwner: string;
+  memeCoinType: string;
+}
+
+export interface XPumpPositionOwner {
+  objectId: string;
+  version: string;
+  digest: string;
+  type: string;
+  memeCoinType: string;
+  blueFinPoolId: string;
+  blueFinPositionId: string;
+}

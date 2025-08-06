@@ -1,6 +1,8 @@
 import { Network } from '@interest-protocol/sui-core-sdk';
+import { bcs } from '@mysten/sui/bcs';
 import { Transaction } from '@mysten/sui/transactions';
-import { SUI_TYPE_ARG } from '@mysten/sui/utils';
+import { normalizeSuiObjectId, SUI_TYPE_ARG } from '@mysten/sui/utils';
+import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import invariant from 'tiny-invariant';
 
 import {
@@ -11,16 +13,19 @@ import {
 } from '../constants';
 import { MemezBaseSDK } from '../sdk';
 import { SdkConstructorArgs } from '../types/memez.types';
+import { parseXPumpPositions } from '../utils';
 import {
   XPumpCollectFeeArgs,
   XPumpGetPositionsArgs,
   XPumpMigrateArgs,
   XPumpMigrateToExistingPoolArgs,
+  XPumpNewPositionOwnerArgs,
   XPumpSetInitializePriceArgs,
   XPumpSetRewardValueArgs,
   XPumpSetTreasuryArgs,
   XPumpSetTreasuryFeeArgs,
   XPumpTreasuryCollectFeeArgs,
+  XPumpUpdatePositionOwnerArgs,
 } from './migrators.types';
 
 export class XPumpMigratorSDK extends MemezBaseSDK {
@@ -143,6 +148,58 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
     };
   }
 
+  public newPositionOwner({
+    tx = new Transaction(),
+    memeCoinType,
+  }: XPumpNewPositionOwnerArgs) {
+    const positionOwner = tx.moveCall({
+      package: this.packageId,
+      module: this.module,
+      function: 'new_position_owner',
+      arguments: [
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
+        this.ownedObject(tx, this.adminId),
+      ],
+      typeArguments: [memeCoinType],
+    });
+
+    return {
+      tx,
+      positionOwner,
+    };
+  }
+
+  public updatePositionOwner({
+    tx = new Transaction(),
+    newPositionOwner,
+    memeCoinType,
+  }: XPumpUpdatePositionOwnerArgs) {
+    const positionOwner = tx.moveCall({
+      package: this.packageId,
+      module: this.module,
+      function: 'update_position_owner',
+      arguments: [
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
+        this.ownedObject(tx, this.adminId),
+        tx.pure.address(newPositionOwner),
+      ],
+      typeArguments: [memeCoinType],
+    });
+
+    return {
+      tx,
+      positionOwner,
+    };
+  }
+
   public async migrate({
     tx = new Transaction(),
     migrator,
@@ -250,7 +307,7 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
   }: XPumpCollectFeeArgs) {
     this.assertObjectId(bluefinPool);
 
-    const [memeCoin, suiCoin] = tx.moveCall({
+    const suiCoin = tx.moveCall({
       package: this.packageId,
       module: this.module,
       function: 'collect_fee',
@@ -274,7 +331,6 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
 
     return {
       tx,
-      memeCoin,
       suiCoin,
     };
   }
@@ -330,6 +386,38 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
       limit,
     });
 
-    return positions;
+    return {
+      hasNextPage: positions.hasNextPage,
+      nextCursor: positions.nextCursor,
+      positions: parseXPumpPositions(positions),
+    };
+  }
+
+  async getPositionDataOwner(memeCoinType: string) {
+    const tx = new Transaction();
+
+    tx.moveCall({
+      package: this.packageId,
+      module: this.module,
+      function: 'position_data_owner',
+      typeArguments: [memeCoinType],
+      arguments: [
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: false,
+          })
+        ),
+      ],
+    });
+    const result = await devInspectAndGetReturnValues(this.client, tx, [
+      [bcs.Address],
+    ]);
+
+    invariant(
+      result[0],
+      'Position data owner devInspectAndGetReturnValues failed'
+    );
+
+    return normalizeSuiObjectId(result[0][0]);
   }
 }

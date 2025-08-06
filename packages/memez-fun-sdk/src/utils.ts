@@ -1,6 +1,7 @@
 import { Network } from '@interest-protocol/sui-core-sdk';
 import {
   getFullnodeUrl,
+  PaginatedObjectsResponse,
   SuiClient,
   SuiObjectResponse,
 } from '@mysten/sui/client';
@@ -13,6 +14,7 @@ import {
 import { Decimal } from 'decimal.js';
 import { pathOr } from 'ramda';
 
+import { XPumpPositionOwner } from './migrators/migrators.types';
 import {
   GetMemeCoinMarketCapArgs,
   MemezPool,
@@ -317,6 +319,9 @@ export const parsePumpPool = async (
       )
     ),
     metadata: {},
+    developer: normalizeSuiAddress(
+      pathOr('0x0', ['data', 'content', 'fields', 'dev'], objectResponse)
+    ),
     migrationWitness: normalizeStructTag(
       pathOr(
         '0x0',
@@ -349,4 +354,32 @@ export const poolIdFromInnerStateId = async (
     ['data', 'content', 'fields', 'constant_product', 'fields', 'memez_fun'],
     object
   );
+};
+
+export const parseXPumpPositions = (
+  positions: PaginatedObjectsResponse
+): XPumpPositionOwner[] => {
+  return positions.data.map((position) => {
+    return {
+      objectId: normalizeSuiObjectId(
+        pathOr('0x0', ['data', 'objectId'], position)
+      ),
+      version: pathOr('', ['data', 'version'], position),
+      digest: pathOr('', ['data', 'digest'], position),
+      type: normalizeStructTag(pathOr('', ['data', 'type'], position)),
+      memeCoinType: normalizeStructTag(
+        pathOr(
+          '',
+          ['data', 'content', 'fields', 'meme', 'fields', 'name'],
+          position
+        )
+      ),
+      blueFinPoolId: normalizeSuiObjectId(
+        pathOr('', ['data', 'content', 'fields', 'pool'], position)
+      ),
+      blueFinPositionId: normalizeSuiObjectId(
+        pathOr('', ['data', 'content', 'fields', 'position'], position)
+      ),
+    };
+  });
 };

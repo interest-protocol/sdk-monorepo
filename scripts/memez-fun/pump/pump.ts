@@ -8,7 +8,7 @@ import { getEnv } from '../utils.script';
   const { pumpSdk, executeTx, testnetPoolId, keypair, POW_10_9 } =
     await getEnv();
 
-  const quoteCoin = tx.splitCoins(tx.gas, [tx.pure.u64(5n * POW_10_9)]);
+  const quoteCoin = tx.splitCoins(tx.gas, [tx.pure.u64(POW_10_9)]);
 
   const { memeCoin, tx: tx2 } = await pumpSdk.pump({
     pool: testnetPoolId,

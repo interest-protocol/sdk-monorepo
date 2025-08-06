@@ -5,7 +5,7 @@ import invariant from 'tiny-invariant';
 import { getEnv } from '../utils.script';
 
 const TREASURY_CAP =
-  '0x21b18422ca9983a81c23f29220257c2b2099be1bf4b319fd27757927c0eaba63';
+  '0x9ad8808dad6ed615f639615fe8672a5af9a0b58280926be1b08a6e659a141670';
 
 const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
 
@@ -23,8 +23,7 @@ const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
     metadata: {
       X: 'https://x.com/Meme',
       Website: 'https://meme.xyz/',
-      GitHub: 'https://github.com/meme',
-      videoUrl: 'https://memez.gg',
+      CreatorWallet: recipient,
     },
     developer: recipient,
     memeCoinTreasuryCap: TREASURY_CAP,
@@ -34,7 +33,7 @@ const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
     quoteCoinType: SUI_TYPE_ARG,
     burnTax: 0,
     virtualLiquidity: 5_000_000_000,
-    targetQuoteLiquidity: 500_000_000,
+    targetQuoteLiquidity: 1_000_000_000,
     liquidityProvision: 0,
   });
 

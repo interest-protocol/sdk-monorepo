@@ -40,6 +40,7 @@ export interface MemezPool<T> {
   progress: string;
   stateId: string;
   dynamicFieldDataId: string;
+  developer: string;
   curveState: T;
 }
 

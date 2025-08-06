@@ -10,7 +10,7 @@ const admin = ADMIN_TO_UPDATE;
 (async () => {
   const tx = sdk.setFeeX({
     pool: SUI_USDC_POOL,
-    feeX: 0.00035 * 1e9,
+    feeX: 0.0003 * 1e9,
     admin,
   });
 
