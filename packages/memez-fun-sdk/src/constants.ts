@@ -21,7 +21,8 @@ export enum Modules {
 export enum Treasuries {
   RECRD = '0xe551156357c05fb323f188087ceb34b723aa82aa464541ac791b8a72594fbd4c',
   MEMEZ = '0x5b2aec3521419fe055b6753b15cbad845ec1dca852b75ad0b13b569f2329f82d',
-  XPUMP = '0x881d835c410f33a1decd8067ce04f6c2ec63eaca196235386b44d315c2152797',
+  BLAST = '0x881d835c410f33a1decd8067ce04f6c2ec63eaca196235386b44d315c2152797',
+  GIVEREP = '0xdc19b2928f31b6df46478e4ad9a309aaff6e958a3b568d4bb76264f767bdfbfc',
 }
 
 export enum Progress {
