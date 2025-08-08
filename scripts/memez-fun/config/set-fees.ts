@@ -29,7 +29,7 @@ import { getEnv } from '../utils.script';
       // last index is the migration fee bps
       [5_000n, 3_500n, 1_500n, 500n],
       // Allocations
-      [10_000n, 500n],
+      [10_000n, 300n],
       // Vesting period
       [0n],
     ],
