@@ -9,6 +9,9 @@ import { getEnv } from '../utils.script';
 const BLUEFIN_HELPER_PACKAGE =
   '0x8a76a6925e81835dbdb489279cef3d2b25cd981dcbf8a82546f3d593abb11a36';
 
+const MEME_COIN_TYPE =
+  '0x55efdcd8a868d728abd5845c9adfdccf84ce4917ea7da92ffd75717920e41da1::test::TEST';
+
 (async () => {
   const { executeTx, network, pumpSdk, testnetPoolId } = await getEnv();
 
@@ -16,14 +19,12 @@ const BLUEFIN_HELPER_PACKAGE =
 
   const tx = new Transaction();
 
-  const pool = await pumpSdk.getPumpPool(testnetPoolId);
-
   const suiCoinMetadata = await suiClient.getCoinMetadata({
     coinType: SUI_TYPE_ARG,
   });
 
   const memeCoinMetadata = await suiClient.getCoinMetadata({
-    coinType: pool.memeCoinType,
+    coinType: MEME_COIN_TYPE,
   });
 
   const suiCoin = coinWithBalance({
@@ -32,8 +33,8 @@ const BLUEFIN_HELPER_PACKAGE =
   })(tx);
 
   const memeCoin = coinWithBalance({
-    type: pool.memeCoinType,
-    balance: 1_000_000_000_000_000n,
+    type: MEME_COIN_TYPE,
+    balance: 400_000_000_000_000n,
   })(tx);
 
   const feeCoin = coinWithBalance({
@@ -45,7 +46,7 @@ const BLUEFIN_HELPER_PACKAGE =
     package: BLUEFIN_HELPER_PACKAGE,
     module: 'bluefin_helper',
     function: 'new_pool',
-    typeArguments: [pool.memeCoinType, SUI_TYPE_ARG],
+    typeArguments: [MEME_COIN_TYPE, SUI_TYPE_ARG],
     arguments: [
       tx.object(BLUEFIN_CONFIG.objectId),
       tx.object.clock(),

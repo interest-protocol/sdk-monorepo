@@ -1,7 +1,11 @@
 import { Network } from '@interest-protocol/sui-core-sdk';
 import { bcs } from '@mysten/sui/bcs';
 import { Transaction } from '@mysten/sui/transactions';
-import { normalizeSuiObjectId, SUI_TYPE_ARG } from '@mysten/sui/utils';
+import {
+  normalizeSuiObjectId,
+  SUI_FRAMEWORK_ADDRESS,
+  SUI_TYPE_ARG,
+} from '@mysten/sui/utils';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import invariant from 'tiny-invariant';
 
@@ -27,6 +31,7 @@ import {
   XPumpTreasuryCollectFeeArgs,
   XPumpUpdatePositionOwnerArgs,
 } from './migrators.types';
+import { Coin } from '../structs';
 
 export class XPumpMigratorSDK extends MemezBaseSDK {
   packageId = PACKAGES[Network.MAINNET].XPUMP_MIGRATOR.latest;
@@ -333,6 +338,53 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
       tx,
       suiCoin,
     };
+  }
+
+  public async pendingFee({
+    bluefinPool,
+    memeCoinType,
+    positionOwner,
+  }: XPumpCollectFeeArgs) {
+    this.assertObjectId(bluefinPool);
+
+    const tx = new Transaction();
+
+    const suiCoin = tx.moveCall({
+      package: this.packageId,
+      module: this.module,
+      function: 'collect_fee',
+      arguments: [
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
+        tx.sharedObjectRef({
+          objectId: BLUEFIN_CONFIG.objectId,
+          mutable: false,
+          initialSharedVersion: BLUEFIN_CONFIG.initialSharedVersion,
+        }),
+        tx.object(bluefinPool),
+        tx.object.clock(),
+        this.ownedObject(tx, positionOwner),
+      ],
+      typeArguments: [memeCoinType],
+    });
+
+    tx.moveCall({
+      package: SUI_FRAMEWORK_ADDRESS,
+      module: 'coin',
+      function: 'value',
+      arguments: [suiCoin],
+      typeArguments: [SUI_TYPE_ARG],
+    });
+
+    const result = await devInspectAndGetReturnValues(this.client, tx, [
+      [Coin],
+      [bcs.U64],
+    ]);
+
+    return result[0][0];
   }
 
   public treasuryCollectFee({
