@@ -349,7 +349,7 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
 
     const tx = new Transaction();
 
-    const suiCoin = tx.moveCall({
+    tx.moveCall({
       package: this.packageId,
       module: this.module,
       function: 'collect_fee',
