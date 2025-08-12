@@ -371,20 +371,11 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
       typeArguments: [memeCoinType],
     });
 
-    tx.moveCall({
-      package: SUI_FRAMEWORK_ADDRESS,
-      module: 'coin',
-      function: 'value',
-      arguments: [suiCoin],
-      typeArguments: [SUI_TYPE_ARG],
-    });
-
     const result = await devInspectAndGetReturnValues(this.client, tx, [
       [Coin],
-      [bcs.U64],
     ]);
 
-    return result[0][0];
+    return result[0][0].value;
   }
 
   public treasuryCollectFee({
