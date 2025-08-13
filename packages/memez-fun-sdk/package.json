@@ -15,7 +15,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "version": "9.5.3",
+  "version": "9.6.0",
   "description": "",
   "scripts": {
     "prebuild": "rimraf dist",

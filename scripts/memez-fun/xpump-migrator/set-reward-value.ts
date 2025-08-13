@@ -8,7 +8,7 @@ import { getEnv } from '../utils.script';
   invariant(network === 'mainnet', 'Only mainnet is supported');
 
   const { tx } = xPumpMigratorSdk.setRewardValue({
-    rewardValue: 100_000_000,
+    rewardValue: 2_000_000_000,
   });
 
   await executeTx(tx);
