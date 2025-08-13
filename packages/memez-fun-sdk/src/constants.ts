@@ -140,7 +140,7 @@ export const PACKAGES = {
         '0x7ec68f4115dc2944426239b13ce6804dd9971b24069fb4efe88360d29b17f0ce'
       ),
       latest: normalizeSuiAddress(
-        '0xf86a91ec0bdaa004a6a1dcfe3d4db69f7c16aa15f5becccb118da1b9cba89a96'
+        '0x6e6560cc1156df07a34982b8a862a7419fb50767160ba2d826c72ae3689952a1'
       ),
     },
   },
