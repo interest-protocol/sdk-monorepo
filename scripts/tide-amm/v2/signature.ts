@@ -1,6 +1,5 @@
-import { normalizeSuiAddress, SUI_TYPE_ARG } from '@mysten/sui/utils';
+import { normalizeSuiAddress } from '@mysten/sui/utils';
 import { bcs } from '@mysten/sui/bcs';
-import { USDC_TYPE } from '../utils.script';
 import { keypair } from '@interest-protocol/sui-utils';
 import { logSuccess } from '@interest-protocol/logger';
 import { toHex } from '@mysten/sui/utils';
@@ -19,15 +18,19 @@ const QuoteStruct = bcs.struct('Quote', {
 
 (async () => {
   const quote = QuoteStruct.serialize({
-    pool: normalizeSuiAddress('0x7'),
-    coin_in: SUI_TYPE_ARG,
-    coin_out: USDC_TYPE,
+    pool: normalizeSuiAddress(
+      '0xe355317e07b8352074f5ac22048abe6af5807f6a196bb7b5d42858570d0f6981'
+    ),
+    coin_in:
+      '0000000000000000000000000000000000000000000000000000000000000000::weth::WETH',
+    coin_out:
+      '0000000000000000000000000000000000000000000000000000000000000000::usdc::USDC',
     amount_in: 2_000n,
     amount_out: 6_000n,
     deadline: 70n,
     gas_price: 123n,
     sender: keypair.toSuiAddress(),
-    nonce: 0n,
+    nonce: 1,
   }).toBytes();
 
   logSuccess(toHex(await keypair.sign(quote)));

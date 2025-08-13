@@ -356,6 +356,20 @@ export const poolIdFromInnerStateId = async (
   );
 };
 
+export const getMultipleStateIds = async (
+  ids: string[],
+  suiClient: SuiClient
+) => {
+  const objects = await suiClient.multiGetObjects({
+    ids,
+    options: { showContent: true },
+  });
+
+  return objects.map((object) => {
+    return pathOr('', ['data', 'content', 'fields', 'inner_state'], object);
+  });
+};
+
 export const parseXPumpPositions = (
   positions: PaginatedObjectsResponse
 ): XPumpPositionOwner[] => {
