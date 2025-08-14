@@ -29,6 +29,15 @@ export interface XPumpMigrateArgs extends MaybeTx {
   feeCoin: ObjectInput;
 }
 
+export interface XPumpMigrateWithLiquidityArgs extends MaybeTx {
+  migrator: TransactionResult;
+  memeCoinType: string;
+  feeCoinType: string;
+  ipxMemeCoinTreasury: string;
+  feeCoin: ObjectInput;
+  liquidity: U64;
+}
+
 export interface XPumpCollectFeeArgs extends MaybeTx {
   bluefinPool: string;
   memeCoinType: string;

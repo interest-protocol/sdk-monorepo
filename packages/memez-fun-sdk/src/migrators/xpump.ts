@@ -1,11 +1,7 @@
 import { Network } from '@interest-protocol/sui-core-sdk';
 import { bcs } from '@mysten/sui/bcs';
 import { Transaction } from '@mysten/sui/transactions';
-import {
-  normalizeSuiObjectId,
-  SUI_FRAMEWORK_ADDRESS,
-  SUI_TYPE_ARG,
-} from '@mysten/sui/utils';
+import { normalizeSuiObjectId, SUI_TYPE_ARG } from '@mysten/sui/utils';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import invariant from 'tiny-invariant';
 
@@ -28,6 +24,7 @@ import {
   XPumpSetRewardValueArgs,
   XPumpSetTreasuryArgs,
   XPumpSetTreasuryFeeArgs,
+  XPumpMigrateWithLiquidityArgs,
   XPumpTreasuryCollectFeeArgs,
   XPumpUpdatePositionOwnerArgs,
 } from './migrators.types';
@@ -247,6 +244,60 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
         tx.object(memeCoinMetadata.id),
         migrator,
         this.ownedObject(tx, feeCoin),
+      ],
+      typeArguments: [memeCoinType, feeCoinType],
+    });
+
+    return {
+      tx,
+      suiCoin,
+    };
+  }
+
+  public async migrateWithLiquidity({
+    tx = new Transaction(),
+    migrator,
+    memeCoinType,
+    feeCoinType,
+    feeCoin,
+    ipxMemeCoinTreasury,
+    liquidity,
+  }: XPumpMigrateWithLiquidityArgs) {
+    const [quoteCoinMetadata, memeCoinMetadata] = await Promise.all([
+      this.client.getCoinMetadata({
+        coinType: SUI_TYPE_ARG,
+      }),
+      this.client.getCoinMetadata({
+        coinType: memeCoinType,
+      }),
+    ]);
+
+    invariant(quoteCoinMetadata?.id, 'Invalid quote coin metadata');
+
+    invariant(memeCoinMetadata?.id, 'Invalid meme coin metadata');
+
+    const suiCoin = tx.moveCall({
+      package: this.packageId,
+      module: this.module,
+      function: 'migrate_to_new_pool',
+      arguments: [
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
+        tx.sharedObjectRef({
+          objectId: BLUEFIN_CONFIG.objectId,
+          mutable: true,
+          initialSharedVersion: BLUEFIN_CONFIG.initialSharedVersion,
+        }),
+        tx.object.clock(),
+        tx.object(ipxMemeCoinTreasury),
+        tx.object(quoteCoinMetadata.id),
+        tx.object(memeCoinMetadata.id),
+        migrator,
+        this.ownedObject(tx, feeCoin),
+        tx.pure.u128(liquidity),
       ],
       typeArguments: [memeCoinType, feeCoinType],
     });

@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@cetusprotocol/cetus-sui-clmm-sdk": "^5.4.0",
+    "@firefly-exchange/library-sui": "^2.8.13",
     "@interest-protocol/acl-sdk": "workspace:*",
     "@interest-protocol/logger": "workspace:*",
     "@interest-protocol/memez-fun-sdk": "workspace:*",
