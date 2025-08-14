@@ -27,7 +27,7 @@ import BN from 'bn.js';
 
   const fee = tx.splitCoins(tx.gas, [0n]);
 
-  const currentPrice = new BN('63901395939770060');
+  const currentPrice = new BN('6901395939770060');
 
   const reward_Sui = new BN('2000000000');
 
@@ -39,9 +39,7 @@ import BN from 'bn.js';
     443600,
     {
       coinA: new BN(pool.curveState.memeBalance.toString()),
-      coinB: quoteBalance
-        .mul(quoteBalance.mul(new BN(500)).div(new BN(10000)))
-        .sub(reward_Sui),
+      coinB: quoteBalance,
     }
   );
 

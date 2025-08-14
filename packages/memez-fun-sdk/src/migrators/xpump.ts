@@ -279,7 +279,7 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
     const suiCoin = tx.moveCall({
       package: this.packageId,
       module: this.module,
-      function: 'migrate_to_new_pool',
+      function: 'migrate_to_new_pool_with_liquidity',
       arguments: [
         tx.sharedObjectRef(
           SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({

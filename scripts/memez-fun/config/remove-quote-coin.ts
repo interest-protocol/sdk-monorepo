@@ -13,7 +13,8 @@ import { getEnv } from '../utils.script';
   const tx2 = configSdk.removeQuoteCoin({
     authWitness,
     configKey: configKeys.MEMEZ,
-    quoteCoinType: SUI_TYPE_ARG,
+    quoteCoinType:
+      '0x8a483be613e5ab107256a1a88cfd539d6224ba8b8524a11da31a5d47071916ea::fake_sui::FAKE_SUI',
     tx: tx as any,
   });
 

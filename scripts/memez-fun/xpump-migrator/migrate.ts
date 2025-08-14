@@ -16,12 +16,10 @@ import { getEnv } from '../utils.script';
 
   invariant(network === 'mainnet', 'Only mainnet is supported');
 
-  const pool = await pumpSdk.getPumpPool(
-    '0x915cd839f2c87144466c91347c89de81cacce00a61ee5513109c4ce23ed58b13'
-  );
+  const pool = await pumpSdk.getPumpPool(testnetPoolId);
 
   const { tx, migrator } = await pumpSdk.migrate({
-    pool: '0x915cd839f2c87144466c91347c89de81cacce00a61ee5513109c4ce23ed58b13',
+    pool: testnetPoolId,
   });
 
   const fee = tx.splitCoins(tx.gas, [0n]);

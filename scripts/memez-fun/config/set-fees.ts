@@ -19,7 +19,7 @@ import { getEnv } from '../utils.script';
   const tx2 = configSdk.setFees({
     authWitness,
     tx: tx as any,
-    configurationKey: configKeys.XPUMP,
+    configurationKey: configKeys.MEMEZ,
     values: [
       // last index is the creator fee nominal
       [10_000, 0n],

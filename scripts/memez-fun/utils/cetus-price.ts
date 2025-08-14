@@ -11,7 +11,7 @@ Decimal.config({
 
 const TARGET_USD_MARKET_CAP = new Decimal(60_000);
 
-const SUI_PRICE_USD = new Decimal(5);
+const SUI_PRICE_USD = new Decimal(4);
 
 const TOTAL_MEME_SUPPLY = new Decimal(1_000_000_000);
 
