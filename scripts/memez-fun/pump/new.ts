@@ -5,7 +5,7 @@ import invariant from 'tiny-invariant';
 import { getEnv } from '../utils.script';
 
 const TREASURY_CAP =
-  '0xfa8cd0ecf3e2934785c2a1ea9d4723d075e4b9796a7ce5aa68eb5c152168b96f';
+  '0xe403754ddf45817c333033d647815c495f0c9ec46013f3b963638f2b48900986';
 
 const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
 
@@ -24,7 +24,7 @@ const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
 
   const { tx: tx2, metadataCap } = await pumpSdk.newPool({
     tx,
-    configurationKey: configKeys.MEMEZ,
+    configurationKey: configKeys.XPUMP,
     metadata: {
       X: 'https://x.com/Meme',
       Website: 'https://meme.xyz/',
@@ -32,8 +32,7 @@ const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
     },
     developer: recipient,
     memeCoinTreasuryCap: TREASURY_CAP,
-    migrationWitness:
-      '0xcd8766f0e879a4b5d1c2b0903765b2064d366e805267145ae7ba48d0064d9be6::xpump_migrator::Witness',
+    migrationWitness: migratorWitnesses.XPUMP,
     totalSupply: TOTAL_SUPPLY,
     isProtected: false,
     quoteCoinType:

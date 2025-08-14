@@ -208,11 +208,12 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
     memeCoinType,
     feeCoinType,
     feeCoin,
+    quoteCoinType,
     ipxMemeCoinTreasury,
   }: XPumpMigrateArgs) {
     const [quoteCoinMetadata, memeCoinMetadata] = await Promise.all([
       this.client.getCoinMetadata({
-        coinType: SUI_TYPE_ARG,
+        coinType: quoteCoinType,
       }),
       this.client.getCoinMetadata({
         coinType: memeCoinType,
@@ -226,7 +227,7 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
     const suiCoin = tx.moveCall({
       package: this.packageId,
       module: this.module,
-      function: 'migrate_to_new_pool',
+      function: 'migrate_to_new_pool_v2',
       arguments: [
         tx.sharedObjectRef(
           SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
@@ -240,12 +241,12 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
         }),
         tx.object.clock(),
         tx.object(ipxMemeCoinTreasury),
-        tx.object(quoteCoinMetadata.id),
         tx.object(memeCoinMetadata.id),
+        tx.object(quoteCoinMetadata.id),
         migrator,
         this.ownedObject(tx, feeCoin),
       ],
-      typeArguments: [memeCoinType, feeCoinType],
+      typeArguments: [memeCoinType, quoteCoinType, feeCoinType],
     });
 
     return {

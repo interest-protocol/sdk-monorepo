@@ -6,7 +6,7 @@ import { getEnv } from '../utils.script';
   const { configSdk, configKeys } = await getEnv();
 
   const fees = await configSdk.getFees({
-    configurationKey: configKeys.MEMEZ,
+    configurationKey: configKeys.XPUMP,
   });
 
   logSuccess('get-fees', fees);

@@ -2,6 +2,7 @@ import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 import invariant from 'tiny-invariant';
 
 import { getEnv } from '../utils.script';
+import { suiClient } from '@interest-protocol/sui-utils';
 
 (async () => {
   const {
@@ -31,9 +32,15 @@ import { getEnv } from '../utils.script';
     feeCoinType: SUI_TYPE_ARG,
     feeCoin: fee,
     ipxMemeCoinTreasury: pool.ipxMemeCoinTreasury,
+    quoteCoinType: pool.quoteCoinType,
   });
 
   tx2.transferObjects([suiCoin], keypair.toSuiAddress());
 
-  await executeTx(tx2);
+  const res = await suiClient.devInspectTransactionBlock({
+    transactionBlock: tx2,
+    sender: keypair.toSuiAddress(),
+  });
+
+  console.log(res);
 })();

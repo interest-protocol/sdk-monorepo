@@ -24,6 +24,7 @@ export interface XPumpSetTreasuryFeeArgs extends MaybeTx {
 export interface XPumpMigrateArgs extends MaybeTx {
   migrator: TransactionResult;
   memeCoinType: string;
+  quoteCoinType: string;
   feeCoinType: string;
   ipxMemeCoinTreasury: string;
   feeCoin: ObjectInput;
