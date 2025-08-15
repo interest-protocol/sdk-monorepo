@@ -23,6 +23,7 @@ export enum Treasuries {
   MEMEZ = '0x5b2aec3521419fe055b6753b15cbad845ec1dca852b75ad0b13b569f2329f82d',
   BLAST = '0x881d835c410f33a1decd8067ce04f6c2ec63eaca196235386b44d315c2152797',
   GIVEREP = '0xdc19b2928f31b6df46478e4ad9a309aaff6e958a3b568d4bb76264f767bdfbfc',
+  NEXA = '0x1764e88da180ad063ac8dbfc652f4546cadc543b94683c2d64962f7a1b04bfcc',
 }
 
 export enum Progress {
