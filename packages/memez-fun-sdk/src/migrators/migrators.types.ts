@@ -81,3 +81,16 @@ export interface XPumpPositionOwner {
   blueFinPoolId: string;
   blueFinPositionId: string;
 }
+
+export interface XPumpSetPackageVersionArgs extends MaybeTx {
+  packageVersion: string;
+}
+
+export interface XPumpSetTicksArgs extends MaybeTx {
+  min: number;
+  max: number;
+}
+
+export interface XPumpMigratorSetLiquidityMarginArgs extends MaybeTx {
+  liquidityMargin: U64;
+}

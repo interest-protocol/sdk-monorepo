@@ -3,6 +3,7 @@ import invariant from 'tiny-invariant';
 
 import { getEnv } from '../utils.script';
 import { suiClient } from '@interest-protocol/sui-utils';
+import { logSuccess } from '@interest-protocol/logger';
 
 (async () => {
   const {
@@ -37,10 +38,5 @@ import { suiClient } from '@interest-protocol/sui-utils';
 
   tx2.transferObjects([suiCoin], keypair.toSuiAddress());
 
-  const res = await suiClient.devInspectTransactionBlock({
-    transactionBlock: tx2,
-    sender: keypair.toSuiAddress(),
-  });
-
-  console.log(res);
+  await executeTx(tx2);
 })();

@@ -7,8 +7,9 @@ import { getEnv } from '../utils.script';
 
   invariant(network === 'mainnet', 'Only mainnet is supported');
 
-  const { tx } = xPumpMigratorSdk.setRewardValue({
-    rewardValue: 1 * 10 ** 9,
+  const { tx } = xPumpMigratorSdk.setTicks({
+    min: 4294523896,
+    max: 443400,
   });
 
   await executeTx(tx);

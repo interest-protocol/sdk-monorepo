@@ -8,7 +8,7 @@ import { getEnv } from '../utils.script';
   const { pumpSdk, executeTx, testnetPoolId, keypair } = await getEnv();
 
   const quoteCoin = coinWithBalance({
-    balance: 5_500 * 1_000_000_000,
+    balance: 3_500 * 1_000_000_000,
     type: '0xfd35b96db6d0eb23b8dc4eae97d330d8de85d36ee6a9ab0b35dcb2b7b86cd22a::fake_sui::FAKE_SUI',
   });
 

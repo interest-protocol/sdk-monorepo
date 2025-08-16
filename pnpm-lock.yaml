@@ -37,13 +37,13 @@ importers:
         version: 9.26.0
       eslint-plugin-import:
         specifier: ^2.31.0
-        version: 2.31.0(@typescript-eslint/parser@8.32.1(eslint@9.26.0)(typescript@5.8.3))(eslint@9.26.0)
+        version: 2.31.0(eslint@9.26.0)
       eslint-plugin-simple-import-sort:
         specifier: ^12.1.1
         version: 12.1.1(eslint@9.26.0)
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.15.18)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))
+        version: 29.7.0(@types/node@22.15.18)
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
@@ -79,10 +79,10 @@ importers:
         version: link:../sui-core-sdk
       '@mysten/sui':
         specifier: ^1.36.0
-        version: 1.36.2(typescript@5.8.3)
+        version: 1.37.2(typescript@5.8.3)
       '@polymedia/suitcase-core':
         specifier: ^0.0.36
-        version: 0.0.36(@mysten/sui@1.36.2(typescript@5.8.3))
+        version: 0.0.36(@mysten/sui@1.37.2(typescript@5.8.3))
       tiny-invariant:
         specifier: ^1.3.3
         version: 1.3.3
@@ -162,10 +162,10 @@ importers:
         version: 0.0.1(typescript@5.8.3)
       '@mysten/sui':
         specifier: ^1.36.0
-        version: 1.36.2(typescript@5.8.3)
+        version: 1.37.2(typescript@5.8.3)
       '@polymedia/suitcase-core':
         specifier: ^0.0.36
-        version: 0.0.36(@mysten/sui@1.36.2(typescript@5.8.3))
+        version: 0.0.36(@mysten/sui@1.37.2(typescript@5.8.3))
       decimal.js:
         specifier: ^10.5.0
         version: 10.5.0
@@ -242,10 +242,10 @@ importers:
         version: link:../sui-core-sdk
       '@mysten/sui':
         specifier: ^1.36.0
-        version: 1.36.2(typescript@5.8.3)
+        version: 1.37.2(typescript@5.8.3)
       '@polymedia/suitcase-core':
         specifier: ^0.0.36
-        version: 0.0.36(@mysten/sui@1.36.2(typescript@5.8.3))
+        version: 0.0.36(@mysten/sui@1.37.2(typescript@5.8.3))
       ramda:
         specifier: ^0.30.1
         version: 0.30.1
@@ -324,9 +324,6 @@ importers:
 
   packages/memez-fun-sdk:
     dependencies:
-      '@cetusprotocol/cetus-sui-clmm-sdk':
-        specifier: ^5.3.0
-        version: 5.4.0(@mysten/bcs@1.7.0)(@mysten/sui@1.36.2(typescript@5.8.3))
       '@interest-protocol/acl-sdk':
         specifier: workspace:*
         version: link:../acl-sdk
@@ -335,10 +332,10 @@ importers:
         version: link:../sui-core-sdk
       '@mysten/sui':
         specifier: ^1.36.2
-        version: 1.36.2(typescript@5.8.3)
+        version: 1.37.2(typescript@5.8.3)
       '@polymedia/suitcase-core':
         specifier: ^0.0.36
-        version: 0.0.36(@mysten/sui@1.36.2(typescript@5.8.3))
+        version: 0.0.36(@mysten/sui@1.37.2(typescript@5.8.3))
       ramda:
         specifier: ^0.30.1
         version: 0.30.1
@@ -440,7 +437,7 @@ importers:
     dependencies:
       '@mysten/sui':
         specifier: ^1.36.2
-        version: 1.36.2(typescript@5.8.3)
+        version: 1.37.2(typescript@5.8.3)
       ramda:
         specifier: ^0.30.1
         version: 0.30.1
@@ -474,7 +471,7 @@ importers:
         version: link:../logger
       '@mysten/sui':
         specifier: ^1.36.1
-        version: 1.36.2(typescript@5.8.3)
+        version: 1.37.2(typescript@5.8.3)
     devDependencies:
       '@interest-protocol/prettier-config':
         specifier: workspace:*
@@ -508,10 +505,10 @@ importers:
         version: link:../sui-core-sdk
       '@mysten/sui':
         specifier: ^1.36.0
-        version: 1.36.2(typescript@5.8.3)
+        version: 1.37.2(typescript@5.8.3)
       '@polymedia/suitcase-core':
         specifier: ^0.0.36
-        version: 0.0.36(@mysten/sui@1.36.2(typescript@5.8.3))
+        version: 0.0.36(@mysten/sui@1.37.2(typescript@5.8.3))
       '@pythnetwork/hermes-client':
         specifier: ^2.0.0
         version: 2.0.0(axios@1.9.0)
@@ -670,7 +667,7 @@ importers:
         version: link:../../packages/sui-utils
       '@mysten/sui':
         specifier: ^1.29.1
-        version: 1.36.2(typescript@5.8.3)
+        version: 1.37.2(typescript@5.8.3)
       decimal.js:
         specifier: ^10.5.0
         version: 10.5.0
@@ -771,7 +768,7 @@ importers:
         version: link:../../packages/sui-utils
       '@mysten/sui':
         specifier: ^1.29.1
-        version: 1.36.2(typescript@5.8.3)
+        version: 1.37.2(typescript@5.8.3)
       tiny-invariant:
         specifier: ^1.3.3
         version: 1.3.3
@@ -793,7 +790,7 @@ importers:
     dependencies:
       '@cetusprotocol/cetus-sui-clmm-sdk':
         specifier: ^5.4.0
-        version: 5.4.0(@mysten/bcs@1.7.0)(@mysten/sui@1.36.2(typescript@5.8.3))
+        version: 5.4.0(@mysten/bcs@1.7.0)(@mysten/sui@1.37.2(typescript@5.8.3))
       '@firefly-exchange/library-sui':
         specifier: ^2.8.13
         version: 2.8.13(@tanstack/react-query@5.85.0(react@19.1.1))(bn.js@5.2.2)(chai@4.5.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.8.3)
@@ -814,10 +811,10 @@ importers:
         version: link:../../packages/sui-utils
       '@mysten/sui':
         specifier: ^1.36.2
-        version: 1.36.2(typescript@5.8.3)
+        version: 1.37.2(typescript@5.8.3)
       '@polymedia/suitcase-core':
         specifier: ^0.0.36
-        version: 0.0.36(@mysten/sui@1.36.2(typescript@5.8.3))
+        version: 0.0.36(@mysten/sui@1.37.2(typescript@5.8.3))
       bn.js:
         specifier: ^5.2.2
         version: 5.2.2
@@ -863,10 +860,10 @@ importers:
     dependencies:
       '@cetusprotocol/aggregator-sdk':
         specifier: ^0.14.2
-        version: 0.14.2(@jest/transform@29.7.0)(@jest/types@29.6.3)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))(typescript@5.8.3)
+        version: 0.14.2(@jest/transform@29.7.0)(@jest/types@29.6.3)(typescript@5.8.3)
       '@cetusprotocol/cetus-sui-clmm-sdk':
         specifier: ^5.3.4
-        version: 5.4.0(@mysten/bcs@1.7.0)(@mysten/sui@1.36.2(typescript@5.8.3))
+        version: 5.4.0(@mysten/bcs@1.7.0)(@mysten/sui@1.37.2(typescript@5.8.3))
       '@interest-protocol/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -881,10 +878,10 @@ importers:
         version: link:../../packages/v3-core
       '@mmt-finance/clmm-sdk':
         specifier: 1.3.10-beta.1
-        version: 1.3.10-beta.1(@mysten/sui@1.36.2(typescript@5.8.3))(axios@1.9.0)(bn.js@5.2.2)(decimal.js@10.5.0)
+        version: 1.3.10-beta.1(@mysten/sui@1.37.2(typescript@5.8.3))(axios@1.9.0)(bn.js@5.2.2)(decimal.js@10.5.0)
       '@mysten/sui':
         specifier: ^1.36.2
-        version: 1.36.2(typescript@5.8.3)
+        version: 1.37.2(typescript@5.8.3)
       '@pythnetwork/hermes-client':
         specifier: ^2.0.0
         version: 2.0.0(axios@1.9.0)
@@ -958,10 +955,10 @@ importers:
         version: 29.5.14
       jest:
         specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.15.18)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))
+        version: 29.7.0(@types/node@22.15.18)
       ts-jest:
         specifier: ^29.1.1
-        version: 29.3.3(@babel/core@7.27.1)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.27.1))(jest@29.7.0(@types/node@22.15.18)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3)))(typescript@5.8.3)
+        version: 29.3.3(@babel/core@7.27.1)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.27.1))(jest@29.7.0(@types/node@22.15.18))(typescript@5.8.3)
     devDependencies:
       '@interest-protocol/typescript-config':
         specifier: workspace:*
@@ -2450,10 +2447,6 @@ packages:
 
   '@mysten/sui@1.24.0':
     resolution: {integrity: sha512-lmJJLM7eMrxM6Qpr6cdLr07UBXlxCM7SJjfcDO7NGrqZTx7/3TD2QhhRpDx0fS2tODxrNwQxCoHPApLVPjokIA==}
-    engines: {node: '>=18'}
-
-  '@mysten/sui@1.36.2':
-    resolution: {integrity: sha512-TRRdzJBa+ZvAQwwjvagecmWNALP6G4oqum8E+959D17KJKBwR5uY9TvlWzUR7dnjNWXIju7OH6KEqgah9hKzUw==}
     engines: {node: '>=18'}
 
   '@mysten/sui@1.37.2':
@@ -7613,13 +7606,13 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@cetusprotocol/aggregator-sdk@0.14.2(@jest/transform@29.7.0)(@jest/types@29.6.3)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))(typescript@5.8.3)':
+  '@cetusprotocol/aggregator-sdk@0.14.2(@jest/transform@29.7.0)(@jest/types@29.6.3)(typescript@5.8.3)':
     dependencies:
       '@babel/core': 7.27.1
       '@babel/preset-env': 7.28.0(@babel/core@7.27.1)
       '@babel/preset-typescript': 7.27.1(@babel/core@7.27.1)
       '@jest/globals': 29.7.0
-      '@mysten/sui': 1.36.2(typescript@5.8.3)
+      '@mysten/sui': 1.37.2(typescript@5.8.3)
       '@pythnetwork/pyth-sui-js': 2.1.0(typescript@5.8.3)
       '@types/jest': 29.5.14
       '@types/json-bigint': 1.0.4
@@ -7627,10 +7620,10 @@ snapshots:
       babel-jest: 29.7.0(@babel/core@7.27.1)
       bip39: 3.1.0
       dotenv: 16.5.0
-      jest: 29.7.0(@types/node@20.17.47)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))
+      jest: 29.7.0(@types/node@20.17.47)
       json-bigint: 1.0.0
       node-fetch: 3.3.2
-      ts-jest: 29.3.3(@babel/core@7.27.1)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.27.1))(jest@29.7.0(@types/node@22.15.18)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3)))(typescript@5.8.3)
+      ts-jest: 29.3.3(@babel/core@7.27.1)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.27.1))(jest@29.7.0(@types/node@20.17.47))(typescript@5.8.3)
       typescript: 5.8.3
     transitivePeerDependencies:
       - '@gql.tada/svelte-support'
@@ -7646,10 +7639,10 @@ snapshots:
       - ts-node
       - utf-8-validate
 
-  '@cetusprotocol/cetus-sui-clmm-sdk@5.4.0(@mysten/bcs@1.7.0)(@mysten/sui@1.36.2(typescript@5.8.3))':
+  '@cetusprotocol/cetus-sui-clmm-sdk@5.4.0(@mysten/bcs@1.7.0)(@mysten/sui@1.37.2(typescript@5.8.3))':
     dependencies:
       '@mysten/bcs': 1.7.0
-      '@mysten/sui': 1.36.2(typescript@5.8.3)
+      '@mysten/sui': 1.37.2(typescript@5.8.3)
       '@suchipi/femver': 1.0.0
       '@syntsugar/cc-graph': 0.1.1
       '@types/bn.js': 5.1.6
@@ -8029,7 +8022,7 @@ snapshots:
 
   '@interest-protocol/sui-core-sdk@0.0.1(typescript@5.8.3)':
     dependencies:
-      '@mysten/sui': 1.36.2(typescript@5.8.3)
+      '@mysten/sui': 1.37.2(typescript@5.8.3)
       ramda: 0.30.1
       tiny-invariant: 1.3.3
     transitivePeerDependencies:
@@ -8064,6 +8057,41 @@ snapshots:
       jest-message-util: 29.7.0
       jest-util: 29.7.0
       slash: 3.0.0
+
+  '@jest/core@29.7.0':
+    dependencies:
+      '@jest/console': 29.7.0
+      '@jest/reporters': 29.7.0
+      '@jest/test-result': 29.7.0
+      '@jest/transform': 29.7.0
+      '@jest/types': 29.6.3
+      '@types/node': 22.15.18
+      ansi-escapes: 4.3.2
+      chalk: 4.1.2
+      ci-info: 3.9.0
+      exit: 0.1.2
+      graceful-fs: 4.2.11
+      jest-changed-files: 29.7.0
+      jest-config: 29.7.0(@types/node@22.15.18)
+      jest-haste-map: 29.7.0
+      jest-message-util: 29.7.0
+      jest-regex-util: 29.6.3
+      jest-resolve: 29.7.0
+      jest-resolve-dependencies: 29.7.0
+      jest-runner: 29.7.0
+      jest-runtime: 29.7.0
+      jest-snapshot: 29.7.0
+      jest-util: 29.7.0
+      jest-validate: 29.7.0
+      jest-watcher: 29.7.0
+      micromatch: 4.0.8
+      pretty-format: 29.7.0
+      slash: 3.0.0
+      strip-ansi: 6.0.1
+    transitivePeerDependencies:
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
 
   '@jest/core@29.7.0(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))':
     dependencies:
@@ -8255,9 +8283,9 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@mmt-finance/clmm-sdk@1.3.10-beta.1(@mysten/sui@1.36.2(typescript@5.8.3))(axios@1.9.0)(bn.js@5.2.2)(decimal.js@10.5.0)':
+  '@mmt-finance/clmm-sdk@1.3.10-beta.1(@mysten/sui@1.37.2(typescript@5.8.3))(axios@1.9.0)(bn.js@5.2.2)(decimal.js@10.5.0)':
     dependencies:
-      '@mysten/sui': 1.36.2(typescript@5.8.3)
+      '@mysten/sui': 1.37.2(typescript@5.8.3)
       '@syntsugar/cc-graph': 0.1.1
       axios: 1.9.0
       bn.js: 5.2.2
@@ -8359,25 +8387,6 @@ snapshots:
       - '@gql.tada/vue-support'
       - typescript
 
-  '@mysten/sui@1.36.2(typescript@5.8.3)':
-    dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.11.0)
-      '@mysten/bcs': 1.6.4
-      '@mysten/utils': 0.1.1
-      '@noble/curves': 1.9.4
-      '@noble/hashes': 1.8.0
-      '@scure/base': 1.2.6
-      '@scure/bip32': 1.7.0
-      '@scure/bip39': 1.6.0
-      gql.tada: 1.8.12(graphql@16.11.0)(typescript@5.8.3)
-      graphql: 16.11.0
-      poseidon-lite: 0.2.1
-      valibot: 0.36.0
-    transitivePeerDependencies:
-      - '@gql.tada/svelte-support'
-      - '@gql.tada/vue-support'
-      - typescript
-
   '@mysten/sui@1.37.2(typescript@5.8.3)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.11.0)
@@ -8461,9 +8470,9 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@polymedia/suitcase-core@0.0.36(@mysten/sui@1.36.2(typescript@5.8.3))':
+  '@polymedia/suitcase-core@0.0.36(@mysten/sui@1.37.2(typescript@5.8.3))':
     dependencies:
-      '@mysten/sui': 1.36.2(typescript@5.8.3)
+      '@mysten/sui': 1.37.2(typescript@5.8.3)
 
   '@pythnetwork/hermes-client@2.0.0(axios@1.9.0)':
     dependencies:
@@ -8493,7 +8502,7 @@ snapshots:
 
   '@pythnetwork/pyth-sui-js@2.1.0(typescript@5.8.3)':
     dependencies:
-      '@mysten/sui': 1.36.2(typescript@5.8.3)
+      '@mysten/sui': 1.37.2(typescript@5.8.3)
       '@pythnetwork/price-service-client': 1.9.0
       buffer: 6.0.3
     transitivePeerDependencies:
@@ -9958,13 +9967,13 @@ snapshots:
       safe-buffer: 5.2.1
       sha.js: 2.4.12
 
-  create-jest@29.7.0(@types/node@20.17.47)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3)):
+  create-jest@29.7.0(@types/node@20.17.47):
     dependencies:
       '@jest/types': 29.6.3
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.11
-      jest-config: 29.7.0(@types/node@20.17.47)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))
+      jest-config: 29.7.0(@types/node@20.17.47)
       jest-util: 29.7.0
       prompts: 2.4.2
     transitivePeerDependencies:
@@ -10334,17 +10343,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.32.1(eslint@9.26.0)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint@9.26.0):
+  eslint-module-utils@2.12.0(eslint-import-resolver-node@0.3.9)(eslint@9.26.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
-      '@typescript-eslint/parser': 8.32.1(eslint@9.26.0)(typescript@5.8.3)
       eslint: 9.26.0
       eslint-import-resolver-node: 0.3.9
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.32.1(eslint@9.26.0)(typescript@5.8.3))(eslint@9.26.0):
+  eslint-plugin-import@2.31.0(eslint@9.26.0):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -10355,7 +10363,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.26.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.32.1(eslint@9.26.0)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint@9.26.0)
+      eslint-module-utils: 2.12.0(eslint-import-resolver-node@0.3.9)(eslint@9.26.0)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -10366,8 +10374,6 @@ snapshots:
       semver: 6.3.1
       string.prototype.trimend: 1.0.9
       tsconfig-paths: 3.15.0
-    optionalDependencies:
-      '@typescript-eslint/parser': 8.32.1(eslint@9.26.0)(typescript@5.8.3)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
@@ -11158,16 +11164,16 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
-  jest-cli@29.7.0(@types/node@20.17.47)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3)):
+  jest-cli@29.7.0(@types/node@20.17.47):
     dependencies:
-      '@jest/core': 29.7.0(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))
+      '@jest/core': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
       chalk: 4.1.2
-      create-jest: 29.7.0(@types/node@20.17.47)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))
+      create-jest: 29.7.0(@types/node@20.17.47)
       exit: 0.1.2
       import-local: 3.2.0
-      jest-config: 29.7.0(@types/node@20.17.47)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))
+      jest-config: 29.7.0(@types/node@20.17.47)
       jest-util: 29.7.0
       jest-validate: 29.7.0
       yargs: 17.7.2
@@ -11196,7 +11202,7 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest-config@29.7.0(@types/node@20.17.47)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3)):
+  jest-config@29.7.0(@types/node@20.17.47):
     dependencies:
       '@babel/core': 7.27.1
       '@jest/test-sequencer': 29.7.0
@@ -11222,7 +11228,36 @@ snapshots:
       strip-json-comments: 3.1.1
     optionalDependencies:
       '@types/node': 20.17.47
-      ts-node: 10.9.2(@types/node@22.15.18)(typescript@5.8.3)
+    transitivePeerDependencies:
+      - babel-plugin-macros
+      - supports-color
+
+  jest-config@29.7.0(@types/node@22.15.18):
+    dependencies:
+      '@babel/core': 7.27.1
+      '@jest/test-sequencer': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.27.1)
+      chalk: 4.1.2
+      ci-info: 3.9.0
+      deepmerge: 4.3.1
+      glob: 7.2.3
+      graceful-fs: 4.2.11
+      jest-circus: 29.7.0
+      jest-environment-node: 29.7.0
+      jest-get-type: 29.6.3
+      jest-regex-util: 29.6.3
+      jest-resolve: 29.7.0
+      jest-runner: 29.7.0
+      jest-util: 29.7.0
+      jest-validate: 29.7.0
+      micromatch: 4.0.8
+      parse-json: 5.2.0
+      pretty-format: 29.7.0
+      slash: 3.0.0
+      strip-json-comments: 3.1.1
+    optionalDependencies:
+      '@types/node': 22.15.18
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -11473,12 +11508,24 @@ snapshots:
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  jest@29.7.0(@types/node@20.17.47)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3)):
+  jest@29.7.0(@types/node@20.17.47):
     dependencies:
-      '@jest/core': 29.7.0(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))
+      '@jest/core': 29.7.0
       '@jest/types': 29.6.3
       import-local: 3.2.0
-      jest-cli: 29.7.0(@types/node@20.17.47)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))
+      jest-cli: 29.7.0(@types/node@20.17.47)
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+
+  jest@29.7.0(@types/node@22.15.18):
+    dependencies:
+      '@jest/core': 29.7.0
+      '@jest/types': 29.6.3
+      import-local: 3.2.0
+      jest-cli: 29.7.0(@types/node@20.17.47)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -12530,12 +12577,52 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
+  ts-jest@29.3.3(@babel/core@7.27.1)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.27.1))(jest@29.7.0(@types/node@20.17.47))(typescript@5.8.3):
+    dependencies:
+      bs-logger: 0.2.6
+      ejs: 3.1.10
+      fast-json-stable-stringify: 2.1.0
+      jest: 29.7.0(@types/node@20.17.47)
+      jest-util: 29.7.0
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.7.2
+      type-fest: 4.41.0
+      typescript: 5.8.3
+      yargs-parser: 21.1.1
+    optionalDependencies:
+      '@babel/core': 7.27.1
+      '@jest/transform': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.27.1)
+
   ts-jest@29.3.3(@babel/core@7.27.1)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.27.1))(jest@29.7.0(@types/node@22.15.18)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3)))(typescript@5.8.3):
     dependencies:
       bs-logger: 0.2.6
       ejs: 3.1.10
       fast-json-stable-stringify: 2.1.0
       jest: 29.7.0(@types/node@22.15.18)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))
+      jest-util: 29.7.0
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.7.2
+      type-fest: 4.41.0
+      typescript: 5.8.3
+      yargs-parser: 21.1.1
+    optionalDependencies:
+      '@babel/core': 7.27.1
+      '@jest/transform': 29.7.0
+      '@jest/types': 29.6.3
+      babel-jest: 29.7.0(@babel/core@7.27.1)
+
+  ts-jest@29.3.3(@babel/core@7.27.1)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.27.1))(jest@29.7.0(@types/node@22.15.18))(typescript@5.8.3):
+    dependencies:
+      bs-logger: 0.2.6
+      ejs: 3.1.10
+      fast-json-stable-stringify: 2.1.0
+      jest: 29.7.0(@types/node@22.15.18)
       jest-util: 29.7.0
       json5: 2.2.3
       lodash.memoize: 4.1.2

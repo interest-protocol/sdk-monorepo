@@ -5,7 +5,7 @@ import invariant from 'tiny-invariant';
 import { getEnv } from '../utils.script';
 
 const TREASURY_CAP =
-  '0xe403754ddf45817c333033d647815c495f0c9ec46013f3b963638f2b48900986';
+  '0xbc8e3091621fe8a355ded4af7bdecfb3370f1d9dd7fe0ac9c5ff1e6069066bb6';
 
 const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
 
@@ -40,7 +40,7 @@ const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
     burnTax: 0,
     virtualLiquidity: 500 * 1_000_000_000,
     targetQuoteLiquidity: 2_500 * 1_000_000_000,
-    liquidityProvision: 2_500,
+    liquidityProvision: 500,
     firstPurchase,
   });
 

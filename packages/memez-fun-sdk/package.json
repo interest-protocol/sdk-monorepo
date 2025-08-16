@@ -15,7 +15,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "version": "10.0.0",
+  "version": "11.0.0",
   "description": "",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -35,7 +35,6 @@
     "tsup": "^8.3.5"
   },
   "dependencies": {
-    "@cetusprotocol/cetus-sui-clmm-sdk": "^5.3.0",
     "@interest-protocol/acl-sdk": "workspace:*",
     "@interest-protocol/sui-core-sdk": "workspace:*",
     "@mysten/sui": "^1.36.2",

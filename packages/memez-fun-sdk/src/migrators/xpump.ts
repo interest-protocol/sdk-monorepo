@@ -27,6 +27,9 @@ import {
   XPumpMigrateWithLiquidityArgs,
   XPumpTreasuryCollectFeeArgs,
   XPumpUpdatePositionOwnerArgs,
+  XPumpSetPackageVersionArgs,
+  XPumpMigratorSetLiquidityMarginArgs,
+  XPumpSetTicksArgs,
 } from './migrators.types';
 import { Coin } from '../structs';
 
@@ -227,7 +230,7 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
     const suiCoin = tx.moveCall({
       package: this.packageId,
       module: this.module,
-      function: 'migrate_to_new_pool_v2',
+      function: 'migrate_to_new_pool_v3',
       arguments: [
         tx.sharedObjectRef(
           SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
@@ -456,6 +459,81 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
         tx.object.clock(),
       ],
       typeArguments: [memeCoinType],
+    });
+
+    return {
+      tx,
+    };
+  }
+
+  public setPackageVersion({
+    tx = new Transaction(),
+    packageVersion,
+  }: XPumpSetPackageVersionArgs) {
+    tx.moveCall({
+      package: this.packageId,
+      module: this.module,
+      function: 'set_package_version',
+      arguments: [
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
+        this.ownedObject(tx, this.adminId),
+        tx.pure.u64(packageVersion),
+      ],
+    });
+
+    return {
+      tx,
+    };
+  }
+
+  public setTicks({ tx = new Transaction(), min, max }: XPumpSetTicksArgs) {
+    tx.moveCall({
+      package: this.packageId,
+      module: this.module,
+      function: 'set_tick_spacing',
+      arguments: [
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
+        this.ownedObject(tx, this.adminId),
+        tx.pure.u32(min),
+        tx.pure.u32(max),
+      ],
+    });
+
+    return {
+      tx,
+    };
+  }
+
+  public setLiquidityMargin({
+    tx = new Transaction(),
+    liquidityMargin,
+  }: XPumpMigratorSetLiquidityMarginArgs) {
+    invariant(
+      BigInt(liquidityMargin) > 0n && BigInt(liquidityMargin) < 10_000n,
+      'Liquidity margin must be greater than 0 and less than 10,000'
+    );
+
+    tx.moveCall({
+      package: this.packageId,
+      module: this.module,
+      function: 'set_liquidity_margin',
+      arguments: [
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
+        this.ownedObject(tx, this.adminId),
+        tx.pure.u64(liquidityMargin),
+      ],
     });
 
     return {

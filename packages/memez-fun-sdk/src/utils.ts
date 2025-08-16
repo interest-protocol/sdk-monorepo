@@ -215,7 +215,7 @@ export const parsePumpPool = async (
     liquidityProvision: BigInt(
       pathOr(
         0n,
-        ['data', 'content', 'fields', 'value', 'fields', 'liquidity_provision'],
+        ['data', 'content', 'fields', 'liquidity_provision'],
         stateObject
       )
     ),
