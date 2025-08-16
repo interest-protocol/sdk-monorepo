@@ -15,7 +15,7 @@ import { executeTx, keypair, suiClient } from '@interest-protocol/sui-utils';
 import { getFullnodeUrl } from '@mysten/sui/client';
 
 const TEST_POOL_ID =
-  '0xaffa5cb1b229da2b56533a5007b4bc0365b1dac1e16a652b7f359a0d2e1f445f';
+  '0xf5cba9418542203b0f299574fe58693f5c5fea58124d22014c3b53a393b165de';
 
 const xPumpMigratorSdk = new XPumpMigratorSDK();
 
