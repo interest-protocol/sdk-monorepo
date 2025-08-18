@@ -7,7 +7,7 @@ import {
 } from '@mysten/sui/utils';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import invariant from 'tiny-invariant';
-
+import { ObjectInput } from '@interest-protocol/sui-core-sdk';
 import { Progress } from './constants';
 import { MemezBaseSDK } from './sdk';
 import {
@@ -279,6 +279,130 @@ export class MemezPumpSDK extends MemezBaseSDK {
       metadataCap,
       tx,
       pool,
+    };
+  }
+
+  public async newPoolWithFirstBuy({
+    tx = new Transaction(),
+    creationSuiFee = this.zeroSuiCoin(tx),
+    memeCoinTreasuryCap,
+    totalSupply = this.defaultSupply,
+    isProtected = false,
+    developer,
+    firstPurchase,
+    metadata = {},
+    configurationKey,
+    migrationWitness,
+    stakeHolders = [],
+    quoteCoinType,
+    burnTax = 0,
+    virtualLiquidity,
+    targetQuoteLiquidity,
+    liquidityProvision = 0,
+  }: NewPumpPoolArgs & { firstPurchase: ObjectInput }) {
+    invariant(
+      burnTax >= 0 && burnTax <= this.MAX_BPS,
+      'burnTax must be between 0 and 10_000'
+    );
+    invariant(
+      liquidityProvision >= 0 && liquidityProvision <= this.MAX_BPS,
+      'liquidityProvision must be between 0 and 10_000'
+    );
+
+    invariant(BigInt(totalSupply) > 0n, 'totalSupply must be greater than 0');
+    invariant(
+      isValidSuiAddress(developer),
+      'developer must be a valid Sui address'
+    );
+
+    invariant(
+      stakeHolders.every((stakeHolder) => isValidSuiAddress(stakeHolder)),
+      'stakeHolders must be a valid Sui address'
+    );
+
+    this.assertNotZeroAddress(developer);
+
+    const { memeCoinType, coinMetadataId } =
+      await this.getCoinMetadataAndType(memeCoinTreasuryCap);
+
+    const memezMetadata = tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.METADATA,
+      function: 'new',
+      arguments: [
+        tx.object(coinMetadataId),
+        tx.pure.vector('string', Object.keys(metadata)),
+        tx.pure.vector('string', Object.values(metadata)),
+      ],
+      typeArguments: [normalizeStructTag(memeCoinType)],
+    });
+
+    const pumpConfig = tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.PUMP_CONFIG,
+      function: 'new',
+      arguments: [
+        tx.pure.vector('u64', [
+          burnTax,
+          virtualLiquidity,
+          targetQuoteLiquidity,
+          liquidityProvision,
+          totalSupply,
+        ]),
+      ],
+    });
+
+    const [pool, metadataCap] = tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.PUMP,
+      function: 'new',
+      arguments: [
+        tx.sharedObjectRef(this.sharedObjects.CONFIG({ mutable: false })),
+        this.ownedObject(tx, memeCoinTreasuryCap),
+        this.ownedObject(tx, creationSuiFee),
+        pumpConfig,
+        this.ownedObject(tx, firstPurchase),
+        memezMetadata,
+        tx.pure.vector('address', stakeHolders),
+        tx.pure.bool(isProtected),
+        tx.pure.address(developer),
+        this.getVersion(tx),
+      ],
+      typeArguments: [
+        normalizeStructTag(memeCoinType),
+        normalizeStructTag(quoteCoinType),
+        normalizeStructTag(configurationKey),
+        normalizeStructTag(migrationWitness),
+      ],
+    });
+
+    invariant(pool, 'Pool not returned from new');
+
+    const firstBuy = tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.PUMP,
+      function: 'dev_purchase_claim',
+      arguments: [pool, this.getVersion(tx)],
+      typeArguments: [
+        normalizeStructTag(memeCoinType),
+        normalizeStructTag(quoteCoinType),
+      ],
+    });
+
+    tx.moveCall({
+      package: '0x2',
+      module: 'transfer',
+      function: 'public_share_object',
+      arguments: [pool],
+      typeArguments: [
+        `${this.packages.MEMEZ_FUN.original}::memez_fun::MemezFun<${this.packages.MEMEZ_FUN.original}::memez_pump::Pump, ${normalizeStructTag(memeCoinType)},${normalizeStructTag(quoteCoinType)}>`,
+      ],
+    });
+
+    return {
+      metadataCap,
+      tx,
+      firstBuy,
     };
   }
 
