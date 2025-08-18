@@ -10,12 +10,11 @@ const TREASURY_CAP =
 const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
 
 (async () => {
-  const { configKeys, migratorWitnesses, keypair } = await getEnv();
+  const { configKeys, migratorWitnesses, keypair, pumpSdk, executeTx } =
+    await getEnv();
 
   const recipient = keypair.toSuiAddress();
   const tx = new Transaction();
-
-  const { pumpSdk, executeTx } = await getEnv();
 
   const firstPurchase = coinWithBalance({
     balance: 5_000_000_000,
