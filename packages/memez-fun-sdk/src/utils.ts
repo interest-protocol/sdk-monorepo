@@ -71,30 +71,19 @@ export const parsePoolType = (x: string) => {
   };
 };
 
-export const parsePumpPool = async (
-  client: SuiClient,
-  objectResponse: SuiObjectResponse
-): Promise<MemezPool<PumpState>> => {
+export const parsePumpPool = (
+  objectResponse: SuiObjectResponse,
+  stateObject: SuiObjectResponse
+): MemezPool<PumpState> => {
   const { poolType, memeCoinType, curveType, quoteCoinType } = parsePoolType(
     pathOr('0x0', ['data', 'content', 'type'], objectResponse)
   );
 
   const stateId = pathOr(
     '0x0',
-    ['data', 'content', 'fields', 'state', 'fields', 'id', 'id'],
+    ['data', 'content', 'fields', 'inner_state'],
     objectResponse
   );
-
-  const dynamicField = await client.getDynamicFields({
-    parentId: stateId,
-  });
-
-  const dynamicFieldDataId = pathOr('0x0', ['objectId'], dynamicField.data[0]);
-
-  const stateObject = await client.getObject({
-    id: dynamicFieldDataId,
-    options: { showContent: true },
-  });
 
   const curveState = {
     burnTax: +pathOr(
@@ -329,7 +318,6 @@ export const parsePumpPool = async (
         objectResponse
       )
     ),
-    dynamicFieldDataId,
     progress: pathOr(
       '0x0',
       ['data', 'content', 'fields', 'progress', 'variant'],

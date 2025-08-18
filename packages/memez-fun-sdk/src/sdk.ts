@@ -6,10 +6,9 @@ import { ObjectRef } from '@mysten/sui/transactions';
 import {
   isValidSuiObjectId,
   normalizeStructTag,
-  normalizeSuiAddress,
   normalizeSuiObjectId,
 } from '@mysten/sui/utils';
-import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
+import { devInspectAndGetReturnValues, sleep } from '@polymedia/suitcase-core';
 import { pathOr } from 'ramda';
 import invariant from 'tiny-invariant';
 
@@ -132,6 +131,55 @@ export class MemezBaseSDK extends SuiCoreSDK {
 
   /**
    * Retrieves the Memez pool object from Sui and parses it.
+   * @dev It performs two {SuiClient.multiGetObjects} calls. Increase the sleepMs if you fetch more than 25 pools at once to avoid rate limiting. It calls {sleep} twice.
+   *
+   * @param pumpId - The objectId of the MemezPool.
+   *
+   * @returns A parsed MemezPool object.
+   */
+  public async getMultiplePumpPools(pumpIds: string[], sleepMs = 500) {
+    pumpIds = pumpIds.map((x) => normalizeSuiObjectId(x));
+
+    const suiObjects = await this.client.multiGetObjects({
+      ids: pumpIds,
+      options: { showContent: true },
+    });
+
+    await sleep(sleepMs);
+
+    const stateObjects = await this.client.multiGetObjects({
+      ids: suiObjects.map((x) =>
+        pathOr('0x0', ['data', 'content', 'fields', 'inner_state'], x)
+      ),
+      options: { showContent: true },
+    });
+
+    const pools = suiObjects.map((suiObject, index) => {
+      const stateObject = stateObjects[index];
+
+      return parsePumpPool(suiObject, stateObject);
+    });
+
+    await sleep(sleepMs);
+
+    const metadatas = await this.getMultiplePoolMetadata(
+      pools.map((pool) => ({
+        poolId: pool.objectId,
+        quoteCoinType: pool.quoteCoinType,
+        memeCoinType: pool.memeCoinType,
+        curveType: pool.curveType,
+      }))
+    );
+
+    pools.forEach((pool, index) => {
+      pool.metadata = metadatas[index];
+    });
+
+    return pools;
+  }
+
+  /**
+   * Retrieves the Memez pool object from Sui and parses it.
    *
    * @param pumpId - The objectId of the MemezPool.
    *
@@ -149,7 +197,18 @@ export class MemezBaseSDK extends SuiCoreSDK {
       options: { showContent: true },
     });
 
-    const pool = await parsePumpPool(this.client, suiObject);
+    const stateId = pathOr(
+      '0x0',
+      ['data', 'content', 'fields', 'inner_state'],
+      suiObject
+    );
+
+    const stateObject = await this.client.getObject({
+      id: stateId,
+      options: { showContent: true },
+    });
+
+    const pool = parsePumpPool(suiObject, stateObject);
 
     pool.metadata = await this.getPoolMetadata({
       poolId: pool.objectId,
@@ -161,6 +220,44 @@ export class MemezBaseSDK extends SuiCoreSDK {
     pumpPoolCache.set(pumpId, pool);
 
     return pool;
+  }
+
+  public async getMultiplePoolMetadata(
+    metadataParams: GetPoolMetadataArgs[]
+  ): Promise<Record<string, string>[]> {
+    const tx = new Transaction();
+
+    metadataParams.forEach((param) => {
+      tx.moveCall({
+        package: this.packages.MEMEZ_FUN.latest,
+        module: this.modules.FUN,
+        function: 'metadata',
+        arguments: [tx.object(param.poolId)],
+        typeArguments: [
+          normalizeStructTag(param.curveType),
+          normalizeStructTag(param.memeCoinType),
+          normalizeStructTag(param.quoteCoinType),
+        ],
+      });
+    });
+
+    const result = await devInspectAndGetReturnValues(
+      this.client,
+      tx,
+      metadataParams.map(() => [VecMap(bcs.string(), bcs.string())])
+    );
+
+    return result.map((x) => {
+      return (x[0] as any).contents?.reduce(
+        (acc: Record<string, string>, elem: any) => {
+          return {
+            ...acc,
+            [elem.key]: elem.value,
+          };
+        },
+        {} as Record<string, string>
+      );
+    });
   }
 
   public async getPoolMetadata({
@@ -189,27 +286,21 @@ export class MemezBaseSDK extends SuiCoreSDK {
       ],
     });
 
-    const metadataVecMap = await this.client.devInspectTransactionBlock({
-      transactionBlock: tx,
-      sender: normalizeSuiAddress('0x0'),
-    });
+    const result = await devInspectAndGetReturnValues(this.client, tx, [
+      [VecMap(bcs.string(), bcs.string())],
+    ]);
 
-    invariant(
-      metadataVecMap.results?.[0]?.returnValues?.[0]?.[0],
-      'No metadata found'
+    invariant(result[0][0], 'No metadata found');
+
+    const metadata = (result[0][0] as any).contents?.reduce(
+      (acc: Record<string, string>, elem: any) => {
+        return {
+          ...acc,
+          [elem.key]: elem.value,
+        };
+      },
+      {} as Record<string, string>
     );
-
-    const metadata = VecMap(bcs.string(), bcs.string())
-      .parse(Uint8Array.from(metadataVecMap.results[0].returnValues[0][0]))
-      .contents.reduce(
-        (acc: Record<string, string>, elem) => {
-          return {
-            ...acc,
-            [elem.key]: elem.value,
-          };
-        },
-        {} as Record<string, string>
-      );
 
     metadataCache.set(poolId, metadata);
 

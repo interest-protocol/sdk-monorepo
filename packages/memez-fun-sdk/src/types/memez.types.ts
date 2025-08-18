@@ -39,7 +39,6 @@ export interface MemezPool<T> {
   migrationWitness: string;
   progress: string;
   stateId: string;
-  dynamicFieldDataId: string;
   developer: string;
   curveState: T;
 }
