@@ -30,6 +30,7 @@ import {
   XPumpSetPackageVersionArgs,
   XPumpMigratorSetLiquidityMarginArgs,
   XPumpSetTicksArgs,
+  XPumpTreasuryCollectPositionV2FeeArgs,
 } from './migrators.types';
 import { Coin } from '../structs';
 
@@ -538,6 +539,42 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
 
     return {
       tx,
+    };
+  }
+
+  public treasuryCollectPositionV2Fee({
+    tx = new Transaction(),
+    bluefinPool,
+    memeCoinType,
+  }: XPumpTreasuryCollectPositionV2FeeArgs) {
+    this.assertObjectId(bluefinPool);
+
+    const [memeCoin, suiCoin] = tx.moveCall({
+      package: this.packageId,
+      module: this.module,
+      function: 'treasury_collect_position_v2_fee',
+      arguments: [
+        tx.sharedObjectRef(
+          SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
+            mutable: true,
+          })
+        ),
+        tx.sharedObjectRef({
+          objectId: BLUEFIN_CONFIG.objectId,
+          mutable: false,
+          initialSharedVersion: BLUEFIN_CONFIG.initialSharedVersion,
+        }),
+        tx.object(bluefinPool),
+        tx.object.clock(),
+        this.ownedObject(tx, this.adminId),
+      ],
+      typeArguments: [memeCoinType],
+    });
+
+    return {
+      tx,
+      memeCoin,
+      suiCoin,
     };
   }
 

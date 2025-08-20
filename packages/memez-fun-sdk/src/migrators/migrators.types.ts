@@ -94,3 +94,8 @@ export interface XPumpSetTicksArgs extends MaybeTx {
 export interface XPumpMigratorSetLiquidityMarginArgs extends MaybeTx {
   liquidityMargin: U64;
 }
+
+export interface XPumpTreasuryCollectPositionV2FeeArgs extends MaybeTx {
+  bluefinPool: string;
+  memeCoinType: string;
+}

@@ -8,5 +8,6 @@ export * from './pump';
 export * from './structs';
 export * from './types/memez.types';
 export * from './utils';
+export * from './wallet';
 
 export type { PumpTypes };

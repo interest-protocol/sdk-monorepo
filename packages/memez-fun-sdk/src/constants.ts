@@ -86,6 +86,10 @@ export const PACKAGES = {
       original: normalizeSuiAddress('0x0'),
       latest: normalizeSuiAddress('0x0'),
     },
+    WALLET: {
+      original: normalizeSuiAddress('0x0'),
+      latest: normalizeSuiAddress('0x0'),
+    },
   },
   [Network.MAINNET]: {
     MEMEZ_FUN: {
@@ -141,7 +145,15 @@ export const PACKAGES = {
         '0x7ec68f4115dc2944426239b13ce6804dd9971b24069fb4efe88360d29b17f0ce'
       ),
       latest: normalizeSuiAddress(
-        '0x70a2abeac6aece09e1cad2d3c1b667b42a568ea9ef85a2daefa68f93dee2cfe7'
+        '0x803999fdc2f3920b14df96e45b187a954b9f775d7ce661d37e683c3a800dddb3'
+      ),
+    },
+    WALLET: {
+      original: normalizeSuiAddress(
+        '0x21700f31d563949214e0411f22a3cf64928f6a3e5b3c13f830a30d6884fe135b'
+      ),
+      latest: normalizeSuiAddress(
+        '0x21700f31d563949214e0411f22a3cf64928f6a3e5b3c13f830a30d6884fe135b'
       ),
     },
   },
@@ -232,6 +244,11 @@ export const SHARED_OBJECTS = {
       initialSharedVersion: '0',
       mutable,
     }),
+    WALLET_REGISTRY: ({ mutable }: { mutable: boolean }) => ({
+      objectId: normalizeSuiObjectId('0x0'),
+      initialSharedVersion: '0',
+      mutable,
+    }),
   },
   [Network.MAINNET]: {
     ACL: ({ mutable }: { mutable: boolean }) => ({
@@ -260,6 +277,13 @@ export const SHARED_OBJECTS = {
         '0x6ac620306c77e9fb452123b8832b56cb4ec7f9bb638e42d3c6eeecdf173a9498'
       ),
       initialSharedVersion: '603610952',
+      mutable,
+    }),
+    WALLET_REGISTRY: ({ mutable }: { mutable: boolean }) => ({
+      objectId: normalizeSuiObjectId(
+        '0xc6ed6d218aff361ed293ba3eaf2805772275c9dc87f650a0f8df9c80471c5fbe'
+      ),
+      initialSharedVersion: '611022341',
       mutable,
     }),
   },
