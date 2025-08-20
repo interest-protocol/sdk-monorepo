@@ -10,6 +10,7 @@ import {
   WalletReceiveArgs,
   WalletReceiveCoinsArgs,
   WalletMergeCoinsArgs,
+  WalletNewArgs,
 } from './types/wallet.types';
 import { normalizeStructTag } from '@mysten/sui/utils';
 
@@ -27,13 +28,11 @@ export class MemezWalletSDK extends MemezBaseSDK {
     super(args);
   }
 
-  async newWallet(owner: string) {
+  async newWallet({ owner, tx = new Transaction() }: WalletNewArgs) {
     invariant(
       (await this.getWalletAddress(owner)) == null,
       'Wallet already exists'
     );
-
-    const tx = new Transaction();
 
     const wallet = tx.moveCall({
       target: `${this.packages.WALLET.latest}::memez_wallet::new`,

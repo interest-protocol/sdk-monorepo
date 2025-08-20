@@ -23,3 +23,7 @@ export interface WalletMergeCoinsArgs extends MaybeTx {
   coins: Object[];
   wallet: string;
 }
+
+export interface WalletNewArgs extends MaybeTx {
+  owner: string;
+}
