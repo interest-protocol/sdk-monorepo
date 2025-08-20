@@ -950,11 +950,11 @@ export class MemezPumpSDK extends MemezBaseSDK {
     value,
     tx = new Transaction(),
   }: UpdateMetadataArgs) {
-    const coinMeatdata = await this.client.getCoinMetadata({
+    const coinMetadata = await this.client.getCoinMetadata({
       coinType: metadataCap.coinType,
     });
 
-    invariant(coinMeatdata?.id, 'Coin metadata not found');
+    invariant(coinMetadata?.id, 'Coin metadata not found');
 
     tx.moveCall({
       package: this.packages.IPX_COIN_STANDARD.original,
@@ -962,7 +962,7 @@ export class MemezPumpSDK extends MemezBaseSDK {
       function: 'update_name',
       arguments: [
         tx.object(metadataCap.ipxTreasury),
-        tx.object(coinMeatdata.id),
+        tx.object(coinMetadata.id),
         tx.object(metadataCap.objectId),
         tx.pure.string(value),
       ],
@@ -979,11 +979,11 @@ export class MemezPumpSDK extends MemezBaseSDK {
     value,
     tx = new Transaction(),
   }: UpdateMetadataArgs) {
-    const coinMeatdata = await this.client.getCoinMetadata({
+    const coinMetadata = await this.client.getCoinMetadata({
       coinType: metadataCap.coinType,
     });
 
-    invariant(coinMeatdata?.id, 'Coin metadata not found');
+    invariant(coinMetadata?.id, 'Coin metadata not found');
 
     tx.moveCall({
       package: this.packages.IPX_COIN_STANDARD.original,
@@ -991,7 +991,7 @@ export class MemezPumpSDK extends MemezBaseSDK {
       function: 'update_symbol',
       arguments: [
         tx.object(metadataCap.ipxTreasury),
-        tx.object(coinMeatdata.id),
+        tx.object(coinMetadata.id),
         tx.object(metadataCap.objectId),
         tx.pure.string(value),
       ],
@@ -1008,11 +1008,11 @@ export class MemezPumpSDK extends MemezBaseSDK {
     value,
     tx = new Transaction(),
   }: UpdateMetadataArgs) {
-    const coinMeatdata = await this.client.getCoinMetadata({
+    const coinMetadata = await this.client.getCoinMetadata({
       coinType: metadataCap.coinType,
     });
 
-    invariant(coinMeatdata?.id, 'Coin metadata not found');
+    invariant(coinMetadata?.id, 'Coin metadata not found');
 
     tx.moveCall({
       package: this.packages.IPX_COIN_STANDARD.original,
@@ -1020,7 +1020,7 @@ export class MemezPumpSDK extends MemezBaseSDK {
       function: 'update_description',
       arguments: [
         tx.object(metadataCap.ipxTreasury),
-        tx.object(coinMeatdata.id),
+        tx.object(coinMetadata.id),
         tx.object(metadataCap.objectId),
         tx.pure.string(value),
       ],
@@ -1037,11 +1037,11 @@ export class MemezPumpSDK extends MemezBaseSDK {
     value,
     tx = new Transaction(),
   }: UpdateMetadataArgs) {
-    const coinMeatdata = await this.client.getCoinMetadata({
+    const coinMetadata = await this.client.getCoinMetadata({
       coinType: metadataCap.coinType,
     });
 
-    invariant(coinMeatdata?.id, 'Coin metadata not found');
+    invariant(coinMetadata?.id, 'Coin metadata not found');
 
     tx.moveCall({
       package: this.packages.IPX_COIN_STANDARD.original,
@@ -1049,7 +1049,7 @@ export class MemezPumpSDK extends MemezBaseSDK {
       function: 'update_icon_url',
       arguments: [
         tx.object(metadataCap.ipxTreasury),
-        tx.object(coinMeatdata.id),
+        tx.object(coinMetadata.id),
         tx.object(metadataCap.objectId),
         tx.pure.string(value),
       ],
