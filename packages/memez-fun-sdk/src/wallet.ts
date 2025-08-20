@@ -6,6 +6,12 @@ import invariant from 'tiny-invariant';
 import { MemezBaseSDK } from './sdk';
 import { SdkConstructorArgs } from './types/memez.types';
 import { SHARED_OBJECTS } from './constants';
+import {
+  WalletReceiveArgs,
+  WalletReceiveCoinsArgs,
+  WalletMergeCoinsArgs,
+} from './types/wallet.types';
+import { normalizeStructTag } from '@mysten/sui/utils';
 
 export class MemezWalletSDK extends MemezBaseSDK {
   /**
@@ -45,6 +51,75 @@ export class MemezWalletSDK extends MemezBaseSDK {
     });
 
     return { tx };
+  }
+
+  receive({
+    type,
+    objectId,
+    wallet,
+    tx = new Transaction(),
+  }: WalletReceiveArgs) {
+    const object = tx.moveCall({
+      target: `${this.packages.WALLET.latest}::memez_wallet::receive`,
+      arguments: [tx.object(wallet), tx.object(objectId)],
+      typeArguments: [normalizeStructTag(type)],
+    });
+
+    return { tx, object };
+  }
+
+  mergeCoins({
+    coinType,
+    coins,
+    wallet,
+    tx = new Transaction(),
+  }: WalletMergeCoinsArgs) {
+    tx.moveCall({
+      target: `${this.packages.WALLET.latest}::memez_wallet::merge_coins`,
+      arguments: [
+        tx.object(wallet),
+        tx.makeMoveVec({
+          elements: coins.map((coin) =>
+            tx.receivingRef({
+              objectId: coin.objectId,
+              version: coin.version,
+              digest: coin.digest,
+            })
+          ),
+          type: `0x2::transfer::Receiving<0x2::coin::Coin<${coinType}>>`,
+        }),
+      ],
+      typeArguments: [normalizeStructTag(coinType)],
+    });
+
+    return { tx };
+  }
+
+  receiveCoins({
+    coinType,
+    coins,
+    wallet,
+    tx = new Transaction(),
+  }: WalletReceiveCoinsArgs) {
+    const coin = tx.moveCall({
+      target: `${this.packages.WALLET.latest}::memez_wallet::receive_coins`,
+      arguments: [
+        tx.object(wallet),
+        tx.makeMoveVec({
+          elements: coins.map((coin) =>
+            tx.receivingRef({
+              objectId: coin.objectId,
+              version: coin.version,
+              digest: coin.digest,
+            })
+          ),
+          type: `0x2::transfer::Receiving<0x2::coin::Coin<${coinType}>>`,
+        }),
+      ],
+      typeArguments: [normalizeStructTag(coinType)],
+    });
+
+    return { tx, coin };
   }
 
   async getWalletAddress(owner: string): Promise<string | null> {
