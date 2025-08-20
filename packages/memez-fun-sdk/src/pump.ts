@@ -26,6 +26,8 @@ import {
   QuoteArgs,
   QuoteDumpReturnValues,
   QuotePumpReturnValues,
+  InternalPumpArgs,
+  InternalDumpArgs,
 } from './types/pump.types';
 
 export class MemezPumpSDK extends MemezBaseSDK {
@@ -539,25 +541,39 @@ export class MemezPumpSDK extends MemezBaseSDK {
       invariant(signature, 'signature is required');
     }
 
-    const memeCoin = tx.moveCall({
-      package: this.packages.MEMEZ_FUN.latest,
-      module: this.modules.PUMP,
-      function: 'pump',
-      arguments: [
-        tx.object(pool.objectId),
-        this.ownedObject(tx, quoteCoin),
-        tx.pure.option('address', referrer),
-        tx.pure.option('vector<u8>', signature ? Array.from(signature) : null),
-        tx.pure.u64(minAmountOut),
-        this.getVersion(tx),
-      ],
-      typeArguments: [pool.memeCoinType, pool.quoteCoinType],
-    });
+    if (referrer === null) {
+      return this.#memezPump({
+        tx,
+        pool,
+        quoteCoin,
+        signature,
+        minAmountOut,
+        referrer: null,
+      });
+    }
 
-    return {
-      memeCoin,
+    invariant(referrer, 'referrer must be a valid Sui address');
+
+    const walletAddress = await this.getWalletAddress(referrer);
+
+    if (walletAddress === null)
+      return this.#routerPump({
+        tx,
+        pool,
+        quoteCoin,
+        signature,
+        minAmountOut,
+        referrer,
+      });
+
+    return this.#memezPump({
       tx,
-    };
+      pool,
+      quoteCoin,
+      signature,
+      minAmountOut,
+      referrer: walletAddress,
+    });
   }
 
   /**
@@ -588,25 +604,36 @@ export class MemezPumpSDK extends MemezBaseSDK {
       pool = await this.getPumpPool(pool);
     }
 
-    const quoteCoin = tx.moveCall({
-      package: this.packages.MEMEZ_FUN.latest,
-      module: this.modules.PUMP,
-      function: 'dump',
-      arguments: [
-        tx.object(pool.objectId),
-        tx.object(pool.ipxMemeCoinTreasury),
-        this.ownedObject(tx, memeCoin),
-        tx.pure.option('address', referrer),
-        tx.pure.u64(minAmountOut),
-        this.getVersion(tx),
-      ],
-      typeArguments: [pool.memeCoinType, pool.quoteCoinType],
-    });
+    if (referrer === null) {
+      return this.#memezDump({
+        tx,
+        pool,
+        memeCoin,
+        minAmountOut,
+        referrer: null,
+      });
+    }
 
-    return {
-      quoteCoin,
+    invariant(referrer, 'referrer must be a valid Sui address');
+
+    const walletAddress = await this.getWalletAddress(referrer);
+
+    if (walletAddress === null)
+      return this.#routerDump({
+        tx,
+        pool,
+        memeCoin,
+        minAmountOut,
+        referrer,
+      });
+
+    return this.#memezDump({
       tx,
-    };
+      pool,
+      memeCoin,
+      minAmountOut,
+      referrer: walletAddress,
+    });
   }
 
   /**
@@ -864,6 +891,140 @@ export class MemezPumpSDK extends MemezBaseSDK {
       virtualLiquidity,
       targetQuoteLiquidity,
       liquidityProvision,
+    };
+  }
+
+  async getWalletAddress(owner: string): Promise<string | null> {
+    const tx = new Transaction();
+
+    tx.moveCall({
+      target: `${this.packages.WALLET.latest}::memez_wallet::wallet_address`,
+      arguments: [
+        tx.sharedObjectRef(
+          this.sharedObjects.WALLET_REGISTRY({ mutable: false })
+        ),
+        tx.pure.address(owner),
+      ],
+    });
+
+    const result = await devInspectAndGetReturnValues(this.client, tx, [
+      [bcs.option(bcs.Address)],
+    ]);
+
+    return result[0][0] as null | string;
+  }
+
+  #memezPump({
+    tx,
+    pool,
+    quoteCoin,
+    signature,
+    minAmountOut,
+    referrer,
+  }: InternalPumpArgs) {
+    const memeCoin = tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.PUMP,
+      function: 'pump',
+      arguments: [
+        tx.object(pool.objectId),
+        this.ownedObject(tx, quoteCoin),
+        tx.pure.option('address', referrer),
+        tx.pure.option('vector<u8>', signature ? Array.from(signature) : null),
+        tx.pure.u64(minAmountOut),
+        this.getVersion(tx),
+      ],
+      typeArguments: [pool.memeCoinType, pool.quoteCoinType],
+    });
+
+    return {
+      memeCoin,
+      tx,
+    };
+  }
+
+  #routerPump({
+    tx,
+    pool,
+    quoteCoin,
+    signature,
+    minAmountOut,
+    referrer,
+  }: InternalPumpArgs) {
+    const memeCoin = tx.moveCall({
+      package: this.packages.ROUTER.latest,
+      module: 'memez_router',
+      function: 'pump',
+      arguments: [
+        tx.object(pool.objectId),
+        tx.sharedObjectRef(
+          this.sharedObjects.WALLET_REGISTRY({ mutable: true })
+        ),
+        this.ownedObject(tx, quoteCoin),
+        tx.pure.option('address', referrer),
+        tx.pure.option('vector<u8>', signature ? Array.from(signature) : null),
+        tx.pure.u64(minAmountOut),
+        this.getVersion(tx),
+      ],
+      typeArguments: [pool.memeCoinType, pool.quoteCoinType],
+    });
+
+    return {
+      memeCoin,
+      tx,
+    };
+  }
+
+  #memezDump({ tx, pool, memeCoin, minAmountOut, referrer }: InternalDumpArgs) {
+    const quoteCoin = tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.PUMP,
+      function: 'dump',
+      arguments: [
+        tx.object(pool.objectId),
+        tx.object(pool.ipxMemeCoinTreasury),
+        this.ownedObject(tx, memeCoin),
+        tx.pure.option('address', referrer),
+        tx.pure.u64(minAmountOut),
+        this.getVersion(tx),
+      ],
+      typeArguments: [pool.memeCoinType, pool.quoteCoinType],
+    });
+
+    return {
+      quoteCoin,
+      tx,
+    };
+  }
+
+  #routerDump({
+    tx,
+    pool,
+    memeCoin,
+    minAmountOut,
+    referrer,
+  }: InternalDumpArgs) {
+    const quoteCoin = tx.moveCall({
+      package: this.packages.ROUTER.latest,
+      module: 'memez_router',
+      function: 'dump',
+      arguments: [
+        tx.object(pool.objectId),
+        tx.sharedObjectRef(
+          this.sharedObjects.WALLET_REGISTRY({ mutable: true })
+        ),
+        tx.object(pool.ipxMemeCoinTreasury),
+        this.ownedObject(tx, memeCoin),
+        tx.pure.option('address', referrer),
+        tx.pure.u64(minAmountOut),
+        this.getVersion(tx),
+      ],
+      typeArguments: [pool.memeCoinType, pool.quoteCoinType],
+    });
+
+    return {
+      quoteCoin,
+      tx,
     };
   }
 }

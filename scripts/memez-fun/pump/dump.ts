@@ -10,7 +10,7 @@ import { getEnv } from '../utils.script';
   const pool = await pumpSdk.getPumpPool(testnetPoolId);
 
   const memeCoin = coinWithBalance({
-    balance: 1_000_000_000n,
+    balance: 100n,
     type: pool.memeCoinType,
   })(tx);
 
@@ -18,6 +18,8 @@ import { getEnv } from '../utils.script';
     pool: testnetPoolId,
     memeCoin,
     tx,
+    referrer:
+      '0x894261575b948c035d002adc3ca4d73c683c01a1bfafac183870940bf9afef1a',
   });
 
   tx2.transferObjects([quoteCoin], keypair.toSuiAddress());

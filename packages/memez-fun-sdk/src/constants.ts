@@ -90,6 +90,10 @@ export const PACKAGES = {
       original: normalizeSuiAddress('0x0'),
       latest: normalizeSuiAddress('0x0'),
     },
+    ROUTER: {
+      original: normalizeSuiAddress('0x0'),
+      latest: normalizeSuiAddress('0x0'),
+    },
   },
   [Network.MAINNET]: {
     MEMEZ_FUN: {
@@ -156,6 +160,14 @@ export const PACKAGES = {
         '0x21700f31d563949214e0411f22a3cf64928f6a3e5b3c13f830a30d6884fe135b'
       ),
     },
+    ROUTER: {
+      original: normalizeSuiAddress(
+        '0x07cb654d8ae22bd18fff08f322d99fdf9d1673712812329b127430b155dc44ff'
+      ),
+      latest: normalizeSuiAddress(
+        '0x07cb654d8ae22bd18fff08f322d99fdf9d1673712812329b127430b155dc44ff'
+      ),
+    },
   },
 } as const;
 
@@ -184,6 +196,7 @@ export const OWNED_OBJECTS = {
     ),
     XPUMP_MIGRATOR_UPGRADE_CAP: normalizeSuiObjectId('0x0'),
     XPUMP_MIGRATOR_ADMIN: normalizeSuiObjectId('0x0'),
+    ROUTER_UPGRADE_CAP: normalizeSuiObjectId('0x0'),
   },
   [Network.MAINNET]: {
     MEMEZ_SUPER_ADMIN: normalizeSuiObjectId(
@@ -212,6 +225,9 @@ export const OWNED_OBJECTS = {
     ),
     XPUMP_MIGRATOR_ADMIN: normalizeSuiObjectId(
       '0x60a3b91023eaec63301e4fd7011a3f8536f8f94e05895610e749dc189a704a33'
+    ),
+    ROUTER_UPGRADE_CAP: normalizeSuiObjectId(
+      '0x0477c7f09abf142a4e8a78309f00127f05cabb87f6c519168ea9579a9dfd9983'
     ),
   },
 } as const;

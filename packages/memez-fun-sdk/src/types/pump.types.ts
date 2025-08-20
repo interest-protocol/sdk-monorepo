@@ -4,7 +4,7 @@ import {
   StructTag,
   U64,
 } from '@interest-protocol/sui-core-sdk';
-import { ObjectRef } from '@mysten/sui/transactions';
+import { ObjectRef, Transaction } from '@mysten/sui/transactions';
 
 import {
   ConfigKey,
@@ -44,11 +44,28 @@ export interface PumpArgs extends MaybeTx {
   minAmountOut?: U64;
 }
 
+export interface InternalPumpArgs {
+  tx: Transaction;
+  pool: MemezPool<PumpState>;
+  quoteCoin: ObjectInput;
+  referrer: string | null;
+  signature: Uint8Array | null;
+  minAmountOut: U64;
+}
+
 export interface DumpArgs extends MaybeTx {
   pool: string | MemezPool<PumpState>;
   memeCoin: ObjectInput;
   minAmountOut?: U64;
   referrer?: string | null;
+}
+
+export interface InternalDumpArgs {
+  tx: Transaction;
+  pool: MemezPool<PumpState>;
+  memeCoin: ObjectInput;
+  minAmountOut: U64;
+  referrer: string | null;
 }
 
 export interface QuoteArgs {
