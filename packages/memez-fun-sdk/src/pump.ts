@@ -28,7 +28,11 @@ import {
   QuotePumpReturnValues,
   InternalPumpArgs,
   InternalDumpArgs,
+  GetMetadataCapsArgs,
+  UpdateMetadataArgs,
+  BurnMemeArgs,
 } from './types/pump.types';
+import { parseMetadataCap } from './utils';
 
 export class MemezPumpSDK extends MemezBaseSDK {
   /**
@@ -912,6 +916,170 @@ export class MemezPumpSDK extends MemezBaseSDK {
     ]);
 
     return result[0][0] as null | string;
+  }
+
+  // === Metadata updates ===
+
+  async getMetadataCaps({
+    owner,
+    nextCursor = null,
+    limit = 50,
+  }: GetMetadataCapsArgs) {
+    const caps = await this.client.getOwnedObjects({
+      owner,
+      options: {
+        showContent: true,
+      },
+      filter: {
+        StructType: `${this.packages.IPX_COIN_STANDARD.original}::ipx_coin_standard::MetadataCap`,
+      },
+      limit,
+      cursor: nextCursor,
+    });
+
+    return {
+      hasNextPage: caps.hasNextPage,
+      nextCursor: caps.nextCursor,
+      total: caps.data.length,
+      caps: caps.data.map((cap) => parseMetadataCap(cap.data!)),
+    };
+  }
+
+  async updateName({
+    metadataCap,
+    value,
+    tx = new Transaction(),
+  }: UpdateMetadataArgs) {
+    const coinMeatdata = await this.client.getCoinMetadata({
+      coinType: metadataCap.coinType,
+    });
+
+    invariant(coinMeatdata?.id, 'Coin metadata not found');
+
+    tx.moveCall({
+      package: this.packages.IPX_COIN_STANDARD.original,
+      module: 'ipx_coin_standard',
+      function: 'update_name',
+      arguments: [
+        tx.object(metadataCap.ipxTreasury),
+        tx.object(coinMeatdata.id),
+        tx.object(metadataCap.objectId),
+        tx.pure.string(value),
+      ],
+      typeArguments: [metadataCap.coinType],
+    });
+
+    return {
+      tx,
+    };
+  }
+
+  async updateSymbol({
+    metadataCap,
+    value,
+    tx = new Transaction(),
+  }: UpdateMetadataArgs) {
+    const coinMeatdata = await this.client.getCoinMetadata({
+      coinType: metadataCap.coinType,
+    });
+
+    invariant(coinMeatdata?.id, 'Coin metadata not found');
+
+    tx.moveCall({
+      package: this.packages.IPX_COIN_STANDARD.original,
+      module: 'ipx_coin_standard',
+      function: 'update_symbol',
+      arguments: [
+        tx.object(metadataCap.ipxTreasury),
+        tx.object(coinMeatdata.id),
+        tx.object(metadataCap.objectId),
+        tx.pure.string(value),
+      ],
+      typeArguments: [metadataCap.coinType],
+    });
+
+    return {
+      tx,
+    };
+  }
+
+  async updateDescription({
+    metadataCap,
+    value,
+    tx = new Transaction(),
+  }: UpdateMetadataArgs) {
+    const coinMeatdata = await this.client.getCoinMetadata({
+      coinType: metadataCap.coinType,
+    });
+
+    invariant(coinMeatdata?.id, 'Coin metadata not found');
+
+    tx.moveCall({
+      package: this.packages.IPX_COIN_STANDARD.original,
+      module: 'ipx_coin_standard',
+      function: 'update_description',
+      arguments: [
+        tx.object(metadataCap.ipxTreasury),
+        tx.object(coinMeatdata.id),
+        tx.object(metadataCap.objectId),
+        tx.pure.string(value),
+      ],
+      typeArguments: [metadataCap.coinType],
+    });
+
+    return {
+      tx,
+    };
+  }
+
+  async updateIconUrl({
+    metadataCap,
+    value,
+    tx = new Transaction(),
+  }: UpdateMetadataArgs) {
+    const coinMeatdata = await this.client.getCoinMetadata({
+      coinType: metadataCap.coinType,
+    });
+
+    invariant(coinMeatdata?.id, 'Coin metadata not found');
+
+    tx.moveCall({
+      package: this.packages.IPX_COIN_STANDARD.original,
+      module: 'ipx_coin_standard',
+      function: 'update_icon_url',
+      arguments: [
+        tx.object(metadataCap.ipxTreasury),
+        tx.object(coinMeatdata.id),
+        tx.object(metadataCap.objectId),
+        tx.pure.string(value),
+      ],
+      typeArguments: [metadataCap.coinType],
+    });
+
+    return {
+      tx,
+    };
+  }
+
+  burnMeme({
+    ipxTreasury,
+    memeCoin,
+    coinType,
+    tx = new Transaction(),
+  }: BurnMemeArgs) {
+    invariant(isValidSuiObjectId(ipxTreasury), 'Invalid ipxTreasury');
+
+    tx.moveCall({
+      package: this.packages.IPX_COIN_STANDARD.original,
+      module: 'ipx_coin_standard',
+      function: 'treasury_burn',
+      arguments: [tx.object(ipxTreasury), this.ownedObject(tx, memeCoin)],
+      typeArguments: [coinType],
+    });
+
+    return {
+      tx,
+    };
   }
 
   #memezPump({

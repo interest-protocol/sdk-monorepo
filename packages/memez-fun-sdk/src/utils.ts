@@ -4,6 +4,7 @@ import {
   PaginatedObjectsResponse,
   SuiClient,
   SuiObjectResponse,
+  SuiObjectData,
 } from '@mysten/sui/client';
 import {
   normalizeStructTag,
@@ -14,6 +15,7 @@ import {
 import { Decimal } from 'decimal.js';
 import { pathOr } from 'ramda';
 
+import { MetadataCap } from './types/pump.types';
 import { XPumpPositionOwner } from './migrators/migrators.types';
 import {
   GetMemeCoinMarketCapArgs,
@@ -384,4 +386,19 @@ export const parseXPumpPositions = (
       ),
     };
   });
+};
+
+export const parseMetadataCap = (x: SuiObjectData): MetadataCap => {
+  return {
+    objectId: normalizeSuiObjectId(x.objectId),
+    version: x.version,
+    digest: x.digest,
+    type: pathOr('', ['content', 'type'], x),
+    ipxTreasury: normalizeSuiObjectId(
+      pathOr('', ['content', 'fields', 'ipx_treasury'], x)
+    ),
+    coinType: normalizeStructTag(
+      pathOr('', ['content', 'fields', 'name', 'fields', 'name'], x)
+    ),
+  };
 };

@@ -89,3 +89,29 @@ export interface QuoteDumpReturnValues {
 export interface DistributeStakeHoldersAllocationArgs extends MaybeTx {
   pool: string | MemezPool<PumpState>;
 }
+
+export interface GetMetadataCapsArgs {
+  owner: string;
+  nextCursor?: string | null;
+  limit?: number;
+}
+
+export interface MetadataCap {
+  objectId: string;
+  version: string;
+  digest: string;
+  type: string;
+  ipxTreasury: string;
+  coinType: string;
+}
+
+export interface UpdateMetadataArgs extends MaybeTx {
+  metadataCap: MetadataCap;
+  value: string;
+}
+
+export interface BurnMemeArgs extends MaybeTx {
+  ipxTreasury: string;
+  memeCoin: ObjectInput;
+  coinType: string;
+}

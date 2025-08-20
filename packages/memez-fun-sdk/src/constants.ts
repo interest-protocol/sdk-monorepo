@@ -94,6 +94,10 @@ export const PACKAGES = {
       original: normalizeSuiAddress('0x0'),
       latest: normalizeSuiAddress('0x0'),
     },
+    IPX_COIN_STANDARD: {
+      original: normalizeSuiAddress('0x0'),
+      latest: normalizeSuiAddress('0x0'),
+    },
   },
   [Network.MAINNET]: {
     MEMEZ_FUN: {
@@ -166,6 +170,14 @@ export const PACKAGES = {
       ),
       latest: normalizeSuiAddress(
         '0x07cb654d8ae22bd18fff08f322d99fdf9d1673712812329b127430b155dc44ff'
+      ),
+    },
+    IPX_COIN_STANDARD: {
+      original: normalizeSuiAddress(
+        '0xa204bd0d48d49fc7b8b05c8ef3f3ae63d1b22d157526a88b91391b41e6053157'
+      ),
+      latest: normalizeSuiAddress(
+        '0xa204bd0d48d49fc7b8b05c8ef3f3ae63d1b22d157526a88b91391b41e6053157'
       ),
     },
   },
