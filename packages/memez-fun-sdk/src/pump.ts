@@ -940,7 +940,6 @@ export class MemezPumpSDK extends MemezBaseSDK {
     return {
       hasNextPage: caps.hasNextPage,
       nextCursor: caps.nextCursor,
-      total: caps.data.length,
       caps: caps.data.map((cap) => parseMetadataCap(cap.data!)),
     };
   }
