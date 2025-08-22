@@ -115,3 +115,10 @@ export interface BurnMemeArgs extends MaybeTx {
   memeCoin: ObjectInput;
   coinType: string;
 }
+
+export interface UpdatePoolMetadataArgs extends MaybeTx {
+  pool: string | MemezPool<PumpState>;
+  newNames: string[];
+  newValues: string[];
+  metadataCap: string;
+}

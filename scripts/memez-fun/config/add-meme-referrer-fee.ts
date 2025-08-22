@@ -11,7 +11,7 @@ import { getEnv } from '../utils.script';
   const tx2 = configSdk.setMemeReferrerFee({
     authWitness,
     configKey: configKeys.XPUMP,
-    fee: 10,
+    fee: 0,
     tx: tx as any,
   });
 

@@ -39,8 +39,8 @@ const IPX =
       // last index is the creator fee nominal
       [10_000, 0n],
       // last index is the swap fee in bps
-      [5_000n, 3_250n, 1_250n, 500n, 25n],
-      [5_000n, 3_250n, 1_250n, 500n, 75n],
+      [5_000n, 3_250n, 1_250n, 500n, 0n],
+      [5_000n, 3_250n, 1_250n, 500n, 100n],
       // last index is the migration fee bps
       [5_000n, 3_250n, 1_250n, 500n, 500n],
       // Allocations

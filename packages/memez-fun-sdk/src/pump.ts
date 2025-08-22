@@ -4,6 +4,7 @@ import {
   isValidSuiAddress,
   isValidSuiObjectId,
   normalizeStructTag,
+  SUI_FRAMEWORK_ADDRESS,
 } from '@mysten/sui/utils';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import invariant from 'tiny-invariant';
@@ -31,6 +32,7 @@ import {
   GetMetadataCapsArgs,
   UpdateMetadataArgs,
   BurnMemeArgs,
+  UpdatePoolMetadataArgs,
 } from './types/pump.types';
 import { parseMetadataCap } from './utils';
 
@@ -1053,6 +1055,45 @@ export class MemezPumpSDK extends MemezBaseSDK {
         tx.pure.string(value),
       ],
       typeArguments: [metadataCap.coinType],
+    });
+
+    return {
+      tx,
+    };
+  }
+
+  async updatePoolMetadata({
+    pool,
+    newNames,
+    newValues,
+    metadataCap,
+    tx = new Transaction(),
+  }: UpdatePoolMetadataArgs) {
+    if (typeof pool === 'string') {
+      invariant(
+        isValidSuiObjectId(pool),
+        'pool must be a valid Sui objectId or MemezPool'
+      );
+      pool = await this.getPumpPool(pool);
+    }
+
+    const vecMap = tx.moveCall({
+      package: SUI_FRAMEWORK_ADDRESS,
+      module: 'vec_map',
+      function: 'from_keys_values',
+      arguments: [
+        tx.pure.vector('string', newNames),
+        tx.pure.vector('string', newValues),
+      ],
+      typeArguments: ['0x1::string::String', '0x1::string::String'],
+    });
+
+    tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.FUN,
+      function: 'update_metadata',
+      arguments: [tx.object(pool.objectId), tx.object(metadataCap), vecMap],
+      typeArguments: [pool.curveType, pool.memeCoinType, pool.quoteCoinType],
     });
 
     return {
