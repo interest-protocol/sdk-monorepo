@@ -17,7 +17,7 @@ import { getEnv } from '../utils.script';
     arguments: [
       tx.sharedObjectRef(sharedObjects.VERSION({ mutable: true })),
       authWitness,
-      tx.pure.u64(3),
+      tx.pure.u64(4),
     ],
   });
 

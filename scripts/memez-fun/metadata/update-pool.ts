@@ -8,12 +8,12 @@ import { Transaction } from '@mysten/sui/transactions';
     owner: keypair.toSuiAddress(),
   });
 
-  const cap = caps.caps[20]!;
+  const cap = caps.caps[19]!;
 
   // Need to ask graphQl {cap.coinType} to get poolId
   // Or go from poolId => sdk.getPumpPool => find {cap.ipxTreasury} === {pool.ipxMemeCoinTreasury}
   const poolId =
-    '0xf5cba9418542203b0f299574fe58693f5c5fea58124d22014c3b53a393b165de';
+    '0x7bb6af7618693ae6eef994eb76a595abdc7d0c156370ecebf65960d8a950d416';
 
   const { tx } = await pumpSdk.updatePoolMetadata({
     pool: poolId,

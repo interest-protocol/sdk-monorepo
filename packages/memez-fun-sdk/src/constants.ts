@@ -105,7 +105,7 @@ export const PACKAGES = {
         '0x779829966a2e8642c310bed79e6ba603e5acd3c31b25d7d4511e2c9303d6e3ef'
       ),
       latest: normalizeSuiAddress(
-        '0x611fa080bb1e4df0bc63b63e0b43356bfad95170defeda74fcaca3e0babe8260'
+        '0x7e6aa6e179466ab2814425a780b122575296d011119fa69d27f289f5a28814bd'
       ),
     },
     MEMEZ: {
