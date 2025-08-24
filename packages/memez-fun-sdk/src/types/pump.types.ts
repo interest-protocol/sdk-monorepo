@@ -118,7 +118,7 @@ export interface BurnMemeArgs extends MaybeTx {
 
 export interface UpdatePoolMetadataArgs extends MaybeTx {
   pool: string | MemezPool<PumpState>;
-  newNames: string[];
-  newValues: string[];
+  newMetadata: Record<string, string>;
   metadataCap: string;
+  configurationKey?: ConfigKey;
 }

@@ -9,7 +9,12 @@ import {
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import invariant from 'tiny-invariant';
 import { ObjectInput } from '@interest-protocol/sui-core-sdk';
-import { Progress } from './constants';
+import {
+  CONFIG_KEY,
+  CONFIG_KEYS,
+  MEMEZ_V3_PACKAGE_ID,
+  Progress,
+} from './constants';
 import { MemezBaseSDK } from './sdk';
 import {
   DevClaimArgs,
@@ -1064,9 +1069,9 @@ export class MemezPumpSDK extends MemezBaseSDK {
 
   async updatePoolMetadata({
     pool,
-    newNames,
-    newValues,
+    newMetadata,
     metadataCap,
+    configurationKey = CONFIG_KEYS.mainnet.XPUMP,
     tx = new Transaction(),
   }: UpdatePoolMetadataArgs) {
     if (typeof pool === 'string') {
@@ -1077,19 +1082,25 @@ export class MemezPumpSDK extends MemezBaseSDK {
       pool = await this.getPumpPool(pool);
     }
 
+    const updatedMetadata = {
+      ...pool.metadata,
+      ...newMetadata,
+      [CONFIG_KEY]: configurationKey,
+    };
+
     const vecMap = tx.moveCall({
       package: SUI_FRAMEWORK_ADDRESS,
       module: 'vec_map',
       function: 'from_keys_values',
       arguments: [
-        tx.pure.vector('string', newNames),
-        tx.pure.vector('string', newValues),
+        tx.pure.vector('string', Object.keys(updatedMetadata)),
+        tx.pure.vector('string', Object.values(updatedMetadata)),
       ],
       typeArguments: ['0x1::string::String', '0x1::string::String'],
     });
 
     tx.moveCall({
-      package: this.packages.MEMEZ_FUN.latest,
+      package: MEMEZ_V3_PACKAGE_ID,
       module: this.modules.FUN,
       function: 'update_metadata',
       arguments: [tx.object(pool.objectId), tx.object(metadataCap), vecMap],

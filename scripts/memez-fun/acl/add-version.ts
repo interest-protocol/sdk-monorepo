@@ -13,7 +13,7 @@ import { getEnv } from '../utils.script';
   tx.moveCall({
     package: packages.MEMEZ_FUN.latest,
     module: 'memez_allowed_versions',
-    function: 'add',
+    function: 'remove',
     arguments: [
       tx.sharedObjectRef(sharedObjects.VERSION({ mutable: true })),
       authWitness,

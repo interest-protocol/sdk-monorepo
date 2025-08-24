@@ -396,3 +396,8 @@ export const BLUEFIN_CONFIG = {
   ),
   initialSharedVersion: '406496849',
 };
+
+export const MEMEZ_V3_PACKAGE_ID =
+  '0x611fa080bb1e4df0bc63b63e0b43356bfad95170defeda74fcaca3e0babe8260';
+
+export const CONFIG_KEY = 'config_key';
