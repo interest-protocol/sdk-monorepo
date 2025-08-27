@@ -18,14 +18,9 @@ import {
   GetFeesArgs,
   GetPoolMetadataArgs,
   MemezFunSharedObjects,
-  MemezPool,
-  PumpState,
   SdkConstructorArgs,
 } from './types/memez.types';
 import { getSdkDefaultArgs, parsePumpPool } from './utils';
-
-const pumpPoolCache = new Map<string, MemezPool<PumpState>>();
-const metadataCache = new Map<string, Record<string, string>>();
 
 export class MemezBaseSDK extends SuiCoreSDK {
   packages: (typeof PACKAGES)[Network];
@@ -188,10 +183,6 @@ export class MemezBaseSDK extends SuiCoreSDK {
   public async getPumpPool(pumpId: string) {
     pumpId = normalizeSuiObjectId(pumpId);
 
-    if (pumpPoolCache.has(pumpId)) {
-      return pumpPoolCache.get(pumpId)!;
-    }
-
     const suiObject = await this.client.getObject({
       id: pumpId,
       options: { showContent: true },
@@ -216,8 +207,6 @@ export class MemezBaseSDK extends SuiCoreSDK {
       memeCoinType: pool.memeCoinType,
       curveType: pool.curveType,
     });
-
-    pumpPoolCache.set(pumpId, pool);
 
     return pool;
   }
@@ -268,10 +257,6 @@ export class MemezBaseSDK extends SuiCoreSDK {
   }: GetPoolMetadataArgs): Promise<Record<string, string>> {
     poolId = normalizeSuiObjectId(poolId);
 
-    if (metadataCache.has(poolId)) {
-      return metadataCache.get(poolId)!;
-    }
-
     const tx = new Transaction();
 
     tx.moveCall({
@@ -301,8 +286,6 @@ export class MemezBaseSDK extends SuiCoreSDK {
       },
       {} as Record<string, string>
     );
-
-    metadataCache.set(poolId, metadata);
 
     return metadata;
   }
