@@ -1071,7 +1071,7 @@ export class MemezPumpSDK extends MemezBaseSDK {
     pool,
     newMetadata,
     metadataCap,
-    configurationKey = CONFIG_KEYS.mainnet.XPUMP,
+    fieldsToRemove = [],
     tx = new Transaction(),
   }: UpdatePoolMetadataArgs) {
     if (typeof pool === 'string') {
@@ -1082,11 +1082,26 @@ export class MemezPumpSDK extends MemezBaseSDK {
       pool = await this.getPumpPool(pool);
     }
 
+    invariant(
+      'config_key' in pool.metadata,
+      'Pool is bricked, metadata does not have config_key'
+    );
+
+    invariant(
+      !fieldsToRemove.includes('config_key'),
+      'fieldsToRemove must not include config_key'
+    );
+
     const updatedMetadata = {
       ...pool.metadata,
       ...newMetadata,
-      [CONFIG_KEY]: configurationKey,
     };
+
+    fieldsToRemove.push('config_key');
+
+    fieldsToRemove.forEach((field) => {
+      delete updatedMetadata[field];
+    });
 
     const vecMap = tx.moveCall({
       package: SUI_FRAMEWORK_ADDRESS,
@@ -1100,8 +1115,8 @@ export class MemezPumpSDK extends MemezBaseSDK {
     });
 
     tx.moveCall({
-      package: MEMEZ_V3_PACKAGE_ID,
-      module: this.modules.FUN,
+      package: this.packages.WRAPPER.latest,
+      module: this.modules.WRAPPER,
       function: 'update_metadata',
       arguments: [tx.object(pool.objectId), tx.object(metadataCap), vecMap],
       typeArguments: [pool.curveType, pool.memeCoinType, pool.quoteCoinType],

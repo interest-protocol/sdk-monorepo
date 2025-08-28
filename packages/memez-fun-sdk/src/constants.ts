@@ -16,6 +16,7 @@ export enum Modules {
   STABLE = 'memez_stable',
   PUMP_CONFIG = 'memez_pump_config',
   STABLE_CONFIG = 'memez_stable_config',
+  WRAPPER = 'memez_wrapper',
 }
 
 export enum Treasuries {
@@ -95,6 +96,10 @@ export const PACKAGES = {
       latest: normalizeSuiAddress('0x0'),
     },
     IPX_COIN_STANDARD: {
+      original: normalizeSuiAddress('0x0'),
+      latest: normalizeSuiAddress('0x0'),
+    },
+    WRAPPER: {
       original: normalizeSuiAddress('0x0'),
       latest: normalizeSuiAddress('0x0'),
     },
@@ -180,6 +185,14 @@ export const PACKAGES = {
         '0xa204bd0d48d49fc7b8b05c8ef3f3ae63d1b22d157526a88b91391b41e6053157'
       ),
     },
+    WRAPPER: {
+      original: normalizeSuiAddress(
+        '0xed935cd6edd5827add904e2e8f68994096e7929a6648a5eb47bd8863a4855ac5'
+      ),
+      latest: normalizeSuiAddress(
+        '0xed935cd6edd5827add904e2e8f68994096e7929a6648a5eb47bd8863a4855ac5'
+      ),
+    },
   },
 } as const;
 
@@ -209,6 +222,7 @@ export const OWNED_OBJECTS = {
     XPUMP_MIGRATOR_UPGRADE_CAP: normalizeSuiObjectId('0x0'),
     XPUMP_MIGRATOR_ADMIN: normalizeSuiObjectId('0x0'),
     ROUTER_UPGRADE_CAP: normalizeSuiObjectId('0x0'),
+    WRAPPER_UPGRADE_CAP: normalizeSuiObjectId('0x0'),
   },
   [Network.MAINNET]: {
     MEMEZ_SUPER_ADMIN: normalizeSuiObjectId(
@@ -240,6 +254,9 @@ export const OWNED_OBJECTS = {
     ),
     ROUTER_UPGRADE_CAP: normalizeSuiObjectId(
       '0x0477c7f09abf142a4e8a78309f00127f05cabb87f6c519168ea9579a9dfd9983'
+    ),
+    WRAPPER_UPGRADE_CAP: normalizeSuiObjectId(
+      '0x65e2c13aa3f2cc918a6a53176544fbc8014fb688ddf7cda649286b0985291f0c'
     ),
   },
 } as const;

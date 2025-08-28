@@ -120,5 +120,5 @@ export interface UpdatePoolMetadataArgs extends MaybeTx {
   pool: string | MemezPool<PumpState>;
   newMetadata: Record<string, string>;
   metadataCap: string;
-  configurationKey?: ConfigKey;
+  fieldsToRemove?: string[];
 }

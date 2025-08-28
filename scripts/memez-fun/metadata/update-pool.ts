@@ -18,8 +18,9 @@ import { Transaction } from '@mysten/sui/transactions';
   const { tx } = await pumpSdk.updatePoolMetadata({
     pool: poolId,
     newMetadata: {
-      name: 'prodprod',
+      name: 'well',
     },
+    fieldsToRemove: ['name111'],
     metadataCap: cap.objectId,
   });
 
