@@ -9,7 +9,7 @@ const MANIFEST =
   '0x915cd839f2c87144466c91347c89de81cacce00a61ee5513109c4ce23ed58b13';
 
 (async () => {
-  const { pumpSdk, testnetPoolId } = await getEnv();
+  const { pumpSdk } = await getEnv();
 
   const pools = await pumpSdk.getMultiplePumpPools([SEXA, MANIFEST]);
 
