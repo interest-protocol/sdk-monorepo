@@ -23,6 +23,7 @@ import {
   PumpState,
   SdkConstructorArgs,
 } from './types/memez.types';
+import { Vesting } from './types/vesting.types';
 
 export const getSdkDefaultArgs = (): SdkConstructorArgs => ({
   network: Network.MAINNET,
@@ -401,4 +402,24 @@ export const parseMetadataCap = (x: SuiObjectData): MetadataCap => {
       pathOr('', ['content', 'fields', 'name', 'fields', 'name'], x)
     ),
   };
+};
+
+export const parseVesting = (x: SuiObjectResponse): Vesting => {
+  return {
+    objectId: normalizeSuiObjectId(x.data!.objectId),
+    version: x.data!.version,
+    digest: x.data!.digest,
+    coinType: getCoinTypeFromVesting(x.data?.type!),
+    balance: BigInt(pathOr(0, ['content', 'fields', 'balance'], x.data!)),
+    released: BigInt(pathOr(0, ['content', 'fields', 'released'], x.data!)),
+    start: BigInt(pathOr(0, ['content', 'fields', 'start'], x.data!)),
+    duration: BigInt(pathOr(0, ['content', 'fields', 'duration'], x.data!)),
+    owner: pathOr('', ['content', 'fields', 'owner'], x.data!),
+  };
+};
+
+const getCoinTypeFromVesting = (typeTag: string) => {
+  const m = /<\s*([^,>]+)\s*[,>]/.exec(typeTag);
+  if (!m) throw new Error('No generic found in type tag');
+  return normalizeStructTag(m[1].trim());
 };

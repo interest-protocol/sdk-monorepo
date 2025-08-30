@@ -10,6 +10,7 @@ import {
   TYPES,
   XPumpMigratorSDK,
   MemezWalletSDK,
+  MemezVestingSDK,
 } from '@interest-protocol/memez-fun-sdk';
 import { Network } from '@interest-protocol/sui-core-sdk';
 import { executeTx, keypair, suiClient } from '@interest-protocol/sui-utils';
@@ -21,6 +22,8 @@ const TEST_POOL_ID =
 const xPumpMigratorSdk = new XPumpMigratorSDK();
 
 const walletSdk = new MemezWalletSDK();
+
+const vestingSdk = new MemezVestingSDK();
 
 export const getEnv = async () => {
   const network =
@@ -49,5 +52,6 @@ export const getEnv = async () => {
     xPumpMigratorSdk,
     POW_10_9: 10n ** 9n,
     walletSdk,
+    vestingSdk,
   };
 };

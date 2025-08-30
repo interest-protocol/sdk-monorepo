@@ -9,5 +9,7 @@ export * from './structs';
 export * from './types/memez.types';
 export * from './utils';
 export * from './wallet';
+export * from './vesting';
+export * from './types/vesting.types';
 
 export type { PumpTypes };
