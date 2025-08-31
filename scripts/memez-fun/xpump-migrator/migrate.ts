@@ -2,8 +2,6 @@ import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 import invariant from 'tiny-invariant';
 
 import { getEnv } from '../utils.script';
-import { suiClient } from '@interest-protocol/sui-utils';
-import { logSuccess } from '@interest-protocol/logger';
 
 (async () => {
   const {
@@ -12,7 +10,6 @@ import { logSuccess } from '@interest-protocol/logger';
     pumpSdk,
     keypair,
     testnetPoolId,
-
     xPumpMigratorSdk,
   } = await getEnv();
 

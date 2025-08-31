@@ -98,6 +98,7 @@ export const parsePumpPool = (
         'constant_product',
         'fields',
         'burner',
+        'fields',
         'fee',
         'fields',
         'pos0',
