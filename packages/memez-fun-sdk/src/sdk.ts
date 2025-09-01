@@ -249,6 +249,32 @@ export class MemezBaseSDK extends SuiCoreSDK {
     });
   }
 
+  async getMultiplePoolsBurnTax(innerStates: string[]) {
+    const stateObjects = await this.client.multiGetObjects({
+      ids: innerStates,
+      options: { showContent: true },
+    });
+
+    return stateObjects.map((stateObject) => {
+      return +pathOr(
+        0,
+        [
+          'data',
+          'content',
+          'fields',
+          'constant_product',
+          'fields',
+          'burner',
+          'fields',
+          'fee',
+          'fields',
+          'pos0',
+        ],
+        stateObject
+      );
+    });
+  }
+
   public async getPoolMetadata({
     poolId,
     quoteCoinType,

@@ -5,11 +5,12 @@ import { getEnv } from '../utils.script';
 (async () => {
   const { pumpSdk, testnetPoolId } = await getEnv();
 
-  const pool = await pumpSdk.getPumpPool(
-    '0xe86c53acda5e29ca38ecba156d0538df76b804a57db7cd2fe8023eaa36600cc3'
-  );
+  // Inner state or state id
+  const burnTaxes = await pumpSdk.getMultiplePoolsBurnTax([
+    '0x16e58c67509c4aa00511a33f22da9940a5f5b5b8d9b2f2e2bb2e2dcbe0932301',
+  ]);
 
   logSuccess({
-    pool,
+    burnTaxes,
   });
 })();

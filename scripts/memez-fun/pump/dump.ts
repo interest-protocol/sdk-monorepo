@@ -10,7 +10,7 @@ import { getEnv } from '../utils.script';
   const pool = await pumpSdk.getPumpPool(testnetPoolId);
 
   const memeCoin = coinWithBalance({
-    balance: 100n,
+    balance: 1_000n * 1_000_000_000n,
     type: pool.memeCoinType,
   })(tx);
 
