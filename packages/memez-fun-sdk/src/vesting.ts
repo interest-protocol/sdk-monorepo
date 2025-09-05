@@ -7,6 +7,7 @@ import {
   Vesting,
   ClaimArgs,
   DestroyZeroBalanceArgs,
+  UncheckedDestroyZeroBalanceArgs,
 } from './types/vesting.types';
 import { normalizeSuiObjectId } from '@mysten/sui/utils';
 import { parseVesting } from './utils';
@@ -91,6 +92,22 @@ export class MemezVestingSDK extends MemezBaseSDK {
       function: 'destroy_zero',
       arguments: [tx.object(vestingObject.objectId)],
       typeArguments: [vestingObject.coinType],
+    });
+
+    return { tx };
+  }
+
+  async uncheckedDestroyZeroBalance({
+    tx = new Transaction(),
+    vestingObjectId,
+    coinType,
+  }: UncheckedDestroyZeroBalanceArgs) {
+    tx.moveCall({
+      package: this.packages.VESTING.latest,
+      module: this.#module,
+      function: 'destroy_zero',
+      arguments: [tx.object(vestingObjectId)],
+      typeArguments: [coinType],
     });
 
     return { tx };

@@ -6,7 +6,7 @@ import { getEnv } from '../utils.script';
   const { pumpSdk, testnetPoolId } = await getEnv();
 
   const pool = await pumpSdk.getPumpPool(
-    '0xe86c53acda5e29ca38ecba156d0538df76b804a57db7cd2fe8023eaa36600cc3'
+    '0x5b16d4ab321c41ed841c8f14fa166021770ba0920766b448e1f534b623ccb6a6'
   );
 
   logSuccess({

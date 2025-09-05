@@ -11,7 +11,7 @@ const admin = ADMIN_TO_UPDATE;
   const tx = sdk.setPauseXtoY({
     pool: SUI_USDC_POOL,
     admin,
-    paused: false,
+    paused: true,
   });
 
   await executeTx(tx);

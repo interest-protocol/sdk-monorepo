@@ -27,3 +27,8 @@ export interface ClaimArgs extends MaybeTx {
 export interface DestroyZeroBalanceArgs extends MaybeTx {
   vesting: string | Vesting;
 }
+
+export interface UncheckedDestroyZeroBalanceArgs extends MaybeTx {
+  vestingObjectId: string;
+  coinType: string;
+}
