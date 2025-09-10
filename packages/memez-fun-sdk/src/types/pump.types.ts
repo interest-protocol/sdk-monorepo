@@ -122,3 +122,21 @@ export interface UpdatePoolMetadataArgs extends MaybeTx {
   metadataCap: string;
   fieldsToRemove?: string[];
 }
+
+export interface CalculateAmountInArgs {
+  amountOut: bigint;
+  balanceIn: bigint;
+  balanceOut: bigint;
+}
+
+export interface GetAmountInArgs {
+  amountOut: bigint;
+  virtualLiquidity: bigint;
+  liquidityProvisionBps: number;
+  allocationBps: number;
+  totalSupply: bigint;
+  memeSwapFeeBps: number;
+  quoteSwapFeeBps: number;
+  quoteReferrerFeeBps: number;
+  memeReferrerFeeBps: number;
+}

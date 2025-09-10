@@ -15,7 +15,11 @@ import {
 import { Decimal } from 'decimal.js';
 import { pathOr } from 'ramda';
 
-import { MetadataCap } from './types/pump.types';
+import {
+  MetadataCap,
+  CalculateAmountInArgs,
+  GetAmountInArgs,
+} from './types/pump.types';
 import { XPumpPositionOwner } from './migrators/migrators.types';
 import {
   GetMemeCoinMarketCapArgs,
@@ -423,4 +427,64 @@ const getCoinTypeFromVesting = (typeTag: string) => {
   const m = /<\s*([^,>]+)\s*[,>]/.exec(typeTag);
   if (!m) throw new Error('No generic found in type tag');
   return normalizeStructTag(m[1].trim());
+};
+
+export const calculateAmountIn = ({
+  amountOut,
+  balanceIn,
+  balanceOut,
+}: CalculateAmountInArgs) => {
+  const numerator = balanceIn * amountOut;
+  const denominator = balanceOut - amountOut;
+
+  if (numerator === 0n) return 0n;
+  else return 1n + (numerator - 1n) / denominator;
+};
+
+const MAX_BPS = 10000n;
+
+const mulDivUp = (a: bigint, b: bigint, denominator: bigint) => {
+  const result = (a * b) / denominator;
+
+  const roundUpValue = (a * b) % denominator;
+
+  if (roundUpValue === 0n) return result;
+
+  return result + 1n;
+};
+
+const addFee = (amount: bigint, feeBps: number) => {
+  return mulDivUp(amount, MAX_BPS, MAX_BPS - BigInt(feeBps));
+};
+
+export const getSuiAmountIn = ({
+  amountOut,
+  virtualLiquidity,
+  liquidityProvisionBps,
+  totalSupply,
+  allocationBps,
+  memeSwapFeeBps,
+  quoteSwapFeeBps,
+  quoteReferrerFeeBps,
+  memeReferrerFeeBps,
+}: GetAmountInArgs) => {
+  let memeLiquidity =
+    totalSupply - (BigInt(liquidityProvisionBps) * totalSupply) / MAX_BPS;
+
+  memeLiquidity =
+    memeLiquidity - (BigInt(allocationBps) * totalSupply) / MAX_BPS;
+
+  const quoteAmountIn = calculateAmountIn({
+    amountOut: addFee(
+      addFee(amountOut, memeSwapFeeBps - memeReferrerFeeBps),
+      memeReferrerFeeBps
+    ),
+    balanceIn: virtualLiquidity,
+    balanceOut: memeLiquidity,
+  });
+
+  return addFee(
+    addFee(quoteAmountIn, quoteSwapFeeBps - quoteReferrerFeeBps),
+    quoteReferrerFeeBps
+  );
 };

@@ -7,7 +7,7 @@ import { getEnv } from '../utils.script';
 
   const x = await pumpSdk.quotePump({
     pool: testnetPoolId,
-    amount: 15n * POW_10_9,
+    amount: 2618756589681,
   });
 
   logSuccess('quote-pump', x);

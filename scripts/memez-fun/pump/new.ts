@@ -5,7 +5,7 @@ import invariant from 'tiny-invariant';
 import { getEnv } from '../utils.script';
 
 const TREASURY_CAP =
-  '0x12370e99aeef8295436ceb0700e32cbe1c7796e5430d3bbe78cb5d1a6c4eb962';
+  '0xaab83f940f95889e74ccad3774906cb4614b187624a30b9d8a4d5cfb8a9d619b';
 
 const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
 

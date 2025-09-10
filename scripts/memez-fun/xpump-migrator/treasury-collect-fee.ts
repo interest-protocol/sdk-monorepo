@@ -6,10 +6,10 @@ const TREASURY =
   '0xaab6feadd3236ecc1b4fa34d00356f0f826f5e3d225818cb738ccdf77dcac979';
 
 const MEME_TYPE =
-  '0x8874caed19104ca153d146654bcc3408e531ea7db5cd503bdb194b2b56710119::victory::VICTORY';
+  '0xbb785e1cdb2f70edf17a1248999f4322ac112be6fddff049bd536592213ceda1::x10::X10';
 
 const BLUEFIN_POOL =
-  '0xdf4c1e5ac010573993a38ee334f125ceb80800db3deefadbde2bc9f1deea9722';
+  '0x36ce76842ad2aa160e959c6cd498be201e4b2de33f4278b2f54ad1bb524355be';
 
 (async () => {
   const { network, executeTx, xPumpMigratorSdk } = await getEnv();
