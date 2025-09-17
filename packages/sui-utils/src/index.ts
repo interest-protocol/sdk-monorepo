@@ -35,6 +35,17 @@ export const executeTx = async (tx: Transaction, client = executeClient) => {
   }
 };
 
+export const devInspectTransactionBlock = async (
+  tx: Transaction,
+  sender: string,
+  client = executeClient
+) => {
+  return client.devInspectTransactionBlock({
+    transactionBlock: tx,
+    sender,
+  });
+};
+
 export const sleep = async (ms = 0) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 

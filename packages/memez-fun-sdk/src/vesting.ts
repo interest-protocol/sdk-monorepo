@@ -143,6 +143,9 @@ export class MemezVestingSDK extends MemezBaseSDK {
 
     if (now > vestingObject.start + vestingObject.duration) return total;
 
-    return (total * (now - vestingObject.start)) / vestingObject.duration;
+    return (
+      (total * (now - vestingObject.start)) / vestingObject.duration -
+      vestingObject.released
+    );
   }
 }

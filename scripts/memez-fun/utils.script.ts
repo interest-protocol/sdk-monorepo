@@ -13,11 +13,16 @@ import {
   MemezVestingSDK,
 } from '@interest-protocol/memez-fun-sdk';
 import { Network } from '@interest-protocol/sui-core-sdk';
-import { executeTx, keypair, suiClient } from '@interest-protocol/sui-utils';
+import {
+  executeTx,
+  keypair,
+  suiClient,
+  devInspectTransactionBlock,
+} from '@interest-protocol/sui-utils';
 import { getFullnodeUrl } from '@mysten/sui/client';
 
 const TEST_POOL_ID =
-  '0x08a05f6a17ec2585d3ee25fe7dde06c0311c0f160df57ccdddf3d7a4f98518d9';
+  '0xe8cecd2c50feff41c5c32992c0a6ae327b157fb421851cb6ed634b80aa83b0d0';
 
 const xPumpMigratorSdk = new XPumpMigratorSDK();
 
@@ -53,5 +58,6 @@ export const getEnv = async () => {
     POW_10_9: 10n ** 9n,
     walletSdk,
     vestingSdk,
+    devInspectTransactionBlock,
   };
 };

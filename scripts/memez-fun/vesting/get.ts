@@ -2,7 +2,7 @@ import { getEnv } from '../utils.script';
 import { logSuccess } from '@interest-protocol/logger';
 
 const VESTING_ID =
-  '0xa34b451da6fcb7c03ebf9851d925ae02c19c571c065c4356f73a8622a76a466f';
+  '0x5538814072dcbe4adfdf09edbd9f1d29140950905c46e23e1a3405a2ed775712';
 
 (async () => {
   const { vestingSdk } = await getEnv();

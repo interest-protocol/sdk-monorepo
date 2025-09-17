@@ -5,7 +5,7 @@ import invariant from 'tiny-invariant';
 import { getEnv } from '../utils.script';
 
 const TREASURY_CAP =
-  '0xaab83f940f95889e74ccad3774906cb4614b187624a30b9d8a4d5cfb8a9d619b';
+  '0x26cce250b39573ffd16f90f263562d24756dc2095eb312d498821946fdc38220';
 
 const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
 
@@ -18,7 +18,7 @@ const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
 
   const firstPurchase = coinWithBalance({
     balance: 0,
-    type: '0xfd35b96db6d0eb23b8dc4eae97d330d8de85d36ee6a9ab0b35dcb2b7b86cd22a::fake_sui::FAKE_SUI',
+    type: '0x2::sui::SUI',
   });
 
   const { tx: tx2, metadataCap } = await pumpSdk.newPool({
@@ -34,11 +34,10 @@ const TOTAL_SUPPLY = 1_000_000_000_000_000_000n;
     migrationWitness: migratorWitnesses.XPUMP,
     totalSupply: TOTAL_SUPPLY,
     isProtected: false,
-    quoteCoinType:
-      '0xfd35b96db6d0eb23b8dc4eae97d330d8de85d36ee6a9ab0b35dcb2b7b86cd22a::fake_sui::FAKE_SUI',
-    burnTax: 6_000,
+    quoteCoinType: '0x2::sui::SUI',
+    burnTax: 0,
     virtualLiquidity: 500 * 1_000_000_000,
-    targetQuoteLiquidity: 2_500 * 1_000_000_000,
+    targetQuoteLiquidity: 1_000_000_000,
     liquidityProvision: 1_350,
     firstPurchase,
   });

@@ -1,5 +1,4 @@
 import invariant from 'tiny-invariant';
-
 import { getEnv } from '../utils.script';
 
 (async () => {

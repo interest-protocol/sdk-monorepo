@@ -126,7 +126,7 @@ export const PACKAGES = {
         '0x1a184ecf7d0652f8f1285a3b0b2e644bf86ae1742317fcdaa9b11a7f3a30bd70'
       ),
       latest: normalizeSuiAddress(
-        '0x64601690d789081d2e9aea9e6fa4d42e9732ba1b2278b81512b9ddf03e6e562a'
+        '0x099f7776a4d55ae21051a80e2de713389782ef30b610245c7606ded178036636'
       ),
     },
     TEST_MEMEZ_MIGRATOR: {

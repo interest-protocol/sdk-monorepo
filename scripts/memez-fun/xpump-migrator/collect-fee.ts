@@ -7,19 +7,18 @@ import { getEnv } from '../utils.script';
 
   invariant(network === 'mainnet', 'Only mainnet is supported');
 
-  const positions = await xPumpMigratorSdk.getPositions({
-    owner: keypair.toSuiAddress(),
-  });
-
-  invariant(positions.positions.length > 0, 'No positions found');
-
   const { tx, suiCoin } = xPumpMigratorSdk.collectFee({
-    bluefinPool: positions.positions[0]?.blueFinPoolId ?? '',
-    memeCoinType: positions.positions[0]?.memeCoinType ?? '',
-    positionOwner: positions.positions[0]?.objectId ?? '',
+    bluefinPool:
+      '0x35906d9576411093fba737f99a8b563b31cc5cd7a29879cc7cd58ff7384c7631',
+    memeCoinType:
+      '0x41fe50c9964878ca4274fa798b1118084c2b1af4c3933d3d2ecce63e0611b017::last_test::LAST_TEST',
+    positionOwner:
+      '0x1f6b7ed76647cb9e0d11c127bb5fd586749cd5768a61c55233c8469c7dc13595',
   });
 
   tx.transferObjects([suiCoin], tx.pure.address(keypair.toSuiAddress()));
 
-  await executeTx(tx);
+  tx.setSender(keypair.toSuiAddress());
+
+  executeTx(tx);
 })();
