@@ -76,5 +76,6 @@ export const getEnv = async () => {
     POW_10_9: 10n ** 9n,
     devInspectTransactionBlock,
     pools: POOLS,
+    PACKAGE_ID,
   };
 };
