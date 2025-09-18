@@ -17,8 +17,9 @@
     { "path": "./packages/sui-utils" },
     { "path": "./packages/blizzard-sdk" },
     { "path": "./packages/logger" },
-    { "path": "./packages/v3-core" }
-  ,
+    { "path": "./packages/v3-core" },
+    { "path": "./packages/vortex" },
     { "path": "./packages/aptos-v3" },
-    { "path": "./packages/tide-amm" }]
+    { "path": "./packages/tide-amm" }
+  ]
 }

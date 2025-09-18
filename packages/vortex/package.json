@@ -1,0 +1,50 @@
+{
+  "name": "@interest-protocol/vortex-sdk",
+  "version": "0.0.1-alpha.0",
+  "description": "",
+  "main": "index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "rollup -c rollup.config.js",
+    "build:types": "tsc --emitDeclarationOnly"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mysten/sui": "^1.36.2",
+    "@polymedia/suitcase-core": "^0.0.67",
+    "poseidon-hash": "^1.0.1",
+    "poseidon-lite": "^0.3.0",
+    "ramda": "^0.30.1",
+    "tiny-invariant": "^1.3.3"
+  },
+  "devDependencies": {
+    "@interest-protocol/prettier-config": "workspace:*",
+    "@interest-protocol/typescript-config": "workspace:*",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.3.5"
+  },
+  "packageManager": "pnpm@9.1.0+sha512.67f5879916a9293e5cf059c23853d571beaf4f753c707f40cb22bed5fb1578c6aad3b6c4107ccb3ba0b35be003eb621a16471ac836c87beb53f9d54bb4612724",
+  "publishConfig": {
+    "access": "public",
+    "dependencies": {
+     "@mysten/sui": "^1.36.2",
+      "@polymedia/suitcase-core": "^0.0.67",
+      "poseidon-hash": "^1.0.1",
+      "poseidon-lite": "^0.3.0",
+      "ramda": "^0.30.1",
+      "tiny-invariant": "^1.3.3"
+    }
+  }
+}
