@@ -138,7 +138,7 @@ export class VortexSdk {
 
     tx.moveCall({
       package: this.packageId,
-      module: Modules.merkleTree,
+      module: Modules.vortex,
       function: 'root',
       arguments: [
         tx.sharedObjectRef({
@@ -153,10 +153,8 @@ export class VortexSdk {
       [bcs.u256()],
     ]);
 
-    invariant(result[0], 'Root devInspectAndGetReturnValues failed');
+    invariant(result[0][0], 'Root devInspectAndGetReturnValues failed');
 
-    const [root] = result[0][0].map((value: string) => BigInt(value));
-
-    return root;
+    return BigInt(result[0][0]);
   }
 }

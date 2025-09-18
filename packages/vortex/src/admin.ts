@@ -9,6 +9,7 @@ import {
   SetWithdrawFeeArgs,
   SetGroth16VkArgs,
 } from './vortex.types';
+import invariant from 'tiny-invariant';
 
 export class VortexAdminSdk {
   private packageId: string;
@@ -45,6 +46,7 @@ export class VortexAdminSdk {
   }
 
   setDepositFee({ tx = new Transaction(), pool, fee }: SetDepositFeeArgs) {
+    invariant(fee >= 0 && fee <= 10_000, 'Fee must be between 0 and 10_000');
     if (typeof pool === 'object') {
       tx.moveCall({
         package: this.packageId,
@@ -69,6 +71,7 @@ export class VortexAdminSdk {
   }
 
   setWithdrawFee({ tx = new Transaction(), pool, fee }: SetWithdrawFeeArgs) {
+    invariant(fee >= 0 && fee <= 10_000, 'Fee must be between 0 and 10_000');
     if (typeof pool === 'object') {
       tx.moveCall({
         package: this.packageId,

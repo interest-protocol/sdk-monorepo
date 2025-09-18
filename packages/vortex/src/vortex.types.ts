@@ -68,13 +68,13 @@ export interface SharePoolArgs {
 export interface SetDepositFeeArgs {
   tx?: Transaction;
   pool: TransactionResult | string;
-  fee: bigint;
+  fee: number;
 }
 
 export interface SetWithdrawFeeArgs {
   tx?: Transaction;
   pool: TransactionResult | string;
-  fee: bigint;
+  fee: number;
 }
 
 export interface SetGroth16VkArgs {

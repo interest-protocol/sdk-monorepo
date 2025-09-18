@@ -12,8 +12,16 @@ export const testnetSuiClient = new SuiClient({
   url: getFullnodeUrl('testnet'),
 });
 
+export const devnetSuiClient = new SuiClient({
+  url: getFullnodeUrl('devnet'),
+});
+
 const executeClient =
-  process.env.WEB_3_NETWORK === 'mainnet' ? suiClient : testnetSuiClient;
+  process.env.WEB_3_NETWORK === 'mainnet'
+    ? suiClient
+    : process.env.WEB_3_NETWORK === 'testnet'
+      ? testnetSuiClient
+      : devnetSuiClient;
 
 export const executeTx = async (tx: Transaction, client = executeClient) => {
   const result = await client.signAndExecuteTransaction({
