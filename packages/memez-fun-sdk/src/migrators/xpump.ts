@@ -371,7 +371,7 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
     const suiCoin = tx.moveCall({
       package: this.packageId,
       module: this.module,
-      function: 'collect_fee',
+      function: 'collect_all_fees',
       arguments: [
         tx.sharedObjectRef(
           SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
@@ -408,7 +408,7 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
     tx.moveCall({
       package: this.packageId,
       module: this.module,
-      function: 'collect_fee',
+      function: 'collect_all_fees',
       arguments: [
         tx.sharedObjectRef(
           SHARED_OBJECTS[Network.MAINNET].XPUMP_MIGRATOR_CONFIG({
