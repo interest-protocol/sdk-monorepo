@@ -22,7 +22,12 @@ import {
 import { getFullnodeUrl } from '@mysten/sui/client';
 
 const TEST_POOL_ID =
-  '0xe8cecd2c50feff41c5c32992c0a6ae327b157fb421851cb6ed634b80aa83b0d0';
+  '0x76c17e2e848b9c770f70f9ec3a8efc399f2ba5268743a05002f74db32bb4f32a';
+
+export const FAKE_SUI_TYPE_ARG =
+  '0xfd35b96db6d0eb23b8dc4eae97d330d8de85d36ee6a9ab0b35dcb2b7b86cd22a::fake_sui::FAKE_SUI';
+
+const POW_9 = 10n ** 9n;
 
 const xPumpMigratorSdk = new XPumpMigratorSDK();
 
@@ -59,5 +64,7 @@ export const getEnv = async () => {
     walletSdk,
     vestingSdk,
     devInspectTransactionBlock,
+    fakeSuiTypeArg: FAKE_SUI_TYPE_ARG,
+    pow9: POW_9,
   };
 };

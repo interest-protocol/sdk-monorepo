@@ -10,11 +10,11 @@ import { getEnv } from '../utils.script';
 
   const { tx, suiCoin } = xPumpMigratorSdk.collectFee({
     bluefinPool:
-      '0x15a1adef56e1b716c29a6ce7df539fd7b8080da283199c92c6caa6f641a61c3f',
+      '0xe0a0cb9cf19d16a01590420e0bf6351760247ba87916ab1846b5aa36be3122f2',
     memeCoinType:
-      '0xc466c28d87b3d5cd34f3d5c088751532d71a38d93a8aae4551dd56272cfb4355::manifest::MANIFEST',
+      '0xefde5ddb743bd93e68a75e410e985980457b5e8837c7f4afa36ecc12bb91022b::mnm::MNM',
     positionOwner:
-      '0x21c3ad5b1c4df66427d7452b4b8204bfd6544e1f015fd37cc30eac45dfdddf22',
+      '0x23bdcfe9367ee38878d376831a6a9d6718801fbee7e12359bdd6c67c2ea822fc',
   });
 
   tx.transferObjects([suiCoin], tx.pure.address(keypair.toSuiAddress()));
@@ -24,7 +24,7 @@ import { getEnv } from '../utils.script';
   logSuccess(
     await devInspectTransactionBlock(
       tx,
-      '0x40cdfd49d252c798833ddb6e48900b4cd44eeff5f2ee8e5fad76b69b739c3e62'
+      '0x7cd2ee66b1bf2561ba0a8f13515e05d700d4ef90d54adfb6948fec7b0c38a095'
     )
   );
 })();

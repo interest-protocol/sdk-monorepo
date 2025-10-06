@@ -5,11 +5,12 @@ import { getEnv } from '../utils.script';
 (async () => {
   const tx = new Transaction();
 
-  const { pumpSdk, executeTx, testnetPoolId, keypair } = await getEnv();
+  const { pumpSdk, executeTx, testnetPoolId, keypair, pow9, fakeSuiTypeArg } =
+    await getEnv();
 
   const quoteCoin = coinWithBalance({
-    balance: 1_000_000_000 * 1.2,
-    type: '0x2::sui::SUI',
+    balance: 80n * pow9,
+    type: fakeSuiTypeArg,
   });
 
   const { memeCoin, tx: tx2 } = await pumpSdk.pump({

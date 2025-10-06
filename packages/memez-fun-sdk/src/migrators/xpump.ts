@@ -47,6 +47,9 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
 
   positionOwnerType = `${PACKAGES[Network.MAINNET].XPUMP_MIGRATOR.original}::${this.module}::PositionOwner`;
 
+  SUI_COIN_METADATA_ID =
+    '0x9258181f5ceac8dbffb7030890243caed69a9599d2886d957a9cb7656af3bdb3';
+
   constructor(args: SdkConstructorArgs | undefined | null = null) {
     super(args);
 
@@ -215,16 +218,9 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
     quoteCoinType,
     ipxMemeCoinTreasury,
   }: XPumpMigrateArgs) {
-    const [quoteCoinMetadata, memeCoinMetadata] = await Promise.all([
-      this.client.getCoinMetadata({
-        coinType: quoteCoinType,
-      }),
-      this.client.getCoinMetadata({
-        coinType: memeCoinType,
-      }),
-    ]);
-
-    invariant(quoteCoinMetadata?.id, 'Invalid quote coin metadata');
+    const memeCoinMetadata = await this.client.getCoinMetadata({
+      coinType: memeCoinType,
+    });
 
     invariant(memeCoinMetadata?.id, 'Invalid meme coin metadata');
 
@@ -246,7 +242,7 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
         tx.object.clock(),
         tx.object(ipxMemeCoinTreasury),
         tx.object(memeCoinMetadata.id),
-        tx.object(quoteCoinMetadata.id),
+        tx.object(this.SUI_COIN_METADATA_ID),
         migrator,
         this.ownedObject(tx, feeCoin),
       ],

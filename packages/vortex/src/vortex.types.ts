@@ -47,9 +47,11 @@ export interface DepositArgs {
 export interface WithdrawArgs {
   tx?: Transaction;
   pool: Pool;
-  proofPointsHex: string;
+  a: string;
+  b: string;
+  c: string;
   root: bigint;
-  nullifier: bigint;
+  nullifierHash: bigint;
   recipient: string;
   relayer: string;
   relayerFee: bigint;

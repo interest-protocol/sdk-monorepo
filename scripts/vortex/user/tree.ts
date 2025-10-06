@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { logSuccess } from '@interest-protocol/logger';
 import { getEnv } from '../utils.script';
 import { pathOr } from 'ramda';
@@ -7,7 +5,7 @@ import { pathOr } from 'ramda';
 (async () => {
   const { suiClient, PACKAGE_ID } = await getEnv();
 
-  const targetIndex = '1';
+  const targetIndex = '0';
 
   const events = await suiClient.queryEvents({
     query: {
@@ -30,36 +28,15 @@ import { pathOr } from 'ramda';
       txDigest: e.id.txDigest,
     }));
 
-  console.log(`Found ${deposits.length} total deposits\n`);
+  const filtered = deposits.filter((d) => d.index <= parseInt(targetIndex));
 
-  if (targetIndex !== undefined) {
-    const filtered = deposits.filter((d) => d.index <= parseInt(targetIndex));
-    console.log(
-      `Filtering up to index ${targetIndex}: ${filtered.length} deposits`
-    );
+  const treeState = {
+    targetIndex: parseInt(targetIndex),
+    allCommitments: filtered.map((d) => ({
+      index: d.index,
+      commitment: d.commitment,
+    })),
+  };
 
-    const treeState = {
-      targetIndex: parseInt(targetIndex),
-      allCommitments: filtered.map((d) => ({
-        index: d.index,
-        commitment: d.commitment,
-      })),
-    };
-
-    logSuccess('Tree state', JSON.stringify(treeState, null, 2));
-  } else {
-    // Display all deposits
-    console.log('All deposits:');
-    console.log('Index | Commitment | Value (SUI) | Transaction');
-    console.log('------|------------|-------------|------------');
-
-    for (const deposit of deposits) {
-      const value = (parseInt(deposit.value) / 1e9).toFixed(1);
-      const shortCommitment = deposit.commitment.substring(0, 20) + '...';
-      const shortTx = deposit.txDigest.substring(0, 10) + '...';
-      console.log(
-        `${deposit.index.toString().padEnd(5)} | ${shortCommitment} | ${value.padEnd(11)} | ${shortTx}`
-      );
-    }
-  }
+  logSuccess('Tree state', JSON.stringify(treeState, null, 2));
 })();

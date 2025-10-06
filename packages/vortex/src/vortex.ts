@@ -14,7 +14,7 @@ import {
   addressToFieldElement,
   bigIntToFieldElement,
 } from './utils';
-import { poseidon2, poseidon1 } from 'poseidon-lite';
+import { poseidon2 } from 'poseidon-lite';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import { Transaction, coinWithBalance } from '@mysten/sui/transactions';
 import { fromHex, SUI_TYPE_ARG } from '@mysten/sui/utils';
@@ -39,8 +39,8 @@ export class VortexSdk {
     return generateRandomNote();
   }
 
-  poseidon1(a: bigint | number | string) {
-    return poseidon1([a]);
+  async hashNullifier(a: string) {
+    return poseidon2([a, a]);
   }
 
   poseidon2(a: bigint | number | string, b: bigint | number | string) {
@@ -86,9 +86,11 @@ export class VortexSdk {
   }
 
   withdraw({
-    proofPointsHex,
+    a,
+    b,
+    c,
     root,
-    nullifier,
+    nullifierHash,
     recipient,
     relayer,
     relayerFee,
@@ -102,15 +104,16 @@ export class VortexSdk {
       module: Modules.proof,
       function: 'new',
       arguments: [
-        tx.pure.vector('u8', fromHex(proofPointsHex)),
-        tx.pure.vector('u8', []),
-        tx.pure.vector('u8', []),
+        tx.pure.vector('u8', fromHex(a)),
+        tx.pure.vector('u8', fromHex(b)),
+        tx.pure.vector('u8', fromHex(c)),
         tx.pure.u256(root),
-        tx.pure.u256(nullifier),
+        tx.pure.u256(nullifierHash),
         tx.pure.address(recipient),
         tx.pure.u64(pool),
         tx.pure.address(relayer),
         tx.pure.u64(relayerFee),
+        tx.pure.address(poolObject.objectId),
       ],
     });
 
