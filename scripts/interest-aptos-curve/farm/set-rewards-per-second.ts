@@ -5,7 +5,7 @@ import { executeTx } from '@interest-protocol/movement-utils';
 
 import { curveMainnetSDK } from '../utils';
 
-const REWARDS_PER_SECOND = 0.0600214947089947;
+const REWARDS_PER_SECOND = 0.0350710978835978;
 
 const rewardsPerSecond = BigInt(Math.floor(REWARDS_PER_SECOND * 1e8));
 
