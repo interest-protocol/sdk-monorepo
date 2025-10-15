@@ -24,12 +24,7 @@ const IPX =
 
   const deadAddress = normalizeSuiAddress('0x0');
 
-  const [blast, giveRep, memez, nexa] = await Promise.all([
-    walletSdk.getWalletAddress(BLAST),
-    walletSdk.getWalletAddress(GIVEREP),
-    walletSdk.getWalletAddress(IPX),
-    walletSdk.getWalletAddress(NEXA),
-  ]);
+  const [blast] = await Promise.all([walletSdk.getWalletAddress(BLAST)]);
 
   const tx2 = configSdk.setFees({
     authWitness,
@@ -39,21 +34,16 @@ const IPX =
       // last index is the creator fee nominal
       [10_000, 0n],
       // last index is the swap fee in bps
-      [5_000n, 3_250n, 1_250n, 500n, 0n],
-      [5_000n, 3_250n, 1_250n, 500n, 100n],
+      [10_000n, 0n, 0n],
+      [8_500n, 1_500n, 120n],
       // last index is the migration fee bps
-      [5_000n, 3_250n, 1_250n, 500n, 500n],
+      [10_000n, 0n, 500n],
       // Allocations
-      [10_000n, 300n],
+      [10_000n, 0n, 500n],
       // Vesting period
-      [0n],
+      [0n, 0n],
     ],
-    recipients: [
-      [deadAddress],
-      [blast!, giveRep!, memez!, nexa!],
-      [blast!, giveRep!, memez!, nexa!],
-      [blast!],
-    ],
+    recipients: [[deadAddress], [blast!], [blast!], [blast!]],
   });
 
   await executeTx(tx2);

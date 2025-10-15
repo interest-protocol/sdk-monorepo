@@ -9,12 +9,7 @@ import {
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import invariant from 'tiny-invariant';
 import { ObjectInput } from '@interest-protocol/sui-core-sdk';
-import {
-  CONFIG_KEY,
-  CONFIG_KEYS,
-  MEMEZ_V3_PACKAGE_ID,
-  Progress,
-} from './constants';
+import { Progress } from './constants';
 import { MemezBaseSDK } from './sdk';
 import {
   DevClaimArgs,
@@ -38,6 +33,7 @@ import {
   UpdateMetadataArgs,
   BurnMemeArgs,
   UpdatePoolMetadataArgs,
+  NewPumpPoolWithDevRevenueShareArgs,
 } from './types/pump.types';
 import { parseMetadataCap } from './utils';
 
@@ -379,6 +375,217 @@ export class MemezPumpSDK extends MemezBaseSDK {
         tx.pure.vector('address', stakeHolders),
         tx.pure.bool(isProtected),
         tx.pure.address(developer),
+        this.getVersion(tx),
+      ],
+      typeArguments: [
+        normalizeStructTag(memeCoinType),
+        normalizeStructTag(quoteCoinType),
+        normalizeStructTag(configurationKey),
+        normalizeStructTag(migrationWitness),
+      ],
+    });
+
+    invariant(pool, 'Pool not returned from new');
+
+    const firstBuy = tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.PUMP,
+      function: 'dev_purchase_claim',
+      arguments: [pool, this.getVersion(tx)],
+      typeArguments: [
+        normalizeStructTag(memeCoinType),
+        normalizeStructTag(quoteCoinType),
+      ],
+    });
+
+    tx.moveCall({
+      package: '0x2',
+      module: 'transfer',
+      function: 'public_share_object',
+      arguments: [pool],
+      typeArguments: [
+        `${this.packages.MEMEZ_FUN.original}::memez_fun::MemezFun<${this.packages.MEMEZ_FUN.original}::memez_pump::Pump, ${normalizeStructTag(memeCoinType)},${normalizeStructTag(quoteCoinType)}>`,
+      ],
+    });
+
+    return {
+      metadataCap,
+      tx,
+      firstBuy,
+    };
+  }
+
+  public async newPoolWithDevRevenueShare({
+    tx = new Transaction(),
+    creationSuiFee = this.zeroSuiCoin(tx),
+    memeCoinTreasuryCap,
+    totalSupply = this.defaultSupply,
+    isProtected = false,
+    metadata = {},
+    configurationKey,
+    migrationWitness,
+    quoteCoinType,
+    burnTax = 0,
+    virtualLiquidity,
+    targetQuoteLiquidity,
+    liquidityProvision = 0,
+  }: NewPumpPoolWithDevRevenueShareArgs) {
+    invariant(
+      burnTax >= 0 && burnTax <= this.MAX_BPS,
+      'burnTax must be between 0 and 10_000'
+    );
+    invariant(
+      liquidityProvision >= 0 && liquidityProvision <= this.MAX_BPS,
+      'liquidityProvision must be between 0 and 10_000'
+    );
+
+    invariant(BigInt(totalSupply) > 0n, 'totalSupply must be greater than 0');
+
+    const { memeCoinType, coinMetadataId } =
+      await this.getCoinMetadataAndType(memeCoinTreasuryCap);
+
+    const memezMetadata = tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.METADATA,
+      function: 'new',
+      arguments: [
+        tx.object(coinMetadataId),
+        tx.pure.vector('string', Object.keys(metadata)),
+        tx.pure.vector('string', Object.values(metadata)),
+      ],
+      typeArguments: [normalizeStructTag(memeCoinType)],
+    });
+
+    const pumpConfig = tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.PUMP_CONFIG,
+      function: 'new',
+      arguments: [
+        tx.pure.vector('u64', [
+          burnTax,
+          virtualLiquidity,
+          targetQuoteLiquidity,
+          liquidityProvision,
+          totalSupply,
+        ]),
+      ],
+    });
+
+    const [pool, metadataCap] = tx.moveCall({
+      package: this.packages.ROUTER.latest,
+      module: this.modules.ROUTER,
+      function: 'new_with_developer_stake_holder',
+      arguments: [
+        tx.sharedObjectRef(
+          this.sharedObjects.WALLET_REGISTRY({ mutable: true })
+        ),
+        tx.sharedObjectRef(this.sharedObjects.CONFIG({ mutable: false })),
+        this.ownedObject(tx, memeCoinTreasuryCap),
+        this.ownedObject(tx, creationSuiFee),
+        pumpConfig,
+        this.ownedObject(tx, this.zeroCoin(tx, quoteCoinType.toString())),
+        memezMetadata,
+        tx.pure.bool(isProtected),
+        this.getVersion(tx),
+      ],
+      typeArguments: [
+        normalizeStructTag(memeCoinType),
+        normalizeStructTag(quoteCoinType),
+        normalizeStructTag(configurationKey),
+        normalizeStructTag(migrationWitness),
+      ],
+    });
+
+    invariant(pool, 'Pool not returned from new');
+
+    tx.moveCall({
+      package: '0x2',
+      module: 'transfer',
+      function: 'public_share_object',
+      arguments: [pool],
+      typeArguments: [
+        `${this.packages.MEMEZ_FUN.original}::memez_fun::MemezFun<${this.packages.MEMEZ_FUN.original}::memez_pump::Pump, ${normalizeStructTag(memeCoinType)},${normalizeStructTag(quoteCoinType)}>`,
+      ],
+    });
+
+    return {
+      metadataCap,
+      tx,
+    };
+  }
+
+  public async newPoolWithFirstBuyAndDevRevenueShare({
+    tx = new Transaction(),
+    creationSuiFee = this.zeroSuiCoin(tx),
+    memeCoinTreasuryCap,
+    totalSupply = this.defaultSupply,
+    isProtected = false,
+    firstPurchase,
+    metadata = {},
+    configurationKey,
+    migrationWitness,
+    quoteCoinType,
+    burnTax = 0,
+    virtualLiquidity,
+    targetQuoteLiquidity,
+    liquidityProvision = 0,
+  }: NewPumpPoolWithDevRevenueShareArgs & { firstPurchase: ObjectInput }) {
+    invariant(
+      burnTax >= 0 && burnTax <= this.MAX_BPS,
+      'burnTax must be between 0 and 10_000'
+    );
+    invariant(
+      liquidityProvision >= 0 && liquidityProvision <= this.MAX_BPS,
+      'liquidityProvision must be between 0 and 10_000'
+    );
+
+    invariant(BigInt(totalSupply) > 0n, 'totalSupply must be greater than 0');
+
+    const { memeCoinType, coinMetadataId } =
+      await this.getCoinMetadataAndType(memeCoinTreasuryCap);
+
+    const memezMetadata = tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.METADATA,
+      function: 'new',
+      arguments: [
+        tx.object(coinMetadataId),
+        tx.pure.vector('string', Object.keys(metadata)),
+        tx.pure.vector('string', Object.values(metadata)),
+      ],
+      typeArguments: [normalizeStructTag(memeCoinType)],
+    });
+
+    const pumpConfig = tx.moveCall({
+      package: this.packages.MEMEZ_FUN.latest,
+      module: this.modules.PUMP_CONFIG,
+      function: 'new',
+      arguments: [
+        tx.pure.vector('u64', [
+          burnTax,
+          virtualLiquidity,
+          targetQuoteLiquidity,
+          liquidityProvision,
+          totalSupply,
+        ]),
+      ],
+    });
+
+    const [pool, metadataCap] = tx.moveCall({
+      package: this.packages.ROUTER.latest,
+      module: this.modules.ROUTER,
+      function: 'new_with_developer_stake_holder',
+      arguments: [
+        tx.sharedObjectRef(
+          this.sharedObjects.WALLET_REGISTRY({ mutable: true })
+        ),
+        tx.sharedObjectRef(this.sharedObjects.CONFIG({ mutable: false })),
+        this.ownedObject(tx, memeCoinTreasuryCap),
+        this.ownedObject(tx, creationSuiFee),
+        pumpConfig,
+        this.ownedObject(tx, firstPurchase),
+        memezMetadata,
+        tx.pure.bool(isProtected),
         this.getVersion(tx),
       ],
       typeArguments: [

@@ -17,6 +17,7 @@ export enum Modules {
   PUMP_CONFIG = 'memez_pump_config',
   STABLE_CONFIG = 'memez_stable_config',
   WRAPPER = 'memez_wrapper',
+  ROUTER = 'memez_router',
 }
 
 export enum Treasuries {
@@ -174,7 +175,7 @@ export const PACKAGES = {
         '0x07cb654d8ae22bd18fff08f322d99fdf9d1673712812329b127430b155dc44ff'
       ),
       latest: normalizeSuiAddress(
-        '0x07cb654d8ae22bd18fff08f322d99fdf9d1673712812329b127430b155dc44ff'
+        '0xa36cd2f2ab1d47c884cf564df780691a461e05bda1db1528772f8d0694cb184d'
       ),
     },
     IPX_COIN_STANDARD: {

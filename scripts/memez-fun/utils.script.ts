@@ -22,7 +22,7 @@ import {
 import { getFullnodeUrl } from '@mysten/sui/client';
 
 const TEST_POOL_ID =
-  '0x76c17e2e848b9c770f70f9ec3a8efc399f2ba5268743a05002f74db32bb4f32a';
+  '0xe7414cd57c699f9ef904edd0954dca8110f0c30112be8785d0b8e37eb0139e67';
 
 export const FAKE_SUI_TYPE_ARG =
   '0xfd35b96db6d0eb23b8dc4eae97d330d8de85d36ee6a9ab0b35dcb2b7b86cd22a::fake_sui::FAKE_SUI';

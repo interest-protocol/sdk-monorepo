@@ -31,6 +31,21 @@ export interface NewPumpPoolArgs extends MaybeTx {
   liquidityProvision?: number;
 }
 
+export interface NewPumpPoolWithDevRevenueShareArgs extends MaybeTx {
+  memeCoinTreasuryCap: string | ObjectRef;
+  creationSuiFee?: ObjectInput;
+  totalSupply?: U64;
+  isProtected?: boolean;
+  metadata?: Record<string, string>;
+  configurationKey: ConfigKey;
+  migrationWitness: MigratorWitness | string;
+  quoteCoinType: string | StructTag;
+  burnTax?: number;
+  virtualLiquidity: U64;
+  targetQuoteLiquidity: U64;
+  liquidityProvision?: number;
+}
+
 export interface NewUncheckedPumpPoolArgs extends NewPumpPoolArgs {
   coinMetadataId: string;
   memeCoinType: string;

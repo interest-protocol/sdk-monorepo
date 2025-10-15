@@ -57,4 +57,13 @@ export class SuiCoreSDK {
       typeArguments: [SUI_TYPE_ARG],
     });
   }
+
+  zeroCoin(tx: Transaction, coinType: string) {
+    return tx.moveCall({
+      package: SUI_FRAMEWORK_ADDRESS,
+      module: 'coin',
+      function: 'zero',
+      typeArguments: [coinType],
+    });
+  }
 }

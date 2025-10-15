@@ -9,7 +9,7 @@ import { getEnv } from '../utils.script';
     await getEnv();
 
   const quoteCoin = coinWithBalance({
-    balance: 80n * pow9,
+    balance: 120n * pow9,
     type: fakeSuiTypeArg,
   });
 
