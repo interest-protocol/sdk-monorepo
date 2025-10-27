@@ -1,10 +1,13 @@
-import { bcs } from '@mysten/sui/bcs';
 import { Transaction } from '@mysten/sui/transactions';
 import { normalizeStructTag, SUI_FRAMEWORK_ADDRESS } from '@mysten/sui/utils';
-import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
+
 import invariant from 'tiny-invariant';
 
-import { SdkConstructorArgs, GetDecimalsArgs } from './farms.types';
+import {
+  SdkConstructorArgs,
+  GetDecimalsArgs,
+  SetRewardsPerSecondArgs,
+} from './farms.types';
 import { Network, SuiCoreSDK } from '@interest-protocol/sui-core-sdk';
 import { SuiClient } from '@mysten/sui/client';
 import { PACKAGES, Modules } from './constants';
@@ -19,8 +22,6 @@ export class FarmsSDK extends SuiCoreSDK {
   network: Network;
 
   client: SuiClient;
-
-  defaultSupply = 1_000_000_000_000_000_000n;
 
   constructor(args: SdkConstructorArgs | undefined | null = null) {
     super();
@@ -52,7 +53,7 @@ export class FarmsSDK extends SuiCoreSDK {
   }
 
   public newFarm({
-    authWitness,
+    adminWitness,
     stakeCoinType,
     adminWitnessType,
     rewardTypes,
@@ -72,7 +73,7 @@ export class FarmsSDK extends SuiCoreSDK {
       function: 'request_new_farm',
       arguments: [
         this.ownedObject(tx, decimals),
-        this.ownedObject(tx, authWitness),
+        this.ownedObject(tx, adminWitness),
       ],
       typeArguments: [
         normalizeStructTag(stakeCoinType),
@@ -139,6 +140,41 @@ export class FarmsSDK extends SuiCoreSDK {
       tx,
       decimals,
     };
+  }
+
+  public async setRewardsPerSecond({
+    farmId,
+    rewardType,
+    adminWitness,
+    rewardsPerSecond,
+    tx = new Transaction(),
+  }: SetRewardsPerSecondArgs) {
+    const farm =
+      typeof farmId === 'string' ? await this.getFarm(farmId) : farmId;
+
+    invariant(
+      farm.rewardTypes.includes(normalizeStructTag(rewardType)),
+      `Reward type ${rewardType} not found in farm ${farmId}`
+    );
+
+    tx.moveCall({
+      package: this.packages.INTEREST_FARM.latest,
+      module: this.modules.FARM,
+      function: 'set_rewards_per_second',
+      arguments: [
+        tx.object(farm.objectId),
+        tx.object.clock(),
+        this.ownedObject(tx, adminWitness),
+        tx.pure.u64(rewardsPerSecond),
+      ],
+      typeArguments: [
+        normalizeStructTag(farm.stakeCoinType),
+        normalizeStructTag(rewardType),
+        normalizeStructTag(farm.adminType),
+      ],
+    });
+
+    return { tx };
   }
 
   public async getFarm(farmId: string) {

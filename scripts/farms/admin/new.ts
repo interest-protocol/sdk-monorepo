@@ -29,7 +29,7 @@ const STAKE_TYPE =
     adminWitnessType: memezTypes.MEMEZ_OTW,
     rewardTypes: [fakeSuiTypeArg],
     decimals,
-    authWitness,
+    adminWitness: authWitness,
   });
 
   await executeTx(tx3);

@@ -7,7 +7,7 @@ export interface SdkConstructorArgs {
 }
 
 export interface NewFarmArgs extends MaybeTx {
-  authWitness: ObjectInput;
+  adminWitness: ObjectInput;
   stakeCoinType: string;
   adminWitnessType: string;
   rewardTypes: string[];
@@ -39,9 +39,10 @@ export interface InterestFarm {
 }
 
 export interface SetRewardsPerSecondArgs extends MaybeTx {
-  farmId: string;
-  rewardTypes: string[];
+  farmId: string | InterestFarm;
+  rewardType: string;
   rewardsPerSecond: bigint;
+  adminWitness: ObjectInput;
 }
 
 export interface RewardDataNativeType {
