@@ -217,6 +217,7 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
     feeCoin,
     quoteCoinType,
     ipxMemeCoinTreasury,
+    quoteMetadataId,
   }: XPumpMigrateArgs) {
     const memeCoinMetadata = await this.client.getCoinMetadata({
       coinType: memeCoinType,
@@ -242,7 +243,7 @@ export class XPumpMigratorSDK extends MemezBaseSDK {
         tx.object.clock(),
         tx.object(ipxMemeCoinTreasury),
         tx.object(memeCoinMetadata.id),
-        tx.object(this.SUI_COIN_METADATA_ID),
+        tx.object(quoteMetadataId || this.SUI_COIN_METADATA_ID),
         migrator,
         this.ownedObject(tx, feeCoin),
       ],

@@ -28,6 +28,7 @@ export interface XPumpMigrateArgs extends MaybeTx {
   feeCoinType: string;
   ipxMemeCoinTreasury: string;
   feeCoin: ObjectInput;
+  quoteMetadataId?: string;
 }
 
 export interface XPumpMigrateWithLiquidityArgs extends MaybeTx {

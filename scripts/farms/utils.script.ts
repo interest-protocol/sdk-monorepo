@@ -1,16 +1,7 @@
 import {
-  CONFIG_KEYS,
-  ConfigSDK,
   makeMemezAclSdk,
-  MemezPumpSDK,
-  MIGRATOR_WITNESSES,
-  OWNED_OBJECTS,
-  PACKAGES,
-  SHARED_OBJECTS,
-  TYPES,
-  XPumpMigratorSDK,
-  MemezWalletSDK,
-  MemezVestingSDK,
+  OWNED_OBJECTS as MemezOwnedObjects,
+  TYPES as MemezTypes,
 } from '@interest-protocol/memez-fun-sdk';
 import { Network } from '@interest-protocol/sui-core-sdk';
 import {
@@ -20,20 +11,15 @@ import {
   devInspectTransactionBlock,
 } from '@interest-protocol/sui-utils';
 import { getFullnodeUrl } from '@mysten/sui/client';
+import { FarmsSDK, PACKAGES, OWNED_OBJECTS } from '@interest-protocol/farms';
 
-const TEST_POOL_ID =
-  '0x3ca9ecc6a4b1de0f8cf1f0e2f263e54d7e6efc91652e5b4108a9b41dd98a7439';
+const TEST_FARM_ID =
+  '0xe18603192330eb80be38041eeedf7f7c821f0d75dc3a829c8b247fbd54a319f8';
 
 export const FAKE_SUI_TYPE_ARG =
   '0xfd35b96db6d0eb23b8dc4eae97d330d8de85d36ee6a9ab0b35dcb2b7b86cd22a::fake_sui::FAKE_SUI';
 
 const POW_9 = 10n ** 9n;
-
-const xPumpMigratorSdk = new XPumpMigratorSDK();
-
-const walletSdk = new MemezWalletSDK();
-
-const vestingSdk = new MemezVestingSDK();
 
 export const getEnv = async () => {
   const network =
@@ -44,27 +30,23 @@ export const getEnv = async () => {
     fullNodeUrl: getFullnodeUrl(network),
   };
 
+  const farmsSdk = new FarmsSDK(payload);
+
   return {
     aclSdk: makeMemezAclSdk(payload),
-    configSdk: new ConfigSDK(payload),
-    pumpSdk: new MemezPumpSDK(payload),
+    memezOwnedObjects: MemezOwnedObjects[network],
+    memezTypes: MemezTypes[network],
+    farmsSdk,
     suiClient,
     executeTx,
     network,
-    migratorWitnesses: MIGRATOR_WITNESSES[network],
     ownedObjects: OWNED_OBJECTS[network],
-    sharedObjects: SHARED_OBJECTS[network],
-    types: TYPES[network],
-    configKeys: CONFIG_KEYS[network],
     packages: PACKAGES[network],
     keypair,
-    testnetPoolId: TEST_POOL_ID,
-    xPumpMigratorSdk,
     POW_10_9: 10n ** 9n,
-    walletSdk,
-    vestingSdk,
     devInspectTransactionBlock,
     fakeSuiTypeArg: FAKE_SUI_TYPE_ARG,
     pow9: POW_9,
+    farmId: TEST_FARM_ID,
   };
 };

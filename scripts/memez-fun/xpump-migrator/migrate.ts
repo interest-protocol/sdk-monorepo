@@ -12,23 +12,22 @@ import { getEnv } from '../utils.script';
     testnetPoolId,
     xPumpMigratorSdk,
     suiClient,
+    fakeSuiTypeArg,
   } = await getEnv();
 
   invariant(network === 'mainnet', 'Only mainnet is supported');
 
   const pool = await pumpSdk.getPumpPool(testnetPoolId);
 
-  console.log(
-    await suiClient.getCoinMetadata({
-      coinType: pool.quoteCoinType,
-    })
-  );
-
   const { tx, migrator } = await pumpSdk.migrate({
     pool: testnetPoolId,
   });
 
   const fee = tx.splitCoins(tx.gas, [0n]);
+
+  const fakeSuiMetadata = await suiClient.getCoinMetadata({
+    coinType: fakeSuiTypeArg,
+  });
 
   const { tx: tx2, suiCoin } = await xPumpMigratorSdk.migrate({
     tx,
@@ -38,6 +37,7 @@ import { getEnv } from '../utils.script';
     ipxMemeCoinTreasury: pool.ipxMemeCoinTreasury,
     memeCoinType: pool.memeCoinType,
     quoteCoinType: pool.quoteCoinType,
+    quoteMetadataId: fakeSuiMetadata!.id!,
   });
 
   tx2.transferObjects([suiCoin], keypair.toSuiAddress());

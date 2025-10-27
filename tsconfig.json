@@ -21,5 +21,6 @@
     { "path": "./packages/vortex" },
     { "path": "./packages/aptos-v3" },
     { "path": "./packages/tide-amm" }
-  ]
+  ,
+    { "path": "./packages/farms" }]
 }
