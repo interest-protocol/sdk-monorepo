@@ -11,8 +11,20 @@ import {
 import { Network, SuiCoreSDK } from '@interest-protocol/sui-core-sdk';
 import { SuiClient } from '@mysten/sui/client';
 import { PACKAGES, Modules } from './constants';
-import { getSdkDefaultArgs, toInterestFarm } from './utils';
-import { NewFarmArgs } from './farms.types';
+import { getSdkDefaultArgs, toInterestFarm, toInterestAccount } from './utils';
+import {
+  NewFarmArgs,
+  PauseArgs,
+  UnpauseArgs,
+  SetEndTimeArgs,
+  AddRewardArgs,
+  NewAccountArgs,
+  DestroyAccountArgs,
+  StakeArgs,
+  UnstakeArgs,
+  HarvestArgs,
+} from './farms.types';
+import BigNumber from 'bignumber.js';
 
 export class FarmsSDK extends SuiCoreSDK {
   packages: (typeof PACKAGES)[Network];
@@ -143,18 +155,17 @@ export class FarmsSDK extends SuiCoreSDK {
   }
 
   public async setRewardsPerSecond({
-    farmId,
+    farm,
     rewardType,
     adminWitness,
     rewardsPerSecond,
     tx = new Transaction(),
   }: SetRewardsPerSecondArgs) {
-    const farm =
-      typeof farmId === 'string' ? await this.getFarm(farmId) : farmId;
+    farm = typeof farm === 'string' ? await this.getFarm(farm) : farm;
 
     invariant(
       farm.rewardTypes.includes(normalizeStructTag(rewardType)),
-      `Reward type ${rewardType} not found in farm ${farmId}`
+      `Reward type ${rewardType} not found in farm ${farm.objectId}`
     );
 
     tx.moveCall({
@@ -187,5 +198,321 @@ export class FarmsSDK extends SuiCoreSDK {
     });
 
     return toInterestFarm(farm);
+  }
+
+  public async pause({
+    farm,
+    adminWitness,
+    tx = new Transaction(),
+  }: PauseArgs) {
+    farm = typeof farm === 'string' ? await this.getFarm(farm) : farm;
+
+    tx.moveCall({
+      package: this.packages.INTEREST_FARM.latest,
+      module: this.modules.FARM,
+      function: 'pause',
+      arguments: [tx.object(farm.objectId), this.ownedObject(tx, adminWitness)],
+      typeArguments: [
+        normalizeStructTag(farm.stakeCoinType),
+        normalizeStructTag(farm.adminType),
+      ],
+    });
+
+    return { tx };
+  }
+
+  public async unpause({
+    farm,
+    adminWitness,
+    tx = new Transaction(),
+  }: UnpauseArgs) {
+    farm = typeof farm === 'string' ? await this.getFarm(farm) : farm;
+
+    tx.moveCall({
+      package: this.packages.INTEREST_FARM.latest,
+      module: this.modules.FARM,
+      function: 'unpause',
+      arguments: [tx.object(farm.objectId), this.ownedObject(tx, adminWitness)],
+      typeArguments: [
+        normalizeStructTag(farm.stakeCoinType),
+        normalizeStructTag(farm.adminType),
+      ],
+    });
+
+    return { tx };
+  }
+
+  public async setEndTime({
+    farm,
+    endTime,
+    adminWitness,
+    rewardType,
+    tx = new Transaction(),
+  }: SetEndTimeArgs) {
+    farm = typeof farm === 'string' ? await this.getFarm(farm) : farm;
+
+    invariant(
+      farm.rewardTypes.includes(normalizeStructTag(rewardType)),
+      `Reward type ${rewardType} not found in farm ${farm.objectId}`
+    );
+
+    tx.moveCall({
+      package: this.packages.INTEREST_FARM.latest,
+      module: this.modules.FARM,
+      function: 'set_end_time',
+      arguments: [
+        tx.object(farm.objectId),
+        tx.object.clock(),
+        this.ownedObject(tx, adminWitness),
+        tx.pure.u64(Math.floor(+endTime.toString())),
+      ],
+      typeArguments: [
+        normalizeStructTag(farm.stakeCoinType),
+        normalizeStructTag(rewardType),
+        normalizeStructTag(farm.adminType),
+      ],
+    });
+
+    return { tx };
+  }
+
+  public async addReward({
+    farm,
+    rewardType,
+    rewardCoin,
+    tx = new Transaction(),
+  }: AddRewardArgs) {
+    farm = typeof farm === 'string' ? await this.getFarm(farm) : farm;
+
+    invariant(
+      farm.rewardTypes.includes(normalizeStructTag(rewardType)),
+      `Reward type ${rewardType} not found in farm ${farm.objectId}`
+    );
+
+    tx.moveCall({
+      package: this.packages.INTEREST_FARM.latest,
+      module: this.modules.FARM,
+      function: 'add_reward',
+      arguments: [
+        tx.object(farm.objectId),
+        tx.object.clock(),
+        this.ownedObject(tx, rewardCoin),
+      ],
+      typeArguments: [
+        normalizeStructTag(farm.stakeCoinType),
+        normalizeStructTag(rewardType),
+      ],
+    });
+
+    return { tx };
+  }
+
+  public async newAccount({ farm, tx = new Transaction() }: NewAccountArgs) {
+    farm = typeof farm === 'string' ? await this.getFarm(farm) : farm;
+
+    const account = tx.moveCall({
+      package: this.packages.INTEREST_FARM.latest,
+      module: this.modules.FARM,
+      function: 'new_account',
+      arguments: [tx.object(farm.objectId)],
+      typeArguments: [normalizeStructTag(farm.stakeCoinType)],
+    });
+
+    return { tx, account };
+  }
+
+  public async getAccounts(owner: string) {
+    const data = [];
+    let hasNextPage = true;
+    let cursor = null;
+    const accounts = await this.client.getOwnedObjects({
+      owner,
+      options: {
+        showContent: true,
+        showType: true,
+      },
+      filter: {
+        Package: this.packages.INTEREST_FARM.original,
+      },
+      limit: 50,
+      cursor,
+    });
+
+    data.push(...accounts.data);
+
+    hasNextPage = accounts.hasNextPage;
+    cursor = accounts.nextCursor;
+
+    while (hasNextPage) {
+      const nextPage = await this.client.getOwnedObjects({
+        owner,
+        options: {
+          showContent: true,
+          showType: true,
+        },
+        filter: {
+          Package: this.packages.INTEREST_FARM.original,
+        },
+        cursor,
+        limit: 50,
+      });
+
+      data.push(...nextPage.data);
+      hasNextPage = nextPage.hasNextPage;
+      cursor = nextPage.nextCursor;
+    }
+
+    return data.map((x) => toInterestAccount(x));
+  }
+
+  public async destroyAccount({
+    account,
+    stakeCoinType,
+    tx = new Transaction(),
+  }: DestroyAccountArgs) {
+    tx.moveCall({
+      package: this.packages.INTEREST_FARM.latest,
+      module: this.modules.FARM,
+      function: 'destroy_account',
+      arguments: [this.ownedObject(tx, account)],
+      typeArguments: [normalizeStructTag(stakeCoinType)],
+    });
+
+    return { tx };
+  }
+
+  public async stake({
+    farm,
+    account,
+    depositCoin,
+    tx = new Transaction(),
+  }: StakeArgs) {
+    farm = typeof farm === 'string' ? await this.getFarm(farm) : farm;
+    account =
+      typeof account === 'string'
+        ? toInterestAccount(
+            await this.client.getObject({
+              id: account,
+              options: {
+                showContent: true,
+                showType: true,
+              },
+            })
+          )
+        : account;
+
+    invariant(
+      account.farm === farm.objectId,
+      `Account ${account.objectId} is not associated with farm ${farm.objectId}`
+    );
+
+    tx.moveCall({
+      package: this.packages.INTEREST_FARM.latest,
+      module: this.modules.FARM,
+      function: 'stake',
+      arguments: [
+        tx.object(account.objectId),
+        tx.object(farm.objectId),
+        tx.object.clock(),
+        this.ownedObject(tx, depositCoin),
+      ],
+      typeArguments: [normalizeStructTag(farm.stakeCoinType)],
+    });
+
+    return { tx };
+  }
+
+  public async unstake({
+    farm,
+    account,
+    amount,
+    tx = new Transaction(),
+  }: UnstakeArgs) {
+    farm = typeof farm === 'string' ? await this.getFarm(farm) : farm;
+    account =
+      typeof account === 'string'
+        ? toInterestAccount(
+            await this.client.getObject({
+              id: account,
+              options: {
+                showContent: true,
+                showType: true,
+              },
+            })
+          )
+        : account;
+
+    invariant(
+      account.farm === farm.objectId,
+      `Account ${account.objectId} is not associated with farm ${farm.objectId}`
+    );
+
+    const amountBigInt = BigInt(
+      new BigNumber(amount.toString()).integerValue().toString()
+    );
+
+    invariant(amountBigInt > 0n, 'Amount must be greater than 0');
+    invariant(
+      amountBigInt <= account.stakeBalance,
+      'Amount must be less than or equal to account balance'
+    );
+
+    const unstakeCoin = tx.moveCall({
+      package: this.packages.INTEREST_FARM.latest,
+      module: this.modules.FARM,
+      function: 'unstake',
+      arguments: [
+        tx.object(account.objectId),
+        tx.object(farm.objectId),
+        tx.object.clock(),
+        tx.pure.u64(amountBigInt),
+      ],
+      typeArguments: [normalizeStructTag(farm.stakeCoinType)],
+    });
+
+    return { tx, unstakeCoin };
+  }
+
+  public async harvest({
+    farm,
+    account,
+    rewardType,
+    tx = new Transaction(),
+  }: HarvestArgs) {
+    farm = typeof farm === 'string' ? await this.getFarm(farm) : farm;
+    account =
+      typeof account === 'string'
+        ? toInterestAccount(
+            await this.client.getObject({
+              id: account,
+              options: {
+                showContent: true,
+                showType: true,
+              },
+            })
+          )
+        : account;
+
+    invariant(
+      account.farm === farm.objectId,
+      `Account ${account.objectId} is not associated with farm ${farm.objectId}`
+    );
+
+    const rewardCoin = tx.moveCall({
+      package: this.packages.INTEREST_FARM.latest,
+      module: this.modules.FARM,
+      function: 'harvest',
+      arguments: [
+        tx.object(account.objectId),
+        tx.object(farm.objectId),
+        tx.object.clock(),
+      ],
+      typeArguments: [
+        normalizeStructTag(farm.stakeCoinType),
+        normalizeStructTag(rewardType),
+      ],
+    });
+
+    return { tx, rewardCoin };
   }
 }

@@ -3,8 +3,13 @@ import { Network } from '@interest-protocol/sui-core-sdk';
 import { getFullnodeUrl } from '@mysten/sui/client';
 import { SuiObjectResponse } from '@mysten/sui/client';
 import { pathOr } from 'ramda';
-import { InterestFarm, Reward, RewardDataNativeType } from './farms.types';
-import { normalizeStructTag } from '@mysten/sui/utils';
+import {
+  InterestFarm,
+  Reward,
+  RewardDataNativeType,
+  InterestAccount,
+} from './farms.types';
+import { normalizeStructTag, normalizeSuiObjectId } from '@mysten/sui/utils';
 
 export const getSdkDefaultArgs = (): SdkConstructorArgs => ({
   network: Network.MAINNET,
@@ -36,6 +41,9 @@ export const toInterestFarm = (value: SuiObjectResponse): InterestFarm => {
         value
       )
     ),
+    totalStakeAmount: BigInt(
+      pathOr(0, ['data', 'content', 'fields', 'total_stake_amount'], value)
+    ),
     rewardTypes: pathOr(
       [{ type: '', fields: [{ name: '' }] as any }],
       ['data', 'content', 'fields', 'rewards'],
@@ -66,6 +74,52 @@ export const toInterestFarm = (value: SuiObjectResponse): InterestFarm => {
         };
       },
       {} as Record<string, Reward>
+    ),
+  };
+};
+
+export const toInterestAccount = (
+  value: SuiObjectResponse
+): InterestAccount => {
+  return {
+    objectId: pathOr('', ['data', 'objectId'], value),
+    objectType: pathOr('', ['data', 'type'], value),
+    farm: normalizeSuiObjectId(
+      pathOr('', ['data', 'content', 'fields', 'farm'], value)
+    ),
+    stakeBalance: BigInt(
+      pathOr(0, ['data', 'content', 'fields', 'balance'], value)
+    ),
+    stakeCoinType: extractStakeCoinType(pathOr('', ['data', 'type'], value))!,
+    rewards: pathOr(
+      [],
+      ['data', 'content', 'fields', 'rewards', 'fields', 'contents'],
+      value
+    ).reduce(
+      (acc, reward) => {
+        return {
+          ...acc,
+          [normalizeStructTag(
+            pathOr('', ['fields', 'key', 'fields', 'name'], reward)
+          )]: BigInt(pathOr(0, ['fields', 'value'], reward)),
+        };
+      },
+      {} as Record<string, bigint>
+    ),
+    rewardDebts: pathOr(
+      [],
+      ['data', 'content', 'fields', 'reward_debts', 'fields', 'contents'],
+      value
+    ).reduce(
+      (acc, reward) => {
+        return {
+          ...acc,
+          [normalizeStructTag(
+            pathOr('', ['fields', 'key', 'fields', 'name'], reward)
+          )]: BigInt(pathOr(0, ['fields', 'value'], reward)),
+        };
+      },
+      {} as Record<string, bigint>
     ),
   };
 };

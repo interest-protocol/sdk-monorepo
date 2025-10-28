@@ -1,4 +1,4 @@
-import { Network } from '@interest-protocol/sui-core-sdk';
+import { Network, U64 } from '@interest-protocol/sui-core-sdk';
 import { MaybeTx, ObjectInput } from '@interest-protocol/sui-core-sdk';
 
 export interface SdkConstructorArgs {
@@ -36,10 +36,11 @@ export interface InterestFarm {
   adminType: string;
   rewardData: Record<string, Reward>;
   stakeCoinType: string;
+  totalStakeAmount: bigint;
 }
 
 export interface SetRewardsPerSecondArgs extends MaybeTx {
-  farmId: string | InterestFarm;
+  farm: InterestFarm | string;
   rewardType: string;
   rewardsPerSecond: bigint;
   adminWitness: ObjectInput;
@@ -65,4 +66,64 @@ export interface RewardDataNativeType {
       };
     };
   };
+}
+
+export interface PauseArgs extends MaybeTx {
+  farm: InterestFarm | string;
+  adminWitness: ObjectInput;
+}
+
+export interface UnpauseArgs extends MaybeTx {
+  farm: InterestFarm | string;
+  adminWitness: ObjectInput;
+}
+
+export interface SetEndTimeArgs extends MaybeTx {
+  farm: InterestFarm | string;
+  endTime: U64;
+  adminWitness: ObjectInput;
+  rewardType: string;
+}
+
+export interface AddRewardArgs extends MaybeTx {
+  farm: InterestFarm | string;
+  rewardType: string;
+  rewardCoin: ObjectInput;
+}
+
+export interface NewAccountArgs extends MaybeTx {
+  farm: InterestFarm | string;
+}
+
+export interface InterestAccount {
+  objectId: string;
+  objectType: string;
+  farm: string;
+  stakeBalance: bigint;
+  stakeCoinType: string;
+  rewards: Record<string, bigint>;
+  rewardDebts: Record<string, bigint>;
+}
+
+export interface DestroyAccountArgs extends MaybeTx {
+  account: ObjectInput;
+  stakeCoinType: string;
+}
+
+export interface StakeArgs extends MaybeTx {
+  farm: InterestFarm | string;
+  account: InterestAccount | string;
+  depositCoin: ObjectInput;
+}
+
+export interface UnstakeArgs extends MaybeTx {
+  farm: InterestFarm | string;
+  account: InterestAccount | string;
+  amount: U64;
+}
+
+export interface HarvestArgs extends MaybeTx {
+  farm: InterestFarm | string;
+  account: InterestAccount | string;
+  rewardType: string;
 }

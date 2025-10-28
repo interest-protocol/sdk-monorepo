@@ -8,18 +8,17 @@ import { getEnv } from '../utils.script';
     memezOwnedObjects,
     executeTx,
     farmId,
-    pow9,
   } = await getEnv();
 
   const { tx, authWitness } = await aclSdk.signIn({
     admin: memezOwnedObjects.ADMIN,
   });
 
-  const { tx: tx2 } = await farmsSdk.setRewardsPerSecond({
+  const { tx: tx2 } = await farmsSdk.setEndTime({
     tx: tx as any,
     farm: farmId,
     rewardType: fakeSuiTypeArg,
-    rewardsPerSecond: (3_000n * pow9) / 604800n,
+    endTime: new Date().getTime() + 604800000,
     adminWitness: authWitness,
   });
 
