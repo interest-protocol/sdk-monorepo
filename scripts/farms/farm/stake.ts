@@ -8,7 +8,7 @@ import { coinWithBalance } from '@mysten/sui/transactions';
   const data = await farmsSdk.getAccounts(keypair.toSuiAddress());
 
   const depositCoin = coinWithBalance({
-    balance: 10n * pow9,
+    balance: 1n * pow9,
     type: data[0]!.stakeCoinType,
   });
 

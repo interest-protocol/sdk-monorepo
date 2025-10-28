@@ -1,8 +1,8 @@
 import { Transaction } from '@mysten/sui/transactions';
 import { normalizeStructTag, SUI_FRAMEWORK_ADDRESS } from '@mysten/sui/utils';
-
+import { bcs } from '@mysten/sui/bcs';
 import invariant from 'tiny-invariant';
-
+import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import {
   SdkConstructorArgs,
   GetDecimalsArgs,
@@ -23,6 +23,7 @@ import {
   StakeArgs,
   UnstakeArgs,
   HarvestArgs,
+  InterestAccount,
 } from './farms.types';
 import BigNumber from 'bignumber.js';
 
@@ -365,6 +366,18 @@ export class FarmsSDK extends SuiCoreSDK {
     return data.map((x) => toInterestAccount(x));
   }
 
+  public async idToInterestAccount(ids: string[]) {
+    const objects = await this.client.multiGetObjects({
+      ids,
+      options: {
+        showContent: true,
+        showType: true,
+      },
+    });
+
+    return objects.map((x) => toInterestAccount(x));
+  }
+
   public async destroyAccount({
     account,
     stakeCoinType,
@@ -514,5 +527,102 @@ export class FarmsSDK extends SuiCoreSDK {
     });
 
     return { tx, rewardCoin };
+  }
+
+  public async multiAccountPendingRewards(accounts: InterestAccount[]) {
+    const tx = new Transaction();
+
+    accounts.forEach((account) => {
+      const rewards = Object.keys(account.rewards);
+
+      rewards.forEach((rewardType) => {
+        tx.moveCall({
+          package: this.packages.INTEREST_FARM.latest,
+          module: this.modules.FARM,
+          function: 'pending_rewards',
+          arguments: [
+            tx.object(account.objectId),
+            tx.object(account.farm),
+            tx.object.clock(),
+          ],
+          typeArguments: [
+            normalizeStructTag(account.stakeCoinType),
+            normalizeStructTag(rewardType),
+          ],
+        });
+      });
+    });
+
+    const allRewards = accounts
+      .map((account) => Object.keys(account.rewards))
+      .flat();
+
+    const result = await devInspectAndGetReturnValues(
+      this.client,
+      tx,
+      allRewards.map(() => [bcs.U64])
+    );
+
+    return accounts.map((account) => {
+      const r = result.splice(0, Object.keys(account.rewards).length);
+
+      return {
+        account: account.objectId,
+
+        rewards: allRewards
+          .splice(0, Object.keys(account.rewards).length)
+          .map((rewardType, index) => ({
+            rewardType: rewardType,
+            amount: BigInt(r[index]![0] as string),
+          })),
+      };
+    });
+  }
+
+  public async pendingRewards(account: InterestAccount | string) {
+    account =
+      typeof account === 'string'
+        ? toInterestAccount(
+            await this.client.getObject({
+              id: account,
+              options: {
+                showContent: true,
+                showType: true,
+              },
+            })
+          )
+        : account;
+
+    const tx = new Transaction();
+
+    const rewards = Object.keys(account.rewards);
+
+    rewards.forEach((rewardType) => {
+      tx.moveCall({
+        package: this.packages.INTEREST_FARM.latest,
+        module: this.modules.FARM,
+        function: 'pending_rewards',
+        arguments: [
+          tx.object(account.objectId),
+          tx.object(account.farm),
+          tx.object.clock(),
+        ],
+        typeArguments: [
+          normalizeStructTag(account.stakeCoinType),
+          normalizeStructTag(rewardType),
+        ],
+      });
+    });
+
+    const result = await devInspectAndGetReturnValues(
+      this.client,
+      tx,
+      rewards.map(() => [bcs.U64])
+    );
+
+    return result.map(([pendingReward], index) => ({
+      rewardType: rewards[index]!,
+      amount: BigInt(pendingReward as string),
+    }));
   }
 }

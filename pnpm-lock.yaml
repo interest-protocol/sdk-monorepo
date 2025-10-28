@@ -204,8 +204,8 @@ importers:
         specifier: ^1.36.2
         version: 1.37.2(typescript@5.8.3)
       '@polymedia/suitcase-core':
-        specifier: ^0.0.36
-        version: 0.0.36(@mysten/sui@1.37.2(typescript@5.8.3))
+        specifier: ^0.0.67
+        version: 0.0.67(@mysten/sui@1.37.2(typescript@5.8.3))
       bignumber.js:
         specifier: ^9.3.0
         version: 9.3.0
