@@ -3,7 +3,7 @@ import { getEnv } from '../utils.script';
 (async () => {
   const {
     farmsSdk,
-    fakeSuiTypeArg,
+    manifestType,
     aclSdk,
     memezOwnedObjects,
     executeTx,
@@ -18,8 +18,8 @@ import { getEnv } from '../utils.script';
   const { tx: tx2 } = await farmsSdk.setRewardsPerSecond({
     tx: tx as any,
     farm: farmId,
-    rewardType: fakeSuiTypeArg,
-    rewardsPerSecond: (3_000n * pow9) / 604800n,
+    rewardType: manifestType,
+    rewardsPerSecond: (pow9 * 10n) / 86400n,
     adminWitness: authWitness,
   });
 

@@ -36,7 +36,7 @@ export interface InterestFarm {
   adminType: string;
   rewardData: Record<string, Reward>;
   stakeCoinType: string;
-  totalStakeAmount: bigint;
+  totalStakedAmount: bigint;
 }
 
 export interface SetRewardsPerSecondArgs extends MaybeTx {

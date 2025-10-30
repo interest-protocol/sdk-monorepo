@@ -8,7 +8,7 @@ import { getEnv } from '../utils.script';
   const { tx, unstakeCoin } = await farmsSdk.unstake({
     farm: farmId,
     account: data[0]!.objectId,
-    amount: 3n * pow9,
+    amount: (1n * pow9) / 10n,
   });
 
   tx.transferObjects([unstakeCoin], keypair.toSuiAddress());

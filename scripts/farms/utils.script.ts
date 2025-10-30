@@ -11,10 +11,17 @@ import {
   devInspectTransactionBlock,
 } from '@interest-protocol/sui-utils';
 import { getFullnodeUrl } from '@mysten/sui/client';
-import { FarmsSDK, PACKAGES, OWNED_OBJECTS } from '@interest-protocol/farms';
+import {
+  FarmsSDK,
+  PACKAGES,
+  OWNED_OBJECTS,
+  FARMS,
+} from '@interest-protocol/farms';
 
-const TEST_FARM_ID =
-  '0xe18603192330eb80be38041eeedf7f7c821f0d75dc3a829c8b247fbd54a319f8';
+export const MANIFEST_TYPE =
+  '0xc466c28d87b3d5cd34f3d5c088751532d71a38d93a8aae4551dd56272cfb4355::manifest::MANIFEST';
+
+const TEST_FARM_ID = FARMS[Network.MAINNET][MANIFEST_TYPE].objectId;
 
 export const FAKE_SUI_TYPE_ARG =
   '0xfd35b96db6d0eb23b8dc4eae97d330d8de85d36ee6a9ab0b35dcb2b7b86cd22a::fake_sui::FAKE_SUI';
@@ -48,5 +55,6 @@ export const getEnv = async () => {
     fakeSuiTypeArg: FAKE_SUI_TYPE_ARG,
     pow9: POW_9,
     farmId: TEST_FARM_ID,
+    manifestType: MANIFEST_TYPE,
   };
 };

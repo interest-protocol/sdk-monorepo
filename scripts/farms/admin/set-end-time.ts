@@ -3,7 +3,7 @@ import { getEnv } from '../utils.script';
 (async () => {
   const {
     farmsSdk,
-    fakeSuiTypeArg,
+    manifestType,
     aclSdk,
     memezOwnedObjects,
     executeTx,
@@ -17,8 +17,8 @@ import { getEnv } from '../utils.script';
   const { tx: tx2 } = await farmsSdk.setEndTime({
     tx: tx as any,
     farm: farmId,
-    rewardType: fakeSuiTypeArg,
-    endTime: new Date().getTime() + 604800000,
+    rewardType: manifestType,
+    endTime: new Date().getTime() + 86400,
     adminWitness: authWitness,
   });
 

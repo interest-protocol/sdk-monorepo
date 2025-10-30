@@ -169,22 +169,42 @@ export class FarmsSDK extends SuiCoreSDK {
       `Reward type ${rewardType} not found in farm ${farm.objectId}`
     );
 
-    tx.moveCall({
-      package: this.packages.INTEREST_FARM.latest,
-      module: this.modules.FARM,
-      function: 'set_rewards_per_second',
-      arguments: [
-        tx.object(farm.objectId),
-        tx.object.clock(),
-        this.ownedObject(tx, adminWitness),
-        tx.pure.u64(rewardsPerSecond),
-      ],
-      typeArguments: [
-        normalizeStructTag(farm.stakeCoinType),
-        normalizeStructTag(rewardType),
-        normalizeStructTag(farm.adminType),
-      ],
-    });
+    if (
+      normalizeStructTag(rewardType) === normalizeStructTag(farm.stakeCoinType)
+    ) {
+      tx.moveCall({
+        package: this.packages.INTEREST_FARM_UTILS.latest,
+        module: this.modules.FARM_UTILS,
+        function: 'set_rewards_per_second',
+        arguments: [
+          tx.object(farm.objectId),
+          tx.object.clock(),
+          this.ownedObject(tx, adminWitness),
+          tx.pure.u64(rewardsPerSecond),
+        ],
+        typeArguments: [
+          normalizeStructTag(farm.stakeCoinType),
+          normalizeStructTag(farm.adminType),
+        ],
+      });
+    } else {
+      tx.moveCall({
+        package: this.packages.INTEREST_FARM.latest,
+        module: this.modules.FARM,
+        function: 'set_rewards_per_second',
+        arguments: [
+          tx.object(farm.objectId),
+          tx.object.clock(),
+          this.ownedObject(tx, adminWitness),
+          tx.pure.u64(rewardsPerSecond),
+        ],
+        typeArguments: [
+          normalizeStructTag(farm.stakeCoinType),
+          normalizeStructTag(rewardType),
+          normalizeStructTag(farm.adminType),
+        ],
+      });
+    }
 
     return { tx };
   }
@@ -257,22 +277,42 @@ export class FarmsSDK extends SuiCoreSDK {
       `Reward type ${rewardType} not found in farm ${farm.objectId}`
     );
 
-    tx.moveCall({
-      package: this.packages.INTEREST_FARM.latest,
-      module: this.modules.FARM,
-      function: 'set_end_time',
-      arguments: [
-        tx.object(farm.objectId),
-        tx.object.clock(),
-        this.ownedObject(tx, adminWitness),
-        tx.pure.u64(Math.floor(+endTime.toString())),
-      ],
-      typeArguments: [
-        normalizeStructTag(farm.stakeCoinType),
-        normalizeStructTag(rewardType),
-        normalizeStructTag(farm.adminType),
-      ],
-    });
+    if (
+      normalizeStructTag(rewardType) === normalizeStructTag(farm.stakeCoinType)
+    ) {
+      tx.moveCall({
+        package: this.packages.INTEREST_FARM_UTILS.latest,
+        module: this.modules.FARM_UTILS,
+        function: 'set_end_time',
+        arguments: [
+          tx.object(farm.objectId),
+          tx.object.clock(),
+          this.ownedObject(tx, adminWitness),
+          tx.pure.u64(Math.floor(+endTime.toString())),
+        ],
+        typeArguments: [
+          normalizeStructTag(farm.stakeCoinType),
+          normalizeStructTag(farm.adminType),
+        ],
+      });
+    } else {
+      tx.moveCall({
+        package: this.packages.INTEREST_FARM.latest,
+        module: this.modules.FARM,
+        function: 'set_end_time',
+        arguments: [
+          tx.object(farm.objectId),
+          tx.object.clock(),
+          this.ownedObject(tx, adminWitness),
+          tx.pure.u64(Math.floor(+endTime.toString())),
+        ],
+        typeArguments: [
+          normalizeStructTag(farm.stakeCoinType),
+          normalizeStructTag(rewardType),
+          normalizeStructTag(farm.adminType),
+        ],
+      });
+    }
 
     return { tx };
   }
@@ -290,20 +330,36 @@ export class FarmsSDK extends SuiCoreSDK {
       `Reward type ${rewardType} not found in farm ${farm.objectId}`
     );
 
-    tx.moveCall({
-      package: this.packages.INTEREST_FARM.latest,
-      module: this.modules.FARM,
-      function: 'add_reward',
-      arguments: [
-        tx.object(farm.objectId),
-        tx.object.clock(),
-        this.ownedObject(tx, rewardCoin),
-      ],
-      typeArguments: [
-        normalizeStructTag(farm.stakeCoinType),
-        normalizeStructTag(rewardType),
-      ],
-    });
+    if (
+      normalizeStructTag(rewardType) === normalizeStructTag(farm.stakeCoinType)
+    ) {
+      tx.moveCall({
+        package: this.packages.INTEREST_FARM_UTILS.latest,
+        module: this.modules.FARM_UTILS,
+        function: 'add_reward',
+        arguments: [
+          tx.object(farm.objectId),
+          tx.object.clock(),
+          this.ownedObject(tx, rewardCoin),
+        ],
+        typeArguments: [normalizeStructTag(farm.stakeCoinType)],
+      });
+    } else {
+      tx.moveCall({
+        package: this.packages.INTEREST_FARM.latest,
+        module: this.modules.FARM,
+        function: 'add_reward',
+        arguments: [
+          tx.object(farm.objectId),
+          tx.object.clock(),
+          this.ownedObject(tx, rewardCoin),
+        ],
+        typeArguments: [
+          normalizeStructTag(farm.stakeCoinType),
+          normalizeStructTag(rewardType),
+        ],
+      });
+    }
 
     return { tx };
   }
@@ -511,20 +567,33 @@ export class FarmsSDK extends SuiCoreSDK {
       `Account ${account.objectId} is not associated with farm ${farm.objectId}`
     );
 
-    const rewardCoin = tx.moveCall({
-      package: this.packages.INTEREST_FARM.latest,
-      module: this.modules.FARM,
-      function: 'harvest',
-      arguments: [
-        tx.object(account.objectId),
-        tx.object(farm.objectId),
-        tx.object.clock(),
-      ],
-      typeArguments: [
-        normalizeStructTag(farm.stakeCoinType),
-        normalizeStructTag(rewardType),
-      ],
-    });
+    const rewardCoin =
+      normalizeStructTag(rewardType) !== normalizeStructTag(farm.stakeCoinType)
+        ? tx.moveCall({
+            package: this.packages.INTEREST_FARM.latest,
+            module: this.modules.FARM,
+            function: 'harvest',
+            arguments: [
+              tx.object(account.objectId),
+              tx.object(farm.objectId),
+              tx.object.clock(),
+            ],
+            typeArguments: [
+              normalizeStructTag(farm.stakeCoinType),
+              normalizeStructTag(rewardType),
+            ],
+          })
+        : tx.moveCall({
+            package: this.packages.INTEREST_FARM_UTILS.latest,
+            module: this.modules.FARM_UTILS,
+            function: 'harvest',
+            arguments: [
+              tx.object(account.objectId),
+              tx.object(farm.objectId),
+              tx.object.clock(),
+            ],
+            typeArguments: [normalizeStructTag(farm.stakeCoinType)],
+          });
 
     return { tx, rewardCoin };
   }

@@ -41,8 +41,8 @@ export const toInterestFarm = (value: SuiObjectResponse): InterestFarm => {
         value
       )
     ),
-    totalStakeAmount: BigInt(
-      pathOr(0, ['data', 'content', 'fields', 'total_stake_amount'], value)
+    totalStakedAmount: BigInt(
+      pathOr(0, ['data', 'content', 'fields', 'total_staked_amount'], value)
     ),
     rewardTypes: pathOr(
       [{ type: '', fields: [{ name: '' }] as any }],

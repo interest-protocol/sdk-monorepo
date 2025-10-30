@@ -11,7 +11,7 @@ const POW_8 = 100000000n;
   const data = curveMainnetSDK.addRewardFa({
     farm: FARMS[4]!.address.toString(),
     rewardFa: WHITELISTED_FAS.MOVE.toString(),
-    amount: 42422n * POW_8,
+    amount: 36172n * POW_8,
   });
 
   const transactionResponse = await executeTx({ data });
