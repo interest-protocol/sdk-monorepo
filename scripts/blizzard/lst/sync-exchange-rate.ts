@@ -10,5 +10,5 @@ import { blizzardSDK } from '../utils.script';
     }).objectId,
   });
 
-  await executeTx(tx);
+  await executeTx(tx as any);
 })();

@@ -21,11 +21,12 @@
   "dependencies": {
     "@cetusprotocol/cetus-sui-clmm-sdk": "^5.4.0",
     "@interest-protocol/logger": "workspace:*",
-    "@interest-protocol/vortex-sdk": "workspace:*",
     "@interest-protocol/sui-core-sdk": "workspace:*",
     "@interest-protocol/sui-utils": "workspace:*",
+    "@interest-protocol/vortex-sdk": "workspace:*",
     "@mysten/sui": "^1.36.2",
     "@polymedia/suitcase-core": "^0.0.36",
+    "poseidon-lite": "^0.3.0",
     "ramda": "^0.30.1",
     "tiny-invariant": "^1.3.3"
   }

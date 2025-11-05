@@ -18,7 +18,7 @@ import { getEnv } from '../utils.script';
     tx: tx as any,
     farm: farmId,
     rewardType: manifestType,
-    endTime: new Date().getTime() + 86400,
+    endTime: new Date().getTime() + 1209600,
     adminWitness: authWitness,
   });
 

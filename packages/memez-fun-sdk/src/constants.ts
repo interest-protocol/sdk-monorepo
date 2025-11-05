@@ -224,6 +224,7 @@ export const OWNED_OBJECTS = {
     XPUMP_MIGRATOR_ADMIN: normalizeSuiObjectId('0x0'),
     ROUTER_UPGRADE_CAP: normalizeSuiObjectId('0x0'),
     WRAPPER_UPGRADE_CAP: normalizeSuiObjectId('0x0'),
+    MEMEZ_WALLET_UPGRADE_CAP: normalizeSuiObjectId('0x0'),
   },
   [Network.MAINNET]: {
     MEMEZ_SUPER_ADMIN: normalizeSuiObjectId(
@@ -258,6 +259,9 @@ export const OWNED_OBJECTS = {
     ),
     WRAPPER_UPGRADE_CAP: normalizeSuiObjectId(
       '0x65e2c13aa3f2cc918a6a53176544fbc8014fb688ddf7cda649286b0985291f0c'
+    ),
+    MEMEZ_WALLET_UPGRADE_CAP: normalizeSuiObjectId(
+      '0x5931862acd1b3aebae53f8c1c64acb93addcd28d33327f37e4b7e1ae7bea5aab'
     ),
   },
 } as const;

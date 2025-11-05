@@ -24,7 +24,7 @@ import { blizzardSDK, MAX_BPS, POW_9 } from '../utils.script';
     returnValues: [, withdrawIXs],
     tx,
   } = await blizzardSDK.fcfs({
-    tx: txb,
+    tx: txb as any,
     value: amountMinusFee,
     blizzardStaking: SHARED_OBJECTS.WWAL_STAKING({
       mutable: true,
@@ -56,5 +56,5 @@ import { blizzardSDK, MAX_BPS, POW_9 } from '../utils.script';
     to: keypair.toSuiAddress(),
   });
 
-  await executeTx(tx);
+  await executeTx(tx as any);
 })();

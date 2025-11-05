@@ -59,5 +59,5 @@ const allowedNodes = [
   }
   await Promise.all(promises);
 
-  await executeTx(tx);
+  await executeTx(tx as any);
 })();

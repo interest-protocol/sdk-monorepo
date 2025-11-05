@@ -10,5 +10,5 @@ import { blizzardAcl } from '../utils.script';
     lstType: TYPES.WWAL,
   });
 
-  await executeTx(tx);
+  await executeTx(tx as any);
 })();

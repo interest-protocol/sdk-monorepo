@@ -24,7 +24,7 @@ const IPX =
 
   const deadAddress = normalizeSuiAddress('0x0');
 
-  const [blast] = await Promise.all([walletSdk.getWalletAddress(BLAST)]);
+  const [ipx] = await Promise.all([walletSdk.getWalletAddress(IPX)]);
 
   const tx2 = configSdk.setFees({
     authWitness,
@@ -43,7 +43,7 @@ const IPX =
       // Vesting period
       [0n, 0n],
     ],
-    recipients: [[deadAddress], [blast!], [blast!], [blast!]],
+    recipients: [[deadAddress], [ipx!], [ipx!], [ipx!]],
   });
 
   await executeTx(tx2);

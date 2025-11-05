@@ -25,5 +25,5 @@ const LST_TREASURY_CAP =
     adminWitness: returnValues,
   });
 
-  await executeTx(tx);
+  await executeTx(tx as any);
 })();

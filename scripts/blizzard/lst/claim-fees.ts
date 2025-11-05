@@ -24,5 +24,5 @@ import { blizzardSDK, wwalAcl } from '../utils.script';
 
   tx.transferObjects([lst, wal], keypair.toSuiAddress());
 
-  await executeTx(tx);
+  await executeTx(tx as any);
 })();

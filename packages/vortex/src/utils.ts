@@ -1,4 +1,4 @@
-import { poseidon2 } from 'poseidon-lite';
+import { poseidon2, poseidon1 } from 'poseidon-lite';
 import invariant from 'tiny-invariant';
 
 import {

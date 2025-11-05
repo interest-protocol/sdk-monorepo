@@ -15,5 +15,5 @@ import { blizzardSDK, wwalAcl } from '../utils.script';
       mutable: true,
     }).objectId,
   });
-  await executeTx(tx);
+  await executeTx(tx as any);
 })();

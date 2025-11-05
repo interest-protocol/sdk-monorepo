@@ -14,5 +14,5 @@ import { blizzardAcl, blizzardSDK } from '../utils.script';
     adminWitness: returnValues,
   });
 
-  await executeTx(tx);
+  await executeTx(tx as any);
 })();

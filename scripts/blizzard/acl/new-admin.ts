@@ -13,5 +13,5 @@ const recipient = '';
     superAdmin: OWNED_OBJECTS.WWAL_SUPER_ADMIN,
   });
 
-  await executeTx(tx);
+  await executeTx(tx as any);
 })();

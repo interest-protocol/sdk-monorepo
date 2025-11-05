@@ -13,7 +13,7 @@ import { blizzardSDK, INTEREST_LABS_NODE, POW_9 } from '../utils.script';
   })(tx);
 
   const { returnValues: nft } = await blizzardSDK.mintAfterVotesFinished({
-    tx,
+    tx: tx as any,
     nodeId: INTEREST_LABS_NODE,
     walCoin,
     blizzardStaking: SHARED_OBJECTS.WWAL_STAKING({
@@ -22,7 +22,7 @@ import { blizzardSDK, INTEREST_LABS_NODE, POW_9 } from '../utils.script';
   });
 
   blizzardSDK.keepStakeNft({
-    tx,
+    tx: tx as any,
     nft,
   });
 

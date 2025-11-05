@@ -2,14 +2,25 @@ import { getEnv } from '../utils.script';
 import { coinWithBalance } from '@mysten/sui/transactions';
 
 (async () => {
-  const { farmsSdk, pow9, executeTx, farmId, manifestType } = await getEnv();
+  const {
+    farmsSdk,
+    pow9,
+    executeTx,
+    farmId,
+    manifestType,
+    suiClient,
+    keypair,
+  } = await getEnv();
 
   const farm = await farmsSdk.getFarm(farmId);
 
-  console.log(farm);
+  const manifestBalance = await suiClient.getBalance({
+    owner: keypair.toSuiAddress(),
+    coinType: manifestType,
+  });
 
   const rewardCoin = coinWithBalance({
-    balance: 10n * pow9,
+    balance: BigInt(manifestBalance.totalBalance),
     type: manifestType,
   });
 

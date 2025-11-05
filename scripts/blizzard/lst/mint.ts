@@ -13,7 +13,7 @@ import { blizzardSDK, INTEREST_LABS_NODE, POW_9 } from '../utils.script';
   })(tx);
 
   const { returnValues: lst } = await blizzardSDK.mint({
-    tx,
+    tx: tx as any,
     nodeId: INTEREST_LABS_NODE,
     walCoin,
     blizzardStaking: SHARED_OBJECTS.WWAL_STAKING({
