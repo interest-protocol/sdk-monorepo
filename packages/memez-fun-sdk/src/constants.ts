@@ -167,7 +167,7 @@ export const PACKAGES = {
         '0x21700f31d563949214e0411f22a3cf64928f6a3e5b3c13f830a30d6884fe135b'
       ),
       latest: normalizeSuiAddress(
-        '0x21700f31d563949214e0411f22a3cf64928f6a3e5b3c13f830a30d6884fe135b'
+        '0xbb474f6a5592276f38707c9e3e1616bd103ea219eb5cd7b67ee8f527d33e7fc2'
       ),
     },
     ROUTER: {
