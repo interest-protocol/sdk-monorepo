@@ -31,8 +31,6 @@ const POW_9 = 10n ** 9n;
 
 const xPumpMigratorSdk = new XPumpMigratorSDK();
 
-const walletSdk = new MemezWalletSDK();
-
 const vestingSdk = new MemezVestingSDK();
 
 export const getEnv = async () => {
@@ -43,6 +41,13 @@ export const getEnv = async () => {
     network,
     fullNodeUrl: getFullnodeUrl(network),
   };
+
+  const walletSdk = new MemezWalletSDK({
+    ...payload,
+    walletRegistryObjectId: SHARED_OBJECTS[network].WALLET_REGISTRY({
+      mutable: true,
+    }).objectId,
+  });
 
   return {
     aclSdk: makeMemezAclSdk(payload),
