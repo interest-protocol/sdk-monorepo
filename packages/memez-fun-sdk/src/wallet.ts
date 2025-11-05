@@ -1,20 +1,22 @@
 import { bcs } from '@mysten/sui/bcs';
 import { Transaction } from '@mysten/sui/transactions';
-
+import { normalizeStructTag } from '@mysten/sui/utils';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import invariant from 'tiny-invariant';
+
+import { SHARED_OBJECTS } from './constants';
 import { MemezBaseSDK } from './sdk';
 import { SdkConstructorArgs } from './types/memez.types';
-import { SHARED_OBJECTS } from './constants';
 import {
-  WalletReceiveArgs,
-  WalletReceiveCoinsArgs,
   WalletMergeCoinsArgs,
   WalletNewArgs,
+  WalletReceiveArgs,
+  WalletReceiveCoinsArgs,
 } from './types/wallet.types';
-import { normalizeStructTag } from '@mysten/sui/utils';
 
 export class MemezWalletSDK extends MemezBaseSDK {
+  private walletRegistryIdOverride?: string;
+
   /**
    * Initiates the MemezPump SDK.
    *
@@ -23,9 +25,22 @@ export class MemezWalletSDK extends MemezBaseSDK {
    * @param args.packages - The package addresses to use for the SDK.
    * @param args.sharedObjects - A record of shared objects to use for the SDK.
    * @param args.network - The network to use for the SDK. Either `mainnet` or `testnet`.
+   * @param args.walletRegistryId - Optional wallet registry object ID to override the default.
    */
-  constructor(args: SdkConstructorArgs | undefined | null = null) {
+  constructor(
+    args: (SdkConstructorArgs & { walletRegistryId?: string }) | undefined | null = null
+  ) {
     super(args);
+    this.walletRegistryIdOverride = args?.walletRegistryId;
+  }
+
+  private getWalletRegistryInput(tx: Transaction, mutable: boolean) {
+    if (this.walletRegistryIdOverride) {
+      return tx.object(this.walletRegistryIdOverride);
+    }
+    return tx.sharedObjectRef(
+      SHARED_OBJECTS.mainnet.WALLET_REGISTRY({ mutable })
+    );
   }
 
   async newWallet({ owner, tx = new Transaction() }: WalletNewArgs) {
@@ -37,9 +52,7 @@ export class MemezWalletSDK extends MemezBaseSDK {
     const wallet = tx.moveCall({
       target: `${this.packages.WALLET.latest}::memez_wallet::new`,
       arguments: [
-        tx.sharedObjectRef(
-          SHARED_OBJECTS.mainnet.WALLET_REGISTRY({ mutable: true })
-        ),
+        this.getWalletRegistryInput(tx, true),
         tx.pure.address(owner),
       ],
     });
@@ -127,9 +140,7 @@ export class MemezWalletSDK extends MemezBaseSDK {
     tx.moveCall({
       target: `${this.packages.WALLET.latest}::memez_wallet::wallet_address`,
       arguments: [
-        tx.sharedObjectRef(
-          SHARED_OBJECTS.mainnet.WALLET_REGISTRY({ mutable: false })
-        ),
+        this.getWalletRegistryInput(tx, false),
         tx.pure.address(owner),
       ],
     });
