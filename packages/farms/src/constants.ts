@@ -69,6 +69,18 @@ export const FARMS = {
         ),
         initialSharedVersion: '667687710',
       },
+    '0x9d5ddbd962c19eb4b7aeb22f82e9b0925c066b7fbc5cc7254051b7b2ffd01f8d::odor::ODOR':
+      {
+        stakeCoinType: '0x0',
+        objectId: normalizeSuiObjectId('0x0'),
+        initialSharedVersion: '0',
+      },
+    '0xcee208b8ae33196244b389e61ffd1202e7a1ae06c8ec210d33402ff649038892::aida::AIDA':
+      {
+        stakeCoinType: '0x0',
+        objectId: normalizeSuiObjectId('0x0'),
+        initialSharedVersion: '0',
+      },
   },
   [Network.MAINNET]: {
     '0xc466c28d87b3d5cd34f3d5c088751532d71a38d93a8aae4551dd56272cfb4355::manifest::MANIFEST':
@@ -79,6 +91,24 @@ export const FARMS = {
           '0xb8cdf04f2d3ecde5b66f99d1005ad31e5bb915d689c1d6c09dc7d43addbc884d'
         ),
         initialSharedVersion: '667687712',
+      },
+    '0x9d5ddbd962c19eb4b7aeb22f82e9b0925c066b7fbc5cc7254051b7b2ffd01f8d::odor::ODOR':
+      {
+        stakeCoinType:
+          '0x9d5ddbd962c19eb4b7aeb22f82e9b0925c066b7fbc5cc7254051b7b2ffd01f8d::odor::ODOR',
+        objectId: normalizeSuiObjectId(
+          '0xd4cfcfbb6e10b645ceec744719b8e01b5d7d9c1a1f6d8cde8f6f8d725f896b24'
+        ),
+        initialSharedVersion: '676841630',
+      },
+    '0xcee208b8ae33196244b389e61ffd1202e7a1ae06c8ec210d33402ff649038892::aida::AIDA':
+      {
+        stakeCoinType:
+          '0xcee208b8ae33196244b389e61ffd1202e7a1ae06c8ec210d33402ff649038892::aida::AIDA',
+        objectId: normalizeSuiObjectId(
+          '0xc6721721e6b66f05ab4374257974d8c0f1beef0db089c30bcfb721f0a6874c46'
+        ),
+        initialSharedVersion: '682067293',
       },
   },
 };

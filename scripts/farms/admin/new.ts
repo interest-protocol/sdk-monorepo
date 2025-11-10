@@ -1,7 +1,7 @@
 import { getEnv } from '../utils.script';
 
 const STAKE_TYPE =
-  '0xc466c28d87b3d5cd34f3d5c088751532d71a38d93a8aae4551dd56272cfb4355::manifest::MANIFEST';
+  '0xcee208b8ae33196244b389e61ffd1202e7a1ae06c8ec210d33402ff649038892::aida::AIDA';
 
 (async () => {
   const { farmsSdk, aclSdk, memezOwnedObjects, executeTx, memezTypes } =
