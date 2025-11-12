@@ -1,12 +1,11 @@
-import { blake2b } from '@noble/hashes/blake2';
+import { blake2b } from '@noble/hashes/blake2.js';
 
-import { gcm } from '@noble/ciphers/aes';
+import { gcm } from '@noble/ciphers/aes.js';
 import { fromHex, toHex } from '@mysten/sui/utils';
 import invariant from 'tiny-invariant';
 
-import { randomBytes } from '@noble/hashes/utils';
+import { randomBytes } from '@noble/hashes/utils.js';
 import { VortexKeypair } from './keypair';
-
 export interface UtxoPayload {
   amount: bigint;
   blinding: bigint;

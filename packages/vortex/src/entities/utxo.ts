@@ -1,7 +1,7 @@
 import { VortexKeypair } from './keypair';
 import { poseidon3 } from 'poseidon-lite';
 
-export interface UtxoConstructorArgs {
+interface UtxoConstructorArgs {
   amount: bigint;
   blinding?: bigint;
   keypair?: VortexKeypair;
@@ -22,17 +22,25 @@ export class Utxo {
     this.index = index;
   }
 
-  commitment(): bigint {
+  commitment() {
     return poseidon3([this.amount, this.keypair.privateKey, this.blinding]);
   }
 
-  nullifier(): bigint {
+  nullifier() {
     const commitment = this.commitment();
     return poseidon3([
       commitment,
       this.index,
       this.keypair.sign(commitment, this.index),
     ]);
+  }
+
+  payload() {
+    return {
+      amount: this.amount,
+      blinding: this.blinding,
+      index: this.index,
+    };
   }
 
   toJSON(): string {

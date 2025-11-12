@@ -17,5 +17,5 @@
     { "directory": "packages/*", "changeProcessCWD": true },
     { "directory": "tools/*", "changeProcessCWD": true }
   ],
-  "cSpell.ignoreWords": ["numberish"]
+  "cSpell.ignoreWords": ["numberish", "utxo"]
 }
