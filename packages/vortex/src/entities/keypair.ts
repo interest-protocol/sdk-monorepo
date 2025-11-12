@@ -110,16 +110,6 @@ export class VortexKeypair {
     return keypair;
   }
 
-  toString(): string {
-    const pubkeyHex = BigInt(this.publicKey).toString(16).padStart(64, '0');
-    const encKeyHex = Buffer.from(this.encryptionKey, 'base64').toString('hex');
-    return '0x' + pubkeyHex + encKeyHex;
-  }
-
-  address(): string {
-    return this.toString();
-  }
-
   static encryptFor(bytes: Buffer, recipientEncryptionKey: string): string {
     const ephemeralPrivateKey = randomBytes(32);
     const ephemeralPublicKey = x25519.getPublicKey(ephemeralPrivateKey);
@@ -150,11 +140,45 @@ export class VortexKeypair {
     return packEncryptedMessage(encryptedMessage);
   }
 
-  encrypt(bytes: Buffer): string {
-    return VortexKeypair.encryptFor(bytes, this.encryptionKey);
+  static encryptUtxoFor(
+    utxo: UtxoPayload,
+    recipientEncryptionKey: string
+  ): string {
+    const utxoString = `${utxo.amount.toString()}|${utxo.blinding.toString()}|${utxo.index.toString()}`;
+    const bytes = Buffer.from(utxoString, 'utf8');
+    return VortexKeypair.encryptFor(bytes, recipientEncryptionKey);
   }
 
-  decrypt(data: string): Buffer {
+  decryptUtxo(encryptedData: string): UtxoPayload {
+    const decrypted = this.#decrypt(encryptedData);
+    const decryptedStr = decrypted.toString('utf8');
+    const parts = decryptedStr.split('|');
+
+    invariant(parts.length === 3, 'Invalid UTXO format after decryption');
+
+    return {
+      amount: BigInt(parts[0]),
+      blinding: BigInt(parts[1]),
+      index: BigInt(parts[2]),
+    };
+  }
+
+  sign(commitment: bigint, merklePath: bigint): bigint {
+    invariant(this.privateKey !== null, 'Cannot sign without private key');
+    return poseidon3([this.privateKey, commitment, merklePath]);
+  }
+
+  toString(): string {
+    const pubkeyHex = BigInt(this.publicKey).toString(16).padStart(64, '0');
+    const encKeyHex = Buffer.from(this.encryptionKey, 'base64').toString('hex');
+    return '0x' + pubkeyHex + encKeyHex;
+  }
+
+  address(): string {
+    return this.toString();
+  }
+
+  #decrypt(data: string): Buffer {
     invariant(this.privateKey !== null, 'Cannot decrypt without private key');
     invariant(
       this.x25519PrivateKey !== null,
@@ -187,34 +211,6 @@ export class VortexKeypair {
     const decrypted = cipher.decrypt(ciphertext);
 
     return Buffer.from(decrypted);
-  }
-
-  static encryptUtxoFor(
-    utxo: UtxoPayload,
-    recipientEncryptionKey: string
-  ): string {
-    const utxoString = `${utxo.amount.toString()}|${utxo.blinding.toString()}|${utxo.index.toString()}`;
-    const bytes = Buffer.from(utxoString, 'utf8');
-    return VortexKeypair.encryptFor(bytes, recipientEncryptionKey);
-  }
-
-  decryptUtxo(encryptedData: string): UtxoPayload {
-    const decrypted = this.decrypt(encryptedData);
-    const decryptedStr = decrypted.toString('utf8');
-    const parts = decryptedStr.split('|');
-
-    invariant(parts.length === 3, 'Invalid UTXO format after decryption');
-
-    return {
-      amount: BigInt(parts[0]),
-      blinding: BigInt(parts[1]),
-      index: BigInt(parts[2]),
-    };
-  }
-
-  sign(commitment: bigint, merklePath: bigint): bigint {
-    invariant(this.privateKey !== null, 'Cannot sign without private key');
-    return poseidon3([this.privateKey, commitment, merklePath]);
   }
 
   #getPrivateKeyBytes(): Uint8Array {

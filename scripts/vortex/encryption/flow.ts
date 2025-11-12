@@ -22,7 +22,7 @@ import invariant from 'tiny-invariant';
     joseVortexKeypair.encryptionKey
   );
 
-  logInfo('encryptedUtxo', encryptedUtxo);
+  logInfo('encryptedUtxo', encryptedUtxo, '\n');
 
   const decryptedUtxo = joseVortexKeypair.decryptUtxo(encryptedUtxo);
 
@@ -30,13 +30,11 @@ import invariant from 'tiny-invariant';
   invariant(decryptedUtxo.blinding === utxoData.blinding, 'blinding mismatch');
   invariant(decryptedUtxo.index === utxoData.index, 'index mismatch');
 
-  logInfo('decryptedUtxo', decryptedUtxo);
-
-  const attackerKeyPair = VortexKeypair.generate();
+  logInfo('decryptedUtxo', decryptedUtxo, '\n');
 
   try {
-    attackerKeyPair.decryptUtxo(encryptedUtxo);
+    VortexKeypair.generate().decryptUtxo(encryptedUtxo);
   } catch {
-    console.log('attacker decrypted utxo should fail');
+    logInfo('unauthorized decryption should fail', '\n');
   }
 })();
