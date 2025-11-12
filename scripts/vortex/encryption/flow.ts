@@ -14,6 +14,7 @@ import invariant from 'tiny-invariant';
 
   const encryptedUtxo = encryption.encryptUtxo(utxo.payload());
 
+  // encryptedUtxo 35bec7fea474a4a6dd8882cf475f11dd51663a5526901ee719bbc92ba1c65eb4df0d88df182e762a3470667dd0
   logInfo('encryptedUtxo', toHex(encryptedUtxo));
 
   const decryptedUtxo = encryption.decryptUtxo(encryptedUtxo);
