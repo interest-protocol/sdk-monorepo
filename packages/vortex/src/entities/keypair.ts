@@ -1,5 +1,5 @@
 import { poseidon1, poseidon3 } from 'poseidon-lite';
-import { BN254_FIELD_MODULUS } from '../constants';
+import { BN254_FIELD_MODULUS, VORTEX_SIGNATURE_DOMAIN } from '../constants';
 
 import { fromBase64, fromHex, toHex } from '@mysten/sui/utils';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
@@ -21,6 +21,12 @@ interface EncryptedMessage {
   ephemPublicKey: string; // base64
   ciphertext: string; // base64
 }
+
+// Sui wallet signature function type
+type SignMessageFn = (message: Uint8Array) => Promise<{
+  signature: string;
+  messageBytes: string;
+}>;
 
 function packEncryptedMessage(encryptedMessage: EncryptedMessage): string {
   const nonceBuf = Buffer.from(encryptedMessage.nonce, 'base64');
@@ -108,6 +114,25 @@ export class VortexKeypair {
     );
 
     return keypair;
+  }
+
+  static async fromSuiWallet(
+    suiAddress: string,
+    signMessage: SignMessageFn
+  ): Promise<VortexKeypair> {
+    // Domain-separated message to prevent signature reuse
+    const message = new TextEncoder().encode(
+      `Generate Vortex Keypair\n\nThis signature will be used to derive your Vortex privacy keypair.\n\nAddress: ${suiAddress}\nDomain: ${VORTEX_SIGNATURE_DOMAIN}`
+    );
+
+    const { signature } = await signMessage(message);
+
+    const signatureBytes = fromBase64(signature);
+    const seed = blake2b(signatureBytes, { dkLen: 32 });
+
+    const privateKey = BigInt('0x' + toHex(seed)) % BN254_FIELD_MODULUS;
+
+    return new VortexKeypair(privateKey);
   }
 
   static encryptFor(bytes: Buffer, recipientEncryptionKey: string): string {

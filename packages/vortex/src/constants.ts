@@ -84,3 +84,5 @@ export const VORTEX_POOL_INITIAL_SHARED_VERSION = '395367334';
 export const LSK_FETCH_OFFSET = 'fetch_offset';
 
 export const LSK_ENCRYPTED_OUTPUTS = 'encrypted_outputs';
+
+export const VORTEX_SIGNATURE_DOMAIN = 'vortex.protocol';
