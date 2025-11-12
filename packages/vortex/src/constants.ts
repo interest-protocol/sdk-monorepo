@@ -80,3 +80,7 @@ export const VORTEX_POOL_OBJECT_ID =
   '0xc1262de72c64e47765b3c07b959a91c46c9c065adf075bb5b1f1ee577ec03d5a';
 
 export const VORTEX_POOL_INITIAL_SHARED_VERSION = '395367334';
+
+export const LSK_FETCH_OFFSET = 'fetch_offset';
+
+export const LSK_ENCRYPTED_OUTPUTS = 'encrypted_outputs';

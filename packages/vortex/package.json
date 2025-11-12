@@ -23,6 +23,8 @@
   "license": "ISC",
   "dependencies": {
     "@mysten/sui": "^1.36.2",
+    "@noble/ciphers": "^2.0.1",
+    "@noble/hashes": "^2.0.1",
     "@polymedia/suitcase-core": "^0.0.67",
     "bignumber.js": "^9.3.0",
     "poseidon-hash": "^1.0.1",
