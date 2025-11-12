@@ -1,8 +1,4 @@
-import {
-  VortexEncryption,
-  VortexKeypair,
-  Utxo,
-} from '@interest-protocol/vortex-sdk';
+import { VortexKeypair, Utxo } from '@interest-protocol/vortex-sdk';
 import { Network } from '@interest-protocol/sui-core-sdk';
 import {
   executeTx,
@@ -15,9 +11,8 @@ import { SuiClient } from '@mysten/sui/client';
 import { Transaction } from '@mysten/sui/transactions';
 
 interface Env {
-  vortexKeypair: VortexKeypair;
+  VortexKeypair: typeof VortexKeypair;
   Utxo: typeof Utxo;
-  encryption: VortexEncryption;
   suiClient: SuiClient;
   executeTx: (tx: Transaction, client?: SuiClient) => Promise<void>;
   network: Network;
@@ -33,11 +28,8 @@ interface Env {
 export const getEnv = async (): Promise<Env> => {
   const network = Network.TESTNET;
 
-  const vortexKeypair = VortexKeypair.generate();
-
   return {
-    vortexKeypair,
-    encryption: new VortexEncryption(vortexKeypair),
+    VortexKeypair,
     suiClient: devnetSuiClient,
     Utxo,
     executeTx,

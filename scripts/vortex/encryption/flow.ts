@@ -1,27 +1,42 @@
 import { getEnv } from '../utils.script';
 import { logInfo } from '@interest-protocol/logger';
-import { toHex } from '@mysten/sui/utils';
 import invariant from 'tiny-invariant';
 
 (async () => {
-  const { encryption, vortexKeypair, Utxo } = await getEnv();
+  const { VortexKeypair, Utxo } = await getEnv();
 
-  const utxo = new Utxo({
-    amount: 12345n,
+  // Generate keypair for jose
+  const joseVortexKeypair = VortexKeypair.generate();
+
+  // Death wants to send 123 Sui to Jose
+  const utxoData = {
+    amount: 123n,
     index: 7n,
-    keypair: vortexKeypair,
-  });
+    blinding: Utxo.blinding(),
+  };
 
-  const encryptedUtxo = encryption.encryptUtxo(utxo.payload());
+  // Death needs to encrypt the UTXO for Jose using his public key
 
-  // encryptedUtxo 35bec7fea474a4a6dd8882cf475f11dd51663a5526901ee719bbc92ba1c65eb4df0d88df182e762a3470667dd0
-  logInfo('encryptedUtxo', toHex(encryptedUtxo));
+  const encryptedUtxo = VortexKeypair.encryptUtxoFor(
+    utxoData,
+    joseVortexKeypair.encryptionKey
+  );
 
-  const decryptedUtxo = encryption.decryptUtxo(encryptedUtxo);
+  logInfo('encryptedUtxo', encryptedUtxo);
 
-  invariant(decryptedUtxo.amount === utxo.amount, 'amount mismatch');
-  invariant(decryptedUtxo.blinding === utxo.blinding, 'blinding mismatch');
-  invariant(decryptedUtxo.index === utxo.index, 'index mismatch');
+  const decryptedUtxo = joseVortexKeypair.decryptUtxo(encryptedUtxo);
+
+  invariant(decryptedUtxo.amount === utxoData.amount, 'amount mismatch');
+  invariant(decryptedUtxo.blinding === utxoData.blinding, 'blinding mismatch');
+  invariant(decryptedUtxo.index === utxoData.index, 'index mismatch');
 
   logInfo('decryptedUtxo', decryptedUtxo);
+
+  const attackerKeyPair = VortexKeypair.generate();
+
+  try {
+    attackerKeyPair.decryptUtxo(encryptedUtxo);
+  } catch {
+    console.log('attacker decrypted utxo should fail');
+  }
 })();

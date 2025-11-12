@@ -16,10 +16,13 @@ export class Utxo {
 
   constructor({ amount, blinding, keypair, index }: UtxoConstructorArgs) {
     this.amount = amount;
-    this.blinding =
-      blinding ?? BigInt(Math.floor(Math.random() * 1_000_000_000));
+    this.blinding = blinding ?? Utxo.blinding();
     this.keypair = keypair ?? VortexKeypair.generate();
     this.index = index;
+  }
+
+  static blinding() {
+    return BigInt(Math.floor(Math.random() * 1_000_000_000));
   }
 
   commitment() {
