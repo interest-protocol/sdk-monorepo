@@ -1,25 +1,25 @@
 import { blake2b } from '@noble/hashes/blake2.js';
 
 import { gcm } from '@noble/ciphers/aes.js';
-import { fromHex, toHex } from '@mysten/sui/utils';
+import { fromHex } from '@mysten/sui/utils';
 import invariant from 'tiny-invariant';
 
 import { randomBytes } from '@noble/hashes/utils.js';
-import { VortexKeypair } from './keypair';
+
 export interface UtxoPayload {
   amount: bigint;
   blinding: bigint;
   index: bigint;
 }
 
-export class VortexEncryption {
+export class VortexEncryptionKey {
   encryptionKey: Uint8Array;
-  utxoPrivateKey: string;
-  spendingKeypair: VortexKeypair;
 
-  constructor(keypair: VortexKeypair) {
-    const privateKeyBytes = keypair.getPrivateKeyBytes();
+  constructor(encryptionKey: Uint8Array) {
+    this.encryptionKey = encryptionKey;
+  }
 
+  static fromPrivateKeyBytes(privateKeyBytes: Uint8Array): VortexEncryptionKey {
     const message = new TextEncoder().encode(
       'Vortex encryption key derivation'
     );
@@ -28,12 +28,7 @@ export class VortexEncryption {
     combined.set(message, privateKeyBytes.length);
     const intermediateKey = blake2b(combined, { dkLen: 32 });
 
-    this.encryptionKey = blake2b(intermediateKey, { dkLen: 32 });
-
-    const hashedSeed = blake2b(this.encryptionKey, { dkLen: 32 });
-    this.utxoPrivateKey = '0x' + toHex(hashedSeed);
-
-    this.spendingKeypair = new VortexKeypair(BigInt(this.utxoPrivateKey));
+    return new VortexEncryptionKey(blake2b(intermediateKey, { dkLen: 32 }));
   }
 
   encryptUtxo(utxo: UtxoPayload): Uint8Array {

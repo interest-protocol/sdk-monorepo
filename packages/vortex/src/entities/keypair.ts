@@ -2,15 +2,20 @@ import { poseidon1, poseidon3 } from 'poseidon-lite';
 import { BN254_FIELD_MODULUS } from '../constants';
 
 import { fromBase64, fromHex, toHex } from '@mysten/sui/utils';
-import { blake2b } from '@noble/hashes/blake2.js';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
+
+import { VortexEncryptionKey } from './encryption';
 
 export class VortexKeypair {
   publicKey: string;
+  encryptionKey: VortexEncryptionKey;
 
   constructor(readonly privateKey: bigint) {
     this.privateKey = privateKey % BN254_FIELD_MODULUS;
     this.publicKey = poseidon1([this.privateKey]).toString();
+    this.encryptionKey = VortexEncryptionKey.fromPrivateKeyBytes(
+      this.getPrivateKeyBytes()
+    );
   }
 
   sign(commitment: bigint, merklePath: bigint): bigint {
@@ -25,15 +30,6 @@ export class VortexKeypair {
           toHex(fromBase64(keypair.getSecretKey().replace('suiprivkey', '')))
       )
     );
-  }
-
-  static fromSignature(signature: Uint8Array): VortexKeypair {
-    const hash = blake2b(signature, { dkLen: 32 });
-    const privateKey = Array.from(hash)
-      .map((b) => b.toString(16).padStart(2, '0'))
-      .join('');
-
-    return new VortexKeypair(BigInt('0x' + privateKey));
   }
 
   getPrivateKeyBytes(): Uint8Array {

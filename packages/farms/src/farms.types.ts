@@ -1,5 +1,9 @@
 import { Network, U64 } from '@interest-protocol/sui-core-sdk';
 import { MaybeTx, ObjectInput } from '@interest-protocol/sui-core-sdk';
+import {
+  TransactionObjectArgument,
+  TransactionResult,
+} from '@mysten/sui/dist/cjs/transactions';
 
 export interface SdkConstructorArgs {
   fullNodeUrl: string;
@@ -116,9 +120,21 @@ export interface StakeArgs extends MaybeTx {
   depositCoin: ObjectInput;
 }
 
+export interface StakeUncheckedArgs extends MaybeTx {
+  farm: InterestFarm | string;
+  account: TransactionResult | TransactionObjectArgument;
+  depositCoin: ObjectInput;
+}
+
 export interface UnstakeArgs extends MaybeTx {
   farm: InterestFarm | string;
   account: InterestAccount | string;
+  amount: U64;
+}
+
+export interface UnstakeUncheckedArgs extends MaybeTx {
+  farm: InterestFarm | string;
+  account: TransactionResult | TransactionObjectArgument;
   amount: U64;
 }
 

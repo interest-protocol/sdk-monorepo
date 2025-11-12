@@ -24,6 +24,8 @@ import {
   UnstakeArgs,
   HarvestArgs,
   InterestAccount,
+  StakeUncheckedArgs,
+  UnstakeUncheckedArgs,
 } from './farms.types';
 import BigNumber from 'bignumber.js';
 
@@ -491,6 +493,30 @@ export class FarmsSDK extends SuiCoreSDK {
     return { tx };
   }
 
+  public async stakeUnchecked({
+    farm,
+    account,
+    depositCoin,
+    tx = new Transaction(),
+  }: StakeUncheckedArgs) {
+    farm = typeof farm === 'string' ? await this.getFarm(farm) : farm;
+
+    tx.moveCall({
+      package: this.packages.INTEREST_FARM.latest,
+      module: this.modules.FARM,
+      function: 'stake',
+      arguments: [
+        account,
+        tx.object(farm.objectId),
+        tx.object.clock(),
+        this.ownedObject(tx, depositCoin),
+      ],
+      typeArguments: [normalizeStructTag(farm.stakeCoinType)],
+    });
+
+    return { tx };
+  }
+
   public async unstake({
     farm,
     account,
@@ -532,6 +558,36 @@ export class FarmsSDK extends SuiCoreSDK {
       function: 'unstake',
       arguments: [
         tx.object(account.objectId),
+        tx.object(farm.objectId),
+        tx.object.clock(),
+        tx.pure.u64(amountBigInt),
+      ],
+      typeArguments: [normalizeStructTag(farm.stakeCoinType)],
+    });
+
+    return { tx, unstakeCoin };
+  }
+
+  public async unstakeUnchecked({
+    farm,
+    account,
+    amount,
+    tx = new Transaction(),
+  }: UnstakeUncheckedArgs) {
+    farm = typeof farm === 'string' ? await this.getFarm(farm) : farm;
+
+    const amountBigInt = BigInt(
+      new BigNumber(amount.toString()).integerValue().toString()
+    );
+
+    invariant(amountBigInt > 0n, 'Amount must be greater than 0');
+
+    const unstakeCoin = tx.moveCall({
+      package: this.packages.INTEREST_FARM.latest,
+      module: this.modules.FARM,
+      function: 'unstake',
+      arguments: [
+        account,
         tx.object(farm.objectId),
         tx.object.clock(),
         tx.pure.u64(amountBigInt),
