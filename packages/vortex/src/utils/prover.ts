@@ -9,7 +9,7 @@
 
 /// <reference types="node" />
 
-import { wtns, groth16 } from 'snarkjs';
+import { groth16 } from 'snarkjs';
 import { BN254_FIELD_MODULUS } from '../constants';
 import BN from 'bn.js';
 
@@ -44,7 +44,6 @@ type UtilsModule = {
 };
 
 // Cast imported modules to their types
-const wtnsTyped = wtns as unknown as WtnsModule;
 const groth16Typed = groth16 as unknown as Groth16Module;
 const utilsTyped = utils as unknown as UtilsModule;
 
@@ -55,10 +54,6 @@ interface Proof {
   pi_c: string[];
   protocol: string;
   curve: string;
-}
-
-interface ProofResult {
-  proof: Proof;
 }
 
 const FIELD_SIZE = new BN(BN254_FIELD_MODULUS);

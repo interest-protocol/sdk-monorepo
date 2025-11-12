@@ -1,6 +1,7 @@
 import { logSuccess } from '@interest-protocol/logger';
-import { coinWithBalance, Transaction } from '@mysten/sui/transactions';
+import { Transaction } from '@mysten/sui/transactions';
 import { toBase64 } from '@mysten/sui/utils';
+import { OWNED_OBJECTS } from '@interest-protocol/memez-fun-sdk';
 
 import { getEnv } from '../utils.script';
 
@@ -21,18 +22,6 @@ const POW_9 = 10n ** 9n;
   const tx = new Transaction();
 
   tx.setSender(MULTISIG_ADDRESS);
-
-  const coinBalance = await suiClient.getBalance({
-    owner: MULTISIG_ADDRESS,
-    coinType: COIN_TYPE,
-  });
-
-  const coinToSend = coinWithBalance({
-    balance: BigInt(coinBalance.totalBalance),
-    type: COIN_TYPE,
-  });
-
-  tx.transferObjects([coinToSend], RECIPIENT);
 
   const builtTx = await tx.build({
     client: suiClient,

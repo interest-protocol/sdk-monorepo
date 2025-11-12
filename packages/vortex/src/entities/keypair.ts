@@ -4,7 +4,7 @@ import { BN254_FIELD_MODULUS, VORTEX_SIGNATURE_DOMAIN } from '../constants';
 import { fromBase64, fromHex, toHex } from '@mysten/sui/utils';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import invariant from 'tiny-invariant';
-import { randomBytes } from '@noble/hashes/utils.js';
+import { randomBytes } from '@noble/ciphers/utils.js';
 import { x25519 } from '@noble/curves/ed25519.js';
 import { xsalsa20poly1305 } from '@noble/ciphers/salsa.js';
 import { blake2b } from '@noble/hashes/blake2.js';
@@ -25,7 +25,7 @@ interface EncryptedMessage {
 // Sui wallet signature function type
 type SignMessageFn = (message: Uint8Array) => Promise<{
   signature: string;
-  messageBytes: string;
+  bytes: string;
 }>;
 
 function packEncryptedMessage(encryptedMessage: EncryptedMessage): string {

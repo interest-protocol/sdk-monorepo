@@ -13,10 +13,11 @@
     "@types/bn.js": "^5.1.6",
     "@types/node": "^22.15.18",
     "@types/ramda": "^0.30.2",
+    "@vitest/coverage-v8": "^4.0.8",
     "dotenv": "^16.5.0",
     "rimraf": "^5.0.1",
     "tsx": "^4.19.4",
-    "vitest": "^0.34.4"
+    "vitest": "^0.34.6"
   },
   "dependencies": {
     "@cetusprotocol/cetus-sui-clmm-sdk": "^5.4.0",
