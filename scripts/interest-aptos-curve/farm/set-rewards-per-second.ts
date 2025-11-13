@@ -5,13 +5,13 @@ import { executeTx } from '@interest-protocol/movement-utils';
 
 import { curveMainnetSDK } from '../utils';
 
-const REWARDS_PER_SECOND = 0.0299041005291005;
+const REWARDS_PER_SECOND = 0.0499057539682539;
 
 const rewardsPerSecond = BigInt(Math.floor(REWARDS_PER_SECOND * 1e8));
 
 (async () => {
   const data = curveMainnetSDK.setRewardsPerSecond({
-    farm: FARMS[4]!.address.toString(),
+    farm: FARMS[3]!.address.toString(),
     rewardFa: WHITELISTED_FAS.MOVE.toString(),
     rewardsPerSecond,
   });

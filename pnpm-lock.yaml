@@ -668,6 +668,9 @@ importers:
 
   packages/vortex:
     dependencies:
+      '@interest-protocol/sui-core-sdk':
+        specifier: workspace:*
+        version: link:../sui-core-sdk
       '@mysten/sui':
         specifier: ^1.36.2
         version: 1.43.2(typescript@5.9.3)

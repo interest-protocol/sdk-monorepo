@@ -1,10 +1,10 @@
 import {
   TEST_VORTEX_PACKAGE_ID,
   expectDevInspectTransactionBlock,
+  testVortex,
 } from '../test-utils';
 import { computeExtDataHash } from '../../utils/ext-data';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
-import { Transaction } from '@mysten/sui/transactions';
 
 describe(computeExtDataHash.name, () => {
   it('should compute the correct hash', async () => {
@@ -12,7 +12,6 @@ describe(computeExtDataHash.name, () => {
     const relayer = Ed25519Keypair.generate();
 
     const payload = {
-      vortex: TEST_VORTEX_PACKAGE_ID,
       recipient: recipient.toSuiAddress(),
       value: 1000n,
       valueSign: true,
@@ -24,23 +23,7 @@ describe(computeExtDataHash.name, () => {
 
     const extDataHash = computeExtDataHash(payload);
 
-    const tx = new Transaction();
-
-    tx.setSender(recipient.toSuiAddress());
-
-    const extData = tx.moveCall({
-      target: `${TEST_VORTEX_PACKAGE_ID}::vortex_ext_data::new`,
-      arguments: [
-        tx.pure.address(payload.vortex),
-        tx.pure.address(payload.recipient),
-        tx.pure.u64(payload.value),
-        tx.pure.bool(payload.valueSign),
-        tx.pure.address(payload.relayer),
-        tx.pure.u64(payload.relayerFee),
-        tx.pure.u256(payload.encryptedOutput1),
-        tx.pure.u256(payload.encryptedOutput2),
-      ],
-    });
+    const { tx, extData } = testVortex.newExtData(payload);
 
     tx.moveCall({
       target: `${TEST_VORTEX_PACKAGE_ID}::vortex_ext_data::assert_hash`,
@@ -71,22 +54,9 @@ describe(computeExtDataHash.name, () => {
 
     const extDataHash = computeExtDataHash(payload);
 
-    const tx = new Transaction();
-
-    tx.setSender(recipient.toSuiAddress());
-
-    const extData = tx.moveCall({
-      target: `${TEST_VORTEX_PACKAGE_ID}::vortex_ext_data::new`,
-      arguments: [
-        tx.pure.address(payload.vortex),
-        tx.pure.address(payload.recipient),
-        tx.pure.u64(payload.value),
-        tx.pure.bool(false),
-        tx.pure.address(payload.relayer),
-        tx.pure.u64(payload.relayerFee),
-        tx.pure.u256(payload.encryptedOutput1),
-        tx.pure.u256(payload.encryptedOutput2),
-      ],
+    const { tx, extData } = testVortex.newExtData({
+      ...payload,
+      valueSign: false,
     });
 
     tx.moveCall({

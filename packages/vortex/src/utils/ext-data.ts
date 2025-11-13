@@ -1,34 +1,20 @@
 import { bcs } from '@mysten/sui/bcs';
 import { blake2b } from '@noble/hashes/blake2.js';
-import { normalizeSuiAddress, normalizeSuiObjectId } from '@mysten/sui/utils';
+import { normalizeSuiAddress } from '@mysten/sui/utils';
 
-export interface ExtDataHashArgs {
-  vortex: string; // Sui address
-  recipient: string; // Sui address
-  value: bigint;
-  valueSign: boolean;
-  relayer: string; // Sui address
-  relayerFee: bigint;
-  encryptedOutput1: bigint;
-  encryptedOutput2: bigint;
-}
+import { ExtDataHashArgs } from '../vortex.types';
 
-export function computeExtDataHash(args: ExtDataHashArgs): Uint8Array {
-  const {
-    vortex,
-    recipient,
-    value,
-    valueSign,
-    relayer,
-    relayerFee,
-    encryptedOutput1,
-    encryptedOutput2,
-  } = args;
-
+export function computeExtDataHash({
+  recipient,
+  value,
+  valueSign,
+  relayer,
+  relayerFee,
+  encryptedOutput1,
+  encryptedOutput2,
+}: ExtDataHashArgs): Uint8Array {
   // Serialize each field using BCS encoding (matching Move's to_bytes())
-  const vortexBytes = bcs.Address.serialize(
-    normalizeSuiObjectId(vortex)
-  ).toBytes();
+
   const recipientBytes = bcs.Address.serialize(
     normalizeSuiAddress(recipient)
   ).toBytes();
@@ -49,7 +35,6 @@ export function computeExtDataHash(args: ExtDataHashArgs): Uint8Array {
 
   // Concatenate all bytes in the same order as Move
   const totalLength =
-    vortexBytes.length +
     recipientBytes.length +
     valueBytes.length +
     valueSignBytes.length +
@@ -60,9 +45,6 @@ export function computeExtDataHash(args: ExtDataHashArgs): Uint8Array {
 
   const data = new Uint8Array(totalLength);
   let offset = 0;
-
-  data.set(vortexBytes, offset);
-  offset += vortexBytes.length;
 
   data.set(recipientBytes, offset);
   offset += recipientBytes.length;

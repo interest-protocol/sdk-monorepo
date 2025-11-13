@@ -67,7 +67,7 @@ export const POW_6 = 1_000_000;
 export const POW_6BN = BigInt(POW_6);
 
 export const TREASURY_ADDRESS = AccountAddress.from(
-  '0xba515545b9681def6f170b6a3a533368c3404f2a91e8842150d08ba377aabd34'
+  '0x878d2e00feee41f65a239a7811d5326c5a1c210758dccfa23bf121c8a28719b0'
 );
 
 export const curveMainnetSDK = new InterestCurve({
