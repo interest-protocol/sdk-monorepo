@@ -1,5 +1,5 @@
-import { VortexKeypair } from '../entities/keypair';
-import { BN254_FIELD_MODULUS } from '../constants';
+import { VortexKeypair } from '../../entities/keypair';
+import { BN254_FIELD_MODULUS } from '../../constants';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 
 describe(VortexKeypair.name, () => {
