@@ -149,6 +149,25 @@ describe(VortexKeypair.name, () => {
       expect(keypair.privateKey).toBeLessThanOrEqual(BN254_FIELD_MODULUS);
     });
 
+    it('should recreate the same keypair from the same Sui wallet', async () => {
+      const suiWallet = Ed25519Keypair.generate();
+      const keypair = await VortexKeypair.fromSuiWallet(
+        suiWallet.toSuiAddress(),
+        async (message) => suiWallet.signPersonalMessage(message)
+      );
+
+      const keypair2 = await VortexKeypair.fromSuiWallet(
+        suiWallet.toSuiAddress(),
+        async (message) => suiWallet.signPersonalMessage(message)
+      );
+
+      expect(keypair.publicKey).toBe(keypair2.publicKey);
+      expect(keypair.encryptionKey).toBe(keypair2.encryptionKey);
+      expect(keypair.privateKey).toBe(keypair2.privateKey);
+      expect(keypair.address()).toBe(keypair2.address());
+      expect(keypair.toString()).toBe(keypair2.toString());
+    });
+
     it('should create a different keypair for a different Sui wallet', async () => {
       const suiWallet1 = Ed25519Keypair.generate();
       const suiWallet2 = Ed25519Keypair.generate();
