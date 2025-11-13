@@ -130,7 +130,7 @@ export class VortexKeypair {
     const signatureBytes = fromBase64(signature);
     const seed = blake2b(signatureBytes, { dkLen: 32 });
 
-    const privateKey = BigInt('0x' + toHex(seed)) % BN254_FIELD_MODULUS;
+    const privateKey = BigInt('0x' + toHex(seed));
 
     return new VortexKeypair(privateKey);
   }
