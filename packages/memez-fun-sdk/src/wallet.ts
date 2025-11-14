@@ -24,7 +24,7 @@ export class MemezWalletSDK extends MemezBaseSDK {
    * @param args.packages - The package addresses to use for the SDK.
    * @param args.sharedObjects - A record of shared objects to use for the SDK.
    * @param args.network - The network to use for the SDK. Either `mainnet` or `testnet`.
-   * @param args.walletRegistryId - Optional wallet registry object ID to override the default.
+   * @param args.walletRegistryObjectId - Optional wallet registry object ID to override the default.
    */
   constructor(args: SdkConstructorArgs & { walletRegistryObjectId: string }) {
     super(args);
