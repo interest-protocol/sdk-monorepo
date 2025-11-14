@@ -1,5 +1,5 @@
 import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
-import { Transaction } from '@mysten/sui/transactions';
+import { Transaction, TransactionArgument } from '@mysten/sui/transactions';
 
 import { Vortex } from '../vortex';
 
@@ -8,20 +8,20 @@ export const devnetSuiClient = new SuiClient({
 });
 
 export const TEST_VORTEX_PACKAGE_ID =
-  '0x277955cc8a73834e1f4cd697f3378d859766b0dd4765955639696ac09cc17d2c';
+  '0xe5c3cc57317735311a9e054fa3d59c625d6e530ab9b9499409c4a7157fbfbaba';
 
 export const TEST_VORTEX_SHARED_OBJECT_ID =
-  '0x40ddca868d871032c9a193d293b9f23dda08affb3756751ca286f92e1707e08a';
+  '0x9751819ded69b113eea0ca81b4fcb95be8a07b166a88858ce58057417b5713d3';
 
 export const TEST_REGISTRY_SHARED_OBJECT_ID =
-  '0xe0cd9b658293528a3e3cbdc83d08d2a9e28ff1b51c0143706996b555e6f5c3ec';
+  '0x86b4429f15c699d4a225474be82490f1165c1123228dcfedc6966c245b840ac2';
 
 export const TEST_UPGRADE_CAP_ID =
-  '0x79b724a068c5b73007f791aa4b8cf7a1b5cc66f25ea0bcaa57cd8ea4d7ee560b';
+  '0xb76878578f39017a04a892e7250a146c13663282de80876fae7d62fb5b073f4b';
 
-export const TEST_REGISTRY_INITIAL_SHARED_VERSION = '7';
+export const TEST_REGISTRY_INITIAL_SHARED_VERSION = '8';
 
-export const TEST_VORTEX_INITIAL_SHARED_VERSION = '7';
+export const TEST_VORTEX_INITIAL_SHARED_VERSION = '8';
 
 interface ExpectDevInspectTransactionBlockArgs {
   tx: Transaction;
@@ -39,6 +39,9 @@ export const expectDevInspectTransactionBlock = async ({
     transactionBlock: tx,
   });
 
+  if (result.effects.status.status !== expectStatus) {
+    console.log(result);
+  }
   expect(result.effects.status.status).toBe(expectStatus);
 };
 
@@ -53,3 +56,21 @@ export const testVortex = new Vortex({
   },
   packageId: TEST_VORTEX_PACKAGE_ID,
 });
+
+interface AssertValueArgs {
+  tx: Transaction;
+  typeArguments: string[];
+  args: TransactionArgument[];
+}
+
+export const assertValueMoveCall = ({
+  tx,
+  typeArguments,
+  args,
+}: AssertValueArgs) => {
+  tx.moveCall({
+    target: `${TEST_VORTEX_PACKAGE_ID}::vortex::assert_value`,
+    arguments: args,
+    typeArguments: typeArguments,
+  });
+};

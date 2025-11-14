@@ -35,7 +35,7 @@ export class Vortex {
   register({ tx = new Transaction(), encryptionKey }: RegisterArgs) {
     tx.moveCall({
       target: `${this.packageId}::vortex::register`,
-      arguments: [this.#mutableRegistryRef(tx), tx.pure.string(encryptionKey)],
+      arguments: [this.mutableRegistryRef(tx), tx.pure.string(encryptionKey)],
     });
 
     return { tx };
@@ -46,7 +46,7 @@ export class Vortex {
 
     tx.moveCall({
       target: `${this.packageId}::vortex::encryption_key`,
-      arguments: [this.#immutableRegistryRef(tx), tx.pure.address(user)],
+      arguments: [this.immutableRegistryRef(tx), tx.pure.address(user)],
     });
 
     const result = await devInspectAndGetReturnValues(this.#suiClient, tx, [
@@ -55,7 +55,7 @@ export class Vortex {
 
     invariant(result[0], 'Encryption key devInspectAndGetReturnValues failed');
 
-    return result[0][0];
+    return result[0][0] as string;
   }
 
   newExtData({
@@ -84,7 +84,7 @@ export class Vortex {
     return { tx, extData };
   }
 
-  #immutableVortexRef(tx: Transaction) {
+  immutableVortexRef(tx: Transaction) {
     return tx.sharedObjectRef({
       objectId: this.vortex.objectId,
       initialSharedVersion: this.vortex.initialSharedVersion,
@@ -92,7 +92,7 @@ export class Vortex {
     });
   }
 
-  #immutableRegistryRef(tx: Transaction) {
+  immutableRegistryRef(tx: Transaction) {
     return tx.sharedObjectRef({
       objectId: this.registry.objectId,
       initialSharedVersion: this.registry.initialSharedVersion,
@@ -100,7 +100,7 @@ export class Vortex {
     });
   }
 
-  #mutableVortexRef(tx: Transaction) {
+  mutableVortexRef(tx: Transaction) {
     return tx.sharedObjectRef({
       objectId: this.vortex.objectId,
       initialSharedVersion: this.vortex.initialSharedVersion,
@@ -108,7 +108,7 @@ export class Vortex {
     });
   }
 
-  #mutableRegistryRef(tx: Transaction) {
+  mutableRegistryRef(tx: Transaction) {
     return tx.sharedObjectRef({
       objectId: this.registry.objectId,
       initialSharedVersion: this.registry.initialSharedVersion,
