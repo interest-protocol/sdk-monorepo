@@ -9,6 +9,7 @@ import {
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import { bcs } from '@mysten/sui/bcs';
 import invariant from 'tiny-invariant';
+import { pathOr } from 'ramda';
 
 export class Vortex {
   #suiClient: SuiClient;
@@ -82,6 +83,75 @@ export class Vortex {
     });
 
     return { tx, extData };
+  }
+
+  async tvl() {
+    const object = await this.#suiClient.getObject({
+      id: this.vortex.objectId,
+      options: {
+        showContent: true,
+      },
+    });
+
+    invariant(object.data, 'Vortex object data not found');
+
+    const content = object.data.content;
+
+    return BigInt(pathOr(0, ['fields', 'balance'], content));
+  }
+
+  async root() {
+    const tx = new Transaction();
+
+    tx.moveCall({
+      target: `${this.packageId}::vortex::root`,
+      arguments: [this.immutableVortexRef(tx)],
+    });
+
+    const result = await devInspectAndGetReturnValues(this.#suiClient, tx, [
+      [bcs.u256()],
+    ]);
+
+    invariant(result[0], 'Root devInspectAndGetReturnValues failed');
+
+    return result[0][0] as string;
+  }
+
+  async nextIndex() {
+    const tx = new Transaction();
+
+    tx.moveCall({
+      target: `${this.packageId}::vortex::next_index`,
+      arguments: [this.immutableVortexRef(tx)],
+    });
+
+    const result = await devInspectAndGetReturnValues(this.#suiClient, tx, [
+      [bcs.u64()],
+    ]);
+
+    invariant(result[0], 'Next index devInspectAndGetReturnValues failed');
+
+    return result[0][0] as string;
+  }
+
+  async isNullifierSpent(nullifier: bigint) {
+    const tx = new Transaction();
+
+    tx.moveCall({
+      target: `${this.packageId}::vortex::is_nullifier_spent`,
+      arguments: [this.immutableVortexRef(tx), tx.pure.u256(nullifier)],
+    });
+
+    const result = await devInspectAndGetReturnValues(this.#suiClient, tx, [
+      [bcs.Bool],
+    ]);
+
+    invariant(
+      result[0],
+      'Is nullifier spent devInspectAndGetReturnValues failed'
+    );
+
+    return result[0][0] as boolean;
   }
 
   immutableVortexRef(tx: Transaction) {

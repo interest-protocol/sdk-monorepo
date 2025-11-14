@@ -42,6 +42,7 @@
     "@interest-protocol/typescript-config": "workspace:*",
     "@types/bn.js": "^5.1.6",
     "@types/jest": "^29.5.5",
+    "@types/ramda": "^0.30.2",
     "@types/snarkjs": "^0.7.9",
     "jest": "^29.7.0",
     "jest-environment-node": "^29.7.0",

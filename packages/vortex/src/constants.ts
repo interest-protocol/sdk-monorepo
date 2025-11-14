@@ -55,7 +55,7 @@ export enum Modules {
 
 export const ROOT_HISTORY_SIZE = 100;
 
-export const MERKLE_TREE_HEIGHT = 31;
+export const MERKLE_TREE_HEIGHT = 26;
 
 export const ERROR_CODES = {
   0: 'Invalid allowed deposit value',
