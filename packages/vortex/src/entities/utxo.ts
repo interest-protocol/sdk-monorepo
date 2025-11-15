@@ -26,7 +26,7 @@ export class Utxo {
   }
 
   commitment() {
-    return poseidon3([this.amount, this.keypair.privateKey, this.blinding]);
+    return poseidon3([this.amount, this.keypair.publicKey, this.blinding]);
   }
 
   nullifier() {
