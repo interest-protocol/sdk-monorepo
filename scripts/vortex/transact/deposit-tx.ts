@@ -156,6 +156,17 @@ export const deposit = async ({
   const proofJson = prove(JSON.stringify(input), provingKey);
   const proof: Proof = JSON.parse(proofJson);
 
+  const publicInputs = {
+    root: input.root,
+    publicAmount: input.publicAmount,
+    extDataHash: input.extDataHash,
+    inputNullifier1: input.inputNullifier1,
+    inputNullifier2: input.inputNullifier2,
+    outputCommitment1: input.outputCommitment1,
+    outputCommitment2: input.outputCommitment2,
+    publicValue: input.publicAmount,
+  };
+
   return {
     proof,
     extDataHash,
@@ -167,14 +178,20 @@ export const deposit = async ({
     outputCommitment2: commitment2,
     root: merkleTree.root(),
     extDataHashBigInt,
+    publicInputs,
   };
 };
 
 (async () => {
   try {
     const env = await getEnv();
-    const { proof, extDataHashBigInt, encryptedUtxo, encryptedUtxo2 } =
-      await deposit(env);
+    const {
+      proof,
+      extDataHashBigInt,
+      encryptedUtxo,
+      encryptedUtxo2,
+      publicInputs,
+    } = await deposit(env);
 
     const tx = new Transaction();
 
@@ -197,13 +214,13 @@ export const deposit = async ({
       target: `${vortex.packageId}::vortex_proof::new`,
       arguments: [
         tx.pure.vector('u8', fromHex(proof.proofSerializedHex)),
-        tx.pure.u256(proof.publicInputs[0]),
-        tx.pure.u256(proof.publicInputs[1]),
+        tx.pure.u256(publicInputs.root),
+        tx.pure.u64(publicInputs.publicAmount),
         tx.pure.u256(extDataHashBigInt),
-        tx.pure.u256(proof.publicInputs[3]),
-        tx.pure.u256(proof.publicInputs[4]),
-        tx.pure.u256(proof.publicInputs[5]),
-        tx.pure.u64(proof.publicInputs[6]),
+        tx.pure.u256(publicInputs.inputNullifier1),
+        tx.pure.u256(publicInputs.inputNullifier2),
+        tx.pure.u256(publicInputs.outputCommitment1),
+        tx.pure.u256(publicInputs.outputCommitment2),
       ],
     });
 
