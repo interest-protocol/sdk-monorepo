@@ -6,7 +6,7 @@ import {
   ZERO_VALUE,
   Utxo,
 } from '@interest-protocol/vortex-sdk';
-import { fromHex, toHex } from '@mysten/sui/utils';
+import { fromHex, toHex, normalizeSuiAddress } from '@mysten/sui/utils';
 import { prove } from '../pkg/vortex';
 import { poseidon2 } from 'poseidon-lite';
 import invariant from 'tiny-invariant';
@@ -111,7 +111,7 @@ export const deposit = async ({
     recipient: keypair.toSuiAddress(),
     value: utxoPayload.amount,
     valueSign: true,
-    relayer: '0x0',
+    relayer: normalizeSuiAddress('0x0'),
     relayerFee: 0n,
     encryptedOutput1: fromHex(encryptedUtxo),
     encryptedOutput2: fromHex(encryptedUtxo2),
@@ -203,7 +203,7 @@ export const deposit = async ({
         tx.pure.address(keypair.toSuiAddress()),
         tx.pure.u64(500),
         tx.pure.bool(true),
-        tx.pure.address('0x0'),
+        tx.pure.address(normalizeSuiAddress('0x0')),
         tx.pure.u64(0n),
         tx.pure.vector('u8', fromHex(encryptedUtxo)),
         tx.pure.vector('u8', fromHex(encryptedUtxo2)),

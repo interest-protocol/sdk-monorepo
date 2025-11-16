@@ -12,18 +12,18 @@ import { Transaction } from '@mysten/sui/transactions';
 import { PROVING_KEY } from './proving-key';
 
 export const VORTEX_PACKAGE_ID =
-  '0xaa30858fe95120b1c2f198d113667adcb82458ac0ebf68752c46c38244ca5b3a';
+  '0xb6fdd9abdbfa4220efb69bf4b60c4b816e2acf622e78cc0df65abc572c4a860d';
 
 export const UPGRADE_CAP =
-  '0xcabe7c85d8884b856a0a154c757541fd48522797146799731629e86bac96b99b';
+  '0x1405fc93b03764f606af37ff8167ba2bc20b57e8a18e3a91e0b9b43094251993';
 
 export const VORTEX_POOL_OBJECT_ID =
-  '0x47b7017f5d5c3ed1434f9c18c2fd617f3954fb64d82e1882570c1329bc8003dc';
+  '0x3e804f122325dc06af824d2ee234a41bb48d1db15193bd10ccaa1c54427a8224';
 
 export const REGISTRY_OBJECT_ID =
-  '0x8cf28860ffaa21681fad93495f155529f4ded1391017bda3284f1512d1822271';
+  '0x1817dae0790a7f73af662a7898ffcd9db8de53d078a910e4d4c6e5504c06c2da';
 
-export const INITIAL_SHARED_VERSION = '20';
+export const INITIAL_SHARED_VERSION = '21';
 
 export interface Env {
   VortexKeypair: typeof VortexKeypair;
