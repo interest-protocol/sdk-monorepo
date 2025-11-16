@@ -198,12 +198,12 @@ export const deposit = async ({
       arguments: [
         tx.pure.vector('u8', fromHex(proof.proofSerializedHex)),
         tx.pure.u256(proof.publicInputs[0]),
+        tx.pure.u256(proof.publicInputs[1]),
+        tx.pure.u256(extDataHashBigInt),
         tx.pure.u256(proof.publicInputs[3]),
         tx.pure.u256(proof.publicInputs[4]),
         tx.pure.u256(proof.publicInputs[5]),
-        tx.pure.u256(proof.publicInputs[6]),
-        tx.pure.u64(proof.publicInputs[1]),
-        tx.pure.u256(extDataHashBigInt),
+        tx.pure.u64(proof.publicInputs[6]),
       ],
     });
 
