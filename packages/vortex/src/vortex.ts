@@ -77,8 +77,8 @@ export class Vortex {
         tx.pure.bool(valueSign),
         tx.pure.address(relayer),
         tx.pure.u64(relayerFee),
-        tx.pure.u256(encryptedOutput1),
-        tx.pure.u256(encryptedOutput2),
+        tx.pure.vector('u8', encryptedOutput1),
+        tx.pure.vector('u8', encryptedOutput2),
       ],
     });
 

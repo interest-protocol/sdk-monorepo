@@ -22,8 +22,8 @@ export interface ExtDataHashArgs {
   valueSign: boolean;
   relayer: string; // Sui address
   relayerFee: bigint;
-  encryptedOutput1: bigint;
-  encryptedOutput2: bigint;
+  encryptedOutput1: Uint8Array;
+  encryptedOutput2: Uint8Array;
 }
 
 export interface NewExtDataArgs extends MaybeTx, ExtDataHashArgs {}

@@ -1,6 +1,7 @@
 import { bcs } from '@mysten/sui/bcs';
 import { blake2b } from '@noble/hashes/blake2.js';
 import { normalizeSuiAddress } from '@mysten/sui/utils';
+import { toHex } from '@mysten/sui/utils';
 
 import { ExtDataHashArgs } from '../vortex.types';
 
@@ -25,11 +26,11 @@ export function computeExtDataHash({
   ).toBytes();
   const relayerFeeBytes = bcs.u64().serialize(relayerFee).toBytes();
   const encryptedOutput1Bytes = bcs
-    .u256()
+    .vector(bcs.u8())
     .serialize(encryptedOutput1)
     .toBytes();
   const encryptedOutput2Bytes = bcs
-    .u256()
+    .vector(bcs.u8())
     .serialize(encryptedOutput2)
     .toBytes();
 
