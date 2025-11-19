@@ -7,7 +7,7 @@ import {
   Utxo,
 } from '@interest-protocol/vortex-sdk';
 import { fromHex, toHex } from '@mysten/sui/utils';
-import { prove, verify } from '../pkg/nodejs/vortex';
+
 import { poseidon2 } from 'poseidon-lite';
 import invariant from 'tiny-invariant';
 
@@ -145,8 +145,8 @@ export const deposit = async () => {
 
   console.log('Generating proof (this may take 5-15 seconds)...');
 
-  const proofJson = prove(JSON.stringify(input), provingKey);
-  const proof = JSON.parse(proofJson);
+  // const proofJson = prove(JSON.stringify(input), provingKey);
+  // const proof = JSON.parse(proofJson);
 
   const publicInputs = {
     root: input.root,

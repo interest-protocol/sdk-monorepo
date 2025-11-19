@@ -1,5 +1,5 @@
 import { VortexKeypair } from './keypair';
-import { poseidon3 } from 'poseidon-lite';
+import { poseidon3 } from '../crypto';
 
 interface UtxoConstructorArgs {
   amount: bigint;
@@ -26,16 +26,20 @@ export class Utxo {
   }
 
   commitment() {
-    return poseidon3([this.amount, this.keypair.publicKey, this.blinding]);
+    return poseidon3(
+      this.amount,
+      BigInt(this.keypair.publicKey),
+      this.blinding
+    );
   }
 
   nullifier() {
     const commitment = this.commitment();
-    return poseidon3([
+    return poseidon3(
       commitment,
       this.index,
-      this.keypair.sign(commitment, this.index),
-    ]);
+      this.keypair.sign(commitment, this.index)
+    );
   }
 
   payload() {

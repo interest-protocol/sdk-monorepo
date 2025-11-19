@@ -1,4 +1,4 @@
-import { poseidon1, poseidon3 } from 'poseidon-lite';
+import { poseidon1, poseidon3 } from '../crypto';
 import { BN254_FIELD_MODULUS, VORTEX_SIGNATURE_DOMAIN } from '../constants';
 
 import { fromBase64, fromHex, toHex } from '@mysten/sui/utils';
@@ -74,7 +74,7 @@ export class VortexKeypair {
 
   constructor(privateKey: bigint) {
     this.privateKey = privateKey % BN254_FIELD_MODULUS;
-    this.publicKey = poseidon1([this.privateKey]).toString();
+    this.publicKey = poseidon1(this.privateKey).toString();
 
     const privKeyBytes = this.#getPrivateKeyBytes();
     this.x25519PrivateKey = blake2b(privKeyBytes, { dkLen: 32 });
@@ -190,7 +190,7 @@ export class VortexKeypair {
 
   sign(commitment: bigint, merklePath: bigint): bigint {
     invariant(this.privateKey !== null, 'Cannot sign without private key');
-    return poseidon3([this.privateKey, commitment, merklePath]);
+    return poseidon3(this.privateKey, commitment, merklePath);
   }
 
   toString(): string {

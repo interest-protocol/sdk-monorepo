@@ -1,7 +1,7 @@
 import { F1Field, Scalar, utils } from '../ff';
-import op from './poseidon-constants-opt.json';
+import { CONSTANTS } from './poseidon-constants-opt';
 
-export const OPT = utils.unStringifyBigInts(op) as {
+export const OPT = utils.unStringifyBigInts(CONSTANTS) as {
   C: bigint[][];
   S: bigint[][];
   M: bigint[][][];
@@ -38,38 +38,38 @@ export class Poseidon {
     const t = inputs.length + 1;
     const nRoundsF = N_ROUNDS_F;
     const nRoundsP = N_ROUNDS_P[t - 2];
-    const C = OPT.C[t - 2];
-    const S = OPT.S[t - 2];
-    const M = OPT.M[t - 2];
-    const P = OPT.P[t - 2];
+    const C = OPT.C[t - 2]!;
+    const S = OPT.S[t - 2]!;
+    const M = OPT.M[t - 2]!;
+    const P = OPT.P[t - 2]!;
 
     let state: bigint[] = [F.zero, ...inputs.map((a) => F.e(a) as bigint)];
 
-    state = state.map((a, i) => F.add(a, C[i]));
+    state = state.map((a, i) => F.add(a, C[i]!));
 
     for (let r = 0; r < nRoundsF / 2 - 1; r++) {
       state = state.map((a) => pow5(a));
-      state = state.map((a, i) => F.add(a, C[(r + 1) * t + i]));
+      state = state.map((a, i) => F.add(a, C[(r + 1) * t + i]!));
       state = state.map((_, i) =>
-        state.reduce((acc, a, j) => F.add(acc, F.mul(M[j][i], a)), F.zero)
+        state.reduce((acc, a, j) => F.add(acc, F.mul(M[j]![i]!, a)), F.zero)
       );
     }
     state = state.map((a) => pow5(a));
-    state = state.map((a, i) => F.add(a, C[(nRoundsF / 2 - 1 + 1) * t + i]));
+    state = state.map((a, i) => F.add(a, C[(nRoundsF / 2 - 1 + 1) * t + i]!));
     state = state.map((_, i) =>
-      state.reduce((acc, a, j) => F.add(acc, F.mul(P[j][i], a)), F.zero)
+      state.reduce((acc, a, j) => F.add(acc, F.mul(P[j]![i]!, a)), F.zero)
     );
-    for (let r = 0; r < nRoundsP; r++) {
-      state[0] = pow5(state[0]);
-      state[0] = F.add(state[0], C[(nRoundsF / 2 + 1) * t + r]);
+    for (let r = 0; r < nRoundsP!; r++) {
+      state[0] = pow5(state[0]!);
+      state[0] = F.add(state[0]!, C[(nRoundsF / 2 + 1) * t + r]!);
 
       const s0 = state.reduce((acc, a, j) => {
-        return F.add(acc, F.mul(S[(t * 2 - 1) * r + j], a));
+        return F.add(acc, F.mul(S[(t * 2 - 1) * r + j]!, a!));
       }, F.zero);
       for (let k = 1; k < t; k++) {
         state[k] = F.add(
-          state[k],
-          F.mul(state[0], S[(t * 2 - 1) * r + t + k - 1])
+          state[k]!,
+          F.mul(state[0]!, S[(t * 2 - 1) * r + t + k - 1]!)
         );
       }
       state[0] = s0;
@@ -77,18 +77,18 @@ export class Poseidon {
     for (let r = 0; r < nRoundsF / 2 - 1; r++) {
       state = state.map((a) => pow5(a));
       state = state.map((a, i) =>
-        F.add(a, C[(nRoundsF / 2 + 1) * t + nRoundsP + r * t + i])
+        F.add(a, C[(nRoundsF / 2 + 1) * t + nRoundsP! + r * t + i]!)
       );
       state = state.map((_, i) =>
-        state.reduce((acc, a, j) => F.add(acc, F.mul(M[j][i], a)), F.zero)
+        state.reduce((acc, a, j) => F.add(acc, F.mul(M[j]![i]!, a)), F.zero)
       );
     }
     state = state.map((a) => pow5(a));
     state = state.map((_, i) =>
-      state.reduce((acc, a, j) => F.add(acc, F.mul(M[j][i], a)), F.zero)
+      state.reduce((acc, a, j) => F.add(acc, F.mul(M[j]![i]!, a)), F.zero)
     );
 
-    return F.normalize(state[0]);
+    return F.normalize(state[0]!);
   }
 
   // HashBytes returns a sponge hash of a msg byte slice split into blocks of 31 bytes

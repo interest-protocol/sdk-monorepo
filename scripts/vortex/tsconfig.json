@@ -23,7 +23,6 @@
     "typeRoots": ["./types", "./node_modules/@types"],
     "types": ["node"]
   },
-  "include": ["./**/*.ts", "./**/*.json", "./types/**/*.d.ts"],
-  "files": ["js-crypto/poseidon/poseidon-constants-opt.json"],
+  "include": ["./**/*.ts", "./types/**/*.d.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

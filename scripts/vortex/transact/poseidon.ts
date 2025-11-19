@@ -1,26 +1,20 @@
-import { Poseidon } from '../js-crypto';
+import { poseidon1, poseidon2, poseidon3 } from '@interest-protocol/vortex-sdk';
 import { getEnv } from '../utils.script';
 import { Transaction } from '@mysten/sui/transactions';
 import { logSuccess } from '@interest-protocol/logger';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import { bcs } from '@mysten/sui/bcs';
 
-const poseidonHash = (items: string[]) =>
-  Poseidon.hash(items.map((item) => BigInt(item)));
-const poseidonHash1 = (item: string) => poseidonHash([item]);
-const poseidonHash2 = (a: string, b: string) => poseidonHash([a, b]);
-const poseidonHash3 = (a: string, b: string, c: string) =>
-  poseidonHash([a, b, c]);
-
 (async () => {
-  const result1 = poseidonHash1('1');
-  const result2 = poseidonHash2('1', '2');
-  const result3 = poseidonHash3('1', '2', '3');
+  const result1 = poseidon1(1n);
+  const result2 = poseidon2(1n, 2n);
+  const result3 = poseidon3(1n, 2n, 3n);
+
   console.log(result1);
   console.log(result2);
   console.log(result3);
 
-  const { suiClient, keypair } = await getEnv();
+  const { suiClient } = await getEnv();
 
   const tx = new Transaction();
 

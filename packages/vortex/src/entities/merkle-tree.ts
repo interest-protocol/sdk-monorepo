@@ -1,5 +1,5 @@
 import { ZERO_VALUE } from '../constants';
-import { poseidon2 } from 'poseidon-lite';
+import { poseidon2 } from '../crypto';
 
 /**
  * @callback hashFunction
@@ -34,7 +34,7 @@ export class MerkleTree {
     this.#zeros[0] = this.zeroElement;
 
     for (let i = 1; i <= levels; i++) {
-      this.#zeros[i] = poseidon2([this.#zeros[i - 1], this.#zeros[i - 1]]);
+      this.#zeros[i] = poseidon2(this.#zeros[i - 1], this.#zeros[i - 1]);
     }
     this.#rebuild();
   }
@@ -43,12 +43,12 @@ export class MerkleTree {
     for (let level = 1; level <= this.levels; level++) {
       this.layers[level] = [];
       for (let i = 0; i < Math.ceil(this.layers[level - 1].length / 2); i++) {
-        this.layers[level][i] = poseidon2([
+        this.layers[level][i] = poseidon2(
           this.layers[level - 1][i * 2],
           i * 2 + 1 < this.layers[level - 1].length
             ? this.layers[level - 1][i * 2 + 1]
-            : this.#zeros[level - 1],
-        ]);
+            : this.#zeros[level - 1]
+        );
       }
     }
   }
@@ -89,12 +89,12 @@ export class MerkleTree {
     this.layers[0][index] = element;
     for (let level = 1; level <= this.levels; level++) {
       index >>= 1;
-      this.layers[level][index] = poseidon2([
+      this.layers[level][index] = poseidon2(
         this.layers[level - 1][index * 2],
         index * 2 + 1 < this.layers[level - 1].length
           ? this.layers[level - 1][index * 2 + 1]
-          : this.#zeros[level - 1],
-      ]);
+          : this.#zeros[level - 1]
+      );
     }
   }
 
