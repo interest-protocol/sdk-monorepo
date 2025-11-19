@@ -67,7 +67,7 @@ export class Vortex {
     relayer,
     relayerFee,
     encryptedOutput1,
-    encryptedOutput2,
+    encryptedOutput0,
   }: NewExtDataArgs) {
     const extData = tx.moveCall({
       target: `${this.packageId}::vortex_ext_data::new`,
@@ -78,7 +78,7 @@ export class Vortex {
         tx.pure.address(relayer),
         tx.pure.u64(relayerFee),
         tx.pure.vector('u8', encryptedOutput1),
-        tx.pure.vector('u8', encryptedOutput2),
+        tx.pure.vector('u8', encryptedOutput0),
       ],
     });
 

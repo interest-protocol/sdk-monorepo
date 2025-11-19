@@ -11,7 +11,8 @@
     "rootDir": "src",
     "strict": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
   },
   "@interest-protocol/*": ["../*/src"],
   "exclude": ["node_modules", "dist"]

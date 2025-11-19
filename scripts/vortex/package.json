@@ -15,12 +15,14 @@
     "@types/ramda": "^0.30.2",
     "@vitest/coverage-v8": "^4.0.8",
     "dotenv": "^16.5.0",
+    "js-crypto": "link:@types/@iden3/js-crypto",
     "rimraf": "^5.0.1",
     "tsx": "^4.19.4",
     "vitest": "^0.34.6"
   },
   "dependencies": {
     "@cetusprotocol/cetus-sui-clmm-sdk": "^5.4.0",
+    "@iden3/js-crypto": "github:iden3/js-crypto",
     "@interest-protocol/logger": "workspace:*",
     "@interest-protocol/sui-core-sdk": "workspace:*",
     "@interest-protocol/sui-utils": "workspace:*",
@@ -29,7 +31,6 @@
     "@polymedia/suitcase-core": "^0.0.36",
     "bignumber.js": "^9.3.1",
     "bn.js": "^5.2.2",
-    "circomlib": "^2.0.5",
     "ethers": "^6.15.0",
     "poseidon-lite": "^0.3.0",
     "ramda": "^0.30.1",

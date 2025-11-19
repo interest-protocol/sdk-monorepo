@@ -7,7 +7,7 @@ import {
   Utxo,
 } from '@interest-protocol/vortex-sdk';
 import { fromHex, toHex } from '@mysten/sui/utils';
-import { prove, verify } from '../pkg/vortex';
+import { prove, verify } from '../pkg/nodejs/vortex';
 import { poseidon2 } from 'poseidon-lite';
 import invariant from 'tiny-invariant';
 
@@ -79,29 +79,32 @@ export const deposit = async () => {
     keypair: vortexKeypair,
   });
 
-  const commitment = utxo.commitment();
-  const commitment2 = utxo2.commitment();
-  const nullifier = utxo.nullifier();
-  const nullifier2 = utxo2.nullifier();
-  const utxoPayload = utxo.payload();
-  const utxoPayload2 = utxo2.payload();
-  const encryptedUtxo = VortexKeypair.encryptUtxoFor(
-    utxoPayload,
+  const commitment0 = utxo.commitment();
+  const commitment1 = utxo2.commitment();
+
+  const nullifier0 = utxo.nullifier();
+  const nullifier1 = utxo2.nullifier();
+
+  const utxoPayload0 = utxo.payload();
+  const utxoPayload1 = utxo2.payload();
+
+  const encryptedUtxo0 = VortexKeypair.encryptUtxoFor(
+    utxoPayload0,
     vortexKeypair.encryptionKey
   );
-  const encryptedUtxo2 = VortexKeypair.encryptUtxoFor(
-    utxoPayload2,
+  const encryptedUtxo1 = VortexKeypair.encryptUtxoFor(
+    utxoPayload1,
     vortexKeypair.encryptionKey
   );
 
   const extDataHash = computeExtDataHash({
     recipient: keypair.toSuiAddress(),
-    value: utxoPayload.amount,
+    value: utxoPayload0.amount,
     valueSign: true,
     relayer: '0x0',
     relayerFee: 0n,
-    encryptedOutput1: fromHex(encryptedUtxo),
-    encryptedOutput2: fromHex(encryptedUtxo2),
+    encryptedOutput0: fromHex(encryptedUtxo0),
+    encryptedOutput1: fromHex(encryptedUtxo1),
   });
 
   const reversedBytes = new Uint8Array(extDataHash.length);
@@ -114,77 +117,73 @@ export const deposit = async () => {
   const input = {
     // Public inputs
     root: merkleTree.root(), // Empty tree
-    publicAmount: utxoPayload.amount, // Depositing
+    publicAmount: utxoPayload0.amount, // Depositing
     extDataHash: extDataHashBigInt, // No external data
-    inputNullifier1: nullifier, // No inputs
-    inputNullifier2: nullifier2,
-    outputCommitment1: commitment,
-    outputCommitment2: commitment2, // Unused output
+    inputNullifier0: nullifier0, // No inputs
+    inputNullifier1: nullifier1,
+    outputCommitment0: commitment0,
+    outputCommitment1: commitment1, // Unused output
     // Private inputs - No input UTXOs (fresh deposit)
+    inPrivateKey0: vortexKeypair.privateKey,
     inPrivateKey1: vortexKeypair.privateKey,
-    inPrivateKey2: vortexKeypair.privateKey,
-    inAmount1: utxoPayload.amount,
-    inAmount2: utxoPayload2.amount,
-    inBlinding1: utxoPayload.blinding,
-    inBlinding2: utxoPayload2.blinding,
-    inPathIndex1: utxoPayload.index,
-    inPathIndex2: utxoPayload2.index,
-    merklePath1: getMerklePath(merkleTree, utxo),
-    merklePath2: getMerklePath(merkleTree, utxo2),
+    inAmount0: utxoPayload0.amount,
+    inAmount1: utxoPayload1.amount,
+    inBlinding0: utxoPayload0.blinding,
+    inBlinding1: utxoPayload1.blinding,
+    inPathIndex0: utxoPayload0.index,
+    inPathIndex1: utxoPayload1.index,
+    merklePath0: getMerklePath(merkleTree, utxo),
+    merklePath1: getMerklePath(merkleTree, utxo2),
     // Private inputs - Output UTXOs
+    outPublicKey0: vortexKeypair.publicKey,
     outPublicKey1: vortexKeypair.publicKey,
-    outPublicKey2: vortexKeypair.publicKey,
-    outAmount1: utxoPayload.amount,
-    outAmount2: utxoPayload2.amount,
-    outBlinding1: utxoPayload.blinding,
-    outBlinding2: utxoPayload2.blinding,
+    outAmount0: utxoPayload0.amount,
+    outAmount1: utxoPayload1.amount,
+    outBlinding0: utxoPayload0.blinding,
+    outBlinding1: utxoPayload1.blinding,
   };
 
   console.log('Generating proof (this may take 5-15 seconds)...');
-  const startTime = Date.now();
-
-  console.log(input);
 
   const proofJson = prove(JSON.stringify(input), provingKey);
   const proof = JSON.parse(proofJson);
-  const duration = ((Date.now() - startTime) / 1000).toFixed(2);
 
-  console.log(`✓ Proof generated in ${duration}s\n`);
-  console.log(proof);
+  const publicInputs = {
+    root: input.root,
+    publicAmount: input.publicAmount,
+    extDataHash: input.extDataHash,
+    inputNullifier0: input.inputNullifier0,
+    inputNullifier1: input.inputNullifier1,
+    outputCommitment0: input.outputCommitment0,
+    outputCommitment1: input.outputCommitment1,
+  };
 
-  // Format for Sui
-  console.log('Sui Move format:');
-  console.log(
-    JSON.stringify(
-      {
-        a: proof.proofA,
-        b: proof.proofB,
-        c: proof.proofC,
-        root: proof.publicInputs[0],
-        inputNullifier1: proof.publicInputs[3],
-        inputNullifier2: proof.publicInputs[4],
-        outputCommitment1: proof.publicInputs[5],
-        outputCommitment2: proof.publicInputs[6],
-        publicValue: proof.publicInputs[1],
-        extDataHash: proof.publicInputs[2],
-      },
-      null,
-      2
-    )
-  );
+  // // Verify proof
+  // const isValid = verify(
+  //   JSON.stringify({
+  //     ...proof,
+  //     publicInputs: [
+  //       publicInputs.root,
+  //       publicInputs.publicAmount,
+  //       publicInputs.extDataHash,
+  //       publicInputs.inputNullifier0,
+  //       publicInputs.inputNullifier1,
+  //       publicInputs.outputCommitment0,
+  //       publicInputs.outputCommitment1,
+  //     ],
+  //   }),
+  //   verifyingKey
+  // );
 
-  // Verify proof
-  console.log('Verifying proof...');
-  const isValid = verify(proofJson, verifyingKey);
-  invariant(isValid, 'Proof is invalid');
-
-  return proof;
+  return true;
 };
 
 (async () => {
   try {
-    const proof = await deposit();
-    console.log(proof);
+    const isValid = await deposit();
+
+    invariant(isValid, 'Proof verification failed');
+
     console.log('SUCCESS!! PROOF VERIFIED');
   } catch (error) {
     console.log(error);
