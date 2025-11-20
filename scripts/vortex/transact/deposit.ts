@@ -7,7 +7,7 @@ import {
   Utxo,
 } from '@interest-protocol/vortex-sdk';
 import { fromHex, toHex } from '@mysten/sui/utils';
-
+import { prove, verify } from '../pkg/nodejs/vortex';
 import { poseidon2 } from 'poseidon-lite';
 import invariant from 'tiny-invariant';
 
@@ -145,42 +145,19 @@ export const deposit = async () => {
 
   console.log('Generating proof (this may take 5-15 seconds)...');
 
-  // const proofJson = prove(JSON.stringify(input), provingKey);
-  // const proof = JSON.parse(proofJson);
+  const proofJson = prove(JSON.stringify(input), provingKey);
 
-  const publicInputs = {
-    root: input.root,
-    publicAmount: input.publicAmount,
-    extDataHash: input.extDataHash,
-    inputNullifier0: input.inputNullifier0,
-    inputNullifier1: input.inputNullifier1,
-    outputCommitment0: input.outputCommitment0,
-    outputCommitment1: input.outputCommitment1,
-  };
+  // Verify proof
+  const isValid = verify(proofJson, verifyingKey);
 
-  // // Verify proof
-  // const isValid = verify(
-  //   JSON.stringify({
-  //     ...proof,
-  //     publicInputs: [
-  //       publicInputs.root,
-  //       publicInputs.publicAmount,
-  //       publicInputs.extDataHash,
-  //       publicInputs.inputNullifier0,
-  //       publicInputs.inputNullifier1,
-  //       publicInputs.outputCommitment0,
-  //       publicInputs.outputCommitment1,
-  //     ],
-  //   }),
-  //   verifyingKey
-  // );
-
-  return true;
+  return isValid;
 };
 
 (async () => {
   try {
     const isValid = await deposit();
+
+    console.log('isValid', typeof isValid, isValid);
 
     invariant(isValid, 'Proof verification failed');
 

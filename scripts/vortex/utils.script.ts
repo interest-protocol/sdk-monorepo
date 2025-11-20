@@ -1,5 +1,5 @@
 import { VortexKeypair, Utxo, Vortex } from '@interest-protocol/vortex-sdk';
-import { Network } from '@interest-protocol/sui-core-sdk';
+
 import {
   executeTx,
   keypair,
@@ -12,25 +12,21 @@ import { Transaction } from '@mysten/sui/transactions';
 import { PROVING_KEY } from './proving-key';
 
 export const VORTEX_PACKAGE_ID =
-  '0x003a92494b0b925b2512c92fab23499dcd302e5d802e080b9e194201573945a3';
-
-export const UPGRADE_CAP =
-  '0x4e01fca4db761fb125d3b7856a302d86eb5034113ffc460544ddb05d88c1a67d';
+  '0x57e5e6ffdb761c81e42479f16d53b920bdd0ca4ce60dda2aa81657d60f01d55d';
 
 export const VORTEX_POOL_OBJECT_ID =
-  '0x0625c583ed092ed5bf6ce838314738738bd5be1b13331703d2dec4665b9c8e90';
+  '0x63527671f580e4989dccb0a8c0c5ecc8f71445892b26347566ca6db321d13f33';
 
 export const REGISTRY_OBJECT_ID =
-  '0x50aafb69ff4d210bf75bcb517291c332da5fd933281f89228ab84b97ffb4e5fb';
+  '0x451e45ff25a95682247377802db300e3da0870774208e1a8be2f2b28393c6fe0';
 
-export const INITIAL_SHARED_VERSION = '14';
+export const INITIAL_SHARED_VERSION = '15';
 
 export interface Env {
   VortexKeypair: typeof VortexKeypair;
   Utxo: typeof Utxo;
   suiClient: SuiClient;
   executeTx: (tx: Transaction, client?: SuiClient) => Promise<void>;
-  network: Network;
   keypair: Ed25519Keypair;
   POW_10_9: bigint;
   devInspectTransactionBlock: (
@@ -44,14 +40,11 @@ export interface Env {
 }
 
 export const getEnv = async (): Promise<Env> => {
-  const network = Network.TESTNET;
-
   return {
     VortexKeypair,
     suiClient: devnetSuiClient,
     Utxo,
     executeTx,
-    network,
     keypair,
     POW_10_9: 10n ** 9n,
     devInspectTransactionBlock,
@@ -67,7 +60,7 @@ export const getEnv = async (): Promise<Env> => {
       },
     }),
     verifyingKey:
-      '8abc1628853c25306d08b697c715ffab55a9ee43e8fb72cc4a3b6bb74407830c63dc8914a6aa2ef6be195b0b1589ac1ad05ad5ac0ce6e34829f7cb9610340519cbab341c90c5acd97085ba44f27ffa35cf527faa2da9da29019090555ad895895445aab414e17fab2cae2ccb341b42181b3aca24f715ff4501f517d97d14f70161dfe981a5101f528c5b1abd54dd0c7eee2a99bac158aebf21742fa868c8b087c11fa867ffc856e7e60bd4b91dd3a4180ad2d4b74f2a5de084e778542392081811d75339fd7440a23509d461b63a90e6bb7f2e593e847370e963c196d242e7250800000000000000f0fb2a7ef418d49c4ca4ad47c160432eec76d45ca0f507f5e70b3ba647e3ca0abf22be21654be4ad8330e36760824d5f6e8d0874f45ad6ce2b8d6495967fef1e0ab17997e18d5413f9df18806bc0b4b41dd70aba3babdc7da2af0b7200e72802414b5c893610bf6d5877b8c82a01f8a8f2db0ec125027977d761c4138234178a4d0a43bb61295f8e3d07d9510f6a594f265d0a62a5fbe8328d5aa431cebcaba89a8bc8f0f2f7dd455906b3b9793fc6d8ebdb13ad2c8f6f6c8836e6144855d5a392573aebbe220531121e6aec38a82d4f48fb0bd39c44edd30549ccaa10e81d014741074b2a851ae5eb4129879f69330338f53e7a8e1e6316600b32d933e51b9a',
+      '8abc1628853c25306d08b697c715ffab55a9ee43e8fb72cc4a3b6bb74407830c63dc8914a6aa2ef6be195b0b1589ac1ad05ad5ac0ce6e34829f7cb9610340519cbab341c90c5acd97085ba44f27ffa35cf527faa2da9da29019090555ad895895445aab414e17fab2cae2ccb341b42181b3aca24f715ff4501f517d97d14f70161dfe981a5101f528c5b1abd54dd0c7eee2a99bac158aebf21742fa868c8b087c11fa867ffc856e7e60bd4b91dd3a4180ad2d4b74f2a5de084e778542392081811d75339fd7440a23509d461b63a90e6bb7f2e593e847370e963c196d242e7250800000000000000ceac4b2a063914c42118ec952c0a2fc742383a7aad3a9a912ed24a69181a721854ce82369c7b4da8d59de6f9d79dd6d8601b36286bc715b3fc8dee7f0ded8ba67d77d29e139590e3fd9d0d4aa90e72ed39a45fd9b015321e42b4504c8b285312d9ff7d6a68973587477e31c377d872c50c52438adabc8498677ad053db396c1de0ba070aee69b8c9eff39be108338512c143afea863712b3a199152b5ef0e7813dce803ef4638b6d07374993e04e9314bd00c40551311caa744a04b0ba36b11500eb0ed20597573384cfdb51bd9714c7cd76bd4b32deeb64e4b80105ddf1a1a7eef919bf409ac9cc16404469a6e7e8ce8b6217bd85240fc2c2c26e2617aa200a',
     provingKey: PROVING_KEY,
   };
 };
