@@ -88,6 +88,12 @@ export class VortexKeypair {
     this.encryptionKey = Buffer.from(x25519PublicKey).toString('base64');
   }
 
+  static fromSuiPrivateKey(privateKey: string): VortexKeypair {
+    return new VortexKeypair(
+      BigInt('0x' + toHex(fromBase64(privateKey.replace('suiprivkey', ''))))
+    );
+  }
+
   static generate(): VortexKeypair {
     const keypair = Ed25519Keypair.generate();
     return new VortexKeypair(

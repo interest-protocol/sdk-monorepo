@@ -3,52 +3,94 @@ import {
   MerkleTree,
   computeExtDataHash,
   Utxo,
-  Proof,
   reverseBytes,
   bytesToBigInt,
+  Proof,
+  parseNewCommitmentEvent,
+  UtxoPayload,
+  BN254_FIELD_MODULUS,
 } from '@interest-protocol/vortex-sdk';
+import { logInfo } from '@interest-protocol/logger';
 import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
 import { prove } from '../pkg/nodejs/vortex';
 
 import { Transaction } from '@mysten/sui/transactions';
+import { BN } from 'bn.js';
 
-export const deposit = async ({
+export const withdraw = async ({
   VortexKeypair,
   keypair,
   vortex,
   provingKey,
   getMerklePath,
+  suiClient,
+  recipientKeypair,
 }: Env) => {
   const vortexKeypair = await VortexKeypair.fromSuiWallet(
     keypair.toSuiAddress(),
     async (message) => keypair.signPersonalMessage(message)
   );
+
+  const commitmentEvents = await suiClient.queryEvents({
+    query: {
+      MoveEventType: vortex.newCommitmentEventType,
+    },
+  });
+
+  const parsedCommitmentEvents = parseNewCommitmentEvent(commitmentEvents).sort(
+    (a, b) => Number(a.index) - Number(b.index)
+  );
+
+  const utxos = [] as UtxoPayload[];
+
+  parsedCommitmentEvents.forEach((event) => {
+    try {
+      const utxo = vortexKeypair.decryptUtxo(event.encryptedOutput);
+      utxos.push({ ...utxo, index: event.index });
+    } catch (error) {
+      console.log('Not our UTXO');
+    }
+  });
+
+  logInfo('utxos', utxos);
+
   const merkleTree = new MerkleTree(26);
+
+  console.log('root', merkleTree.root());
+  console.log('root from chain', await vortex.root());
+
+  merkleTree.bulkInsert(
+    parsedCommitmentEvents.map((event) => event.commitment)
+  );
+
+  // Consuming 500
+  const inputUtxo0 = new Utxo({
+    amount: utxos[0]!.amount,
+    index: utxos[0]!.index,
+    keypair: vortexKeypair,
+    blinding: utxos[0]!.blinding,
+  });
+
+  // Just a 0 dummy
+  const inputUtxo1 = new Utxo({
+    amount: utxos[1]!.amount,
+    index: utxos[1]!.index,
+    blinding: utxos[1]!.blinding,
+    keypair: vortexKeypair,
+  });
 
   const nextIndex = await vortex.nextIndex();
 
-  const inputUtxo0 = new Utxo({
-    amount: 0n,
-    index: BigInt(nextIndex),
-    keypair: vortexKeypair,
-  });
-
-  const inputUtxo1 = new Utxo({
-    amount: 0n,
-    index: BigInt(nextIndex) + 1n,
-    keypair: vortexKeypair,
-  });
-
   // Output UTXOs: the actual deposit. Commitment Utxos do not need an index.
   const outputUtxo0 = new Utxo({
-    amount: 500n,
-    index: 0n,
+    amount: 250n,
+    index: BigInt(nextIndex),
     keypair: vortexKeypair,
   });
 
   const outputUtxo1 = new Utxo({
     amount: 0n,
-    index: 0n,
+    index: BigInt(nextIndex) + 1n,
     keypair: vortexKeypair,
   });
 
@@ -68,17 +110,23 @@ export const deposit = async ({
   );
 
   // Deposit
-  const publicAmount = 500n;
+  const extDataPublicAmount = 250n;
 
-  const extDataHash = computeExtDataHash({
-    recipient: keypair.toSuiAddress(),
-    value: publicAmount,
-    valueSign: true,
+  const proofPublicAmount = new BN(BN254_FIELD_MODULUS).sub(
+    new BN(extDataPublicAmount)
+  );
+
+  const extDataPayload = {
+    recipient: recipientKeypair.toSuiAddress(),
+    value: extDataPublicAmount,
+    valueSign: false,
     relayer: '0x0',
     relayerFee: 0n,
     encryptedOutput0: fromHex(encryptedUtxo0),
     encryptedOutput1: fromHex(encryptedUtxo1),
-  });
+  };
+
+  const extDataHash = computeExtDataHash(extDataPayload);
 
   const extDataHashBigInt = bytesToBigInt(reverseBytes(extDataHash));
 
@@ -86,7 +134,7 @@ export const deposit = async ({
   const input = {
     // Public inputs
     root: merkleTree.root(), // Empty tree
-    publicAmount, // Depositing
+    publicAmount: proofPublicAmount.toString(), // Withdrawing
     extDataHash: extDataHashBigInt, // No external data
     inputNullifier0: nullifier0, // No inputs
     inputNullifier1: nullifier1,
@@ -112,11 +160,12 @@ export const deposit = async ({
     outBlinding1: outputUtxo1.blinding,
   };
 
-  const proof: Proof = JSON.parse(prove(JSON.stringify(input), provingKey));
+  const proofJson = prove(JSON.stringify(input), provingKey);
+  const proof: Proof = JSON.parse(proofJson);
 
   const publicInputs = {
     root: input.root,
-    publicAmount: input.publicAmount,
+    publicAmount: proofPublicAmount.toString(),
     extDataHash: input.extDataHash,
     inputNullifier0: input.inputNullifier0,
     inputNullifier1: input.inputNullifier1,
@@ -126,24 +175,17 @@ export const deposit = async ({
 
   return {
     proof,
-    extDataHash,
-    encryptedUtxo0,
-    encryptedUtxo1,
-    inputNullifier0: nullifier0,
-    inputNullifier1: nullifier1,
-    outputCommitment0: commitment0,
-    outputCommitment1: commitment1,
-    root: merkleTree.root(),
     extDataHashBigInt,
     publicInputs,
+    extDataPayload,
   };
 };
 
 (async () => {
   try {
     const env = await getEnv();
-    const { proof, encryptedUtxo0, encryptedUtxo1, publicInputs } =
-      await deposit(env);
+
+    const { proof, publicInputs, extDataPayload } = await withdraw(env);
 
     const tx = new Transaction();
 
@@ -152,13 +194,13 @@ export const deposit = async ({
     const extData = tx.moveCall({
       target: `${vortex.packageId}::vortex_ext_data::new`,
       arguments: [
-        tx.pure.address(keypair.toSuiAddress()),
-        tx.pure.u64(500),
-        tx.pure.bool(true),
-        tx.pure.address(normalizeSuiAddress('0x0')),
-        tx.pure.u64(0n),
-        tx.pure.vector('u8', fromHex(encryptedUtxo0)),
-        tx.pure.vector('u8', fromHex(encryptedUtxo1)),
+        tx.pure.address(extDataPayload.recipient),
+        tx.pure.u64(extDataPayload.value),
+        tx.pure.bool(extDataPayload.valueSign),
+        tx.pure.address(normalizeSuiAddress(extDataPayload.relayer)),
+        tx.pure.u64(extDataPayload.relayerFee),
+        tx.pure.vector('u8', extDataPayload.encryptedOutput0),
+        tx.pure.vector('u8', extDataPayload.encryptedOutput1),
       ],
     });
 

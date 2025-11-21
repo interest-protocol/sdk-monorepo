@@ -2,64 +2,24 @@ import { getEnv } from '../utils.script';
 import {
   MerkleTree,
   computeExtDataHash,
-  MERKLE_TREE_HEIGHT,
-  ZERO_VALUE,
-  Utxo,
-  poseidon2,
+  reverseBytes,
+  bytesToBigInt,
 } from '@interest-protocol/vortex-sdk';
-import { fromHex, toHex } from '@mysten/sui/utils';
+import { fromHex } from '@mysten/sui/utils';
 import { prove, verify } from '../pkg/nodejs/vortex';
 
 import invariant from 'tiny-invariant';
 
-function getMerklePath(
-  merkleTree: MerkleTree,
-  utxo: Utxo | null
-): [string, string][] {
-  if (!utxo || utxo.amount === 0n) {
-    return Array(MERKLE_TREE_HEIGHT)
-      .fill(null)
-      .map(() => [ZERO_VALUE.toString(), ZERO_VALUE.toString()]);
-  }
-
-  // For deposits, input UTXOs don't exist in the tree yet, so return zero paths
-  const utxoIndex = Number(utxo.index);
-  const treeSize = merkleTree.layers[0]?.length ?? 0;
-  if (utxoIndex < 0 || utxoIndex >= treeSize) {
-    return Array(MERKLE_TREE_HEIGHT)
-      .fill(null)
-      .map(() => [ZERO_VALUE.toString(), ZERO_VALUE.toString()]);
-  }
-
-  const { pathElements, pathIndices } = merkleTree.path(utxoIndex);
-  const commitment = utxo.commitment();
-
-  let currentHash = commitment; // Start at leaf
-  const wasmPath: [string, string][] = [];
-
-  for (let i = 0; i < MERKLE_TREE_HEIGHT; i++) {
-    const sibling = pathElements[i];
-    const isLeft = pathIndices[i] === 0;
-
-    invariant(sibling !== undefined, 'Sibling is undefined');
-
-    if (isLeft) {
-      // Current is left child, sibling is right
-      wasmPath.push([currentHash.toString(), sibling.toString()]);
-      currentHash = poseidon2(currentHash, sibling);
-    } else {
-      // Current is right child, sibling is left
-      wasmPath.push([sibling.toString(), currentHash.toString()]);
-      currentHash = poseidon2(sibling, currentHash);
-    }
-  }
-
-  return wasmPath;
-}
-
 export const deposit = async () => {
-  const { VortexKeypair, keypair, Utxo, provingKey, verifyingKey, vortex } =
-    await getEnv();
+  const {
+    VortexKeypair,
+    keypair,
+    Utxo,
+    provingKey,
+    verifyingKey,
+    vortex,
+    getMerklePath,
+  } = await getEnv();
   const vortexKeypair = await VortexKeypair.fromSuiWallet(
     keypair.toSuiAddress(),
     async (message) => keypair.signPersonalMessage(message)
@@ -121,11 +81,7 @@ export const deposit = async () => {
     encryptedOutput1: fromHex(encryptedUtxo1),
   });
 
-  const reversedBytes = new Uint8Array(extDataHash.length);
-  for (let i = 0; i < extDataHash.length; i++) {
-    reversedBytes[i] = extDataHash[extDataHash.length - 1 - i]!;
-  }
-  const extDataHashBigInt = BigInt('0x' + toHex(reversedBytes));
+  const extDataHashBigInt = bytesToBigInt(reverseBytes(extDataHash));
 
   // Prepare circuit input
   const input = {
@@ -157,14 +113,11 @@ export const deposit = async () => {
     outBlinding1: outputUtxo1.blinding,
   };
 
-  console.log(input);
-
   console.log('Generating proof (this may take 5-15 seconds)...');
 
   const proofJson = prove(JSON.stringify(input), provingKey);
 
-  const isValid = verify(proofJson, verifyingKey);
-  return isValid;
+  return verify(proofJson, verifyingKey);
 };
 
 (async () => {

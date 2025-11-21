@@ -1,4 +1,4 @@
-import { ZERO_VALUE } from '../constants';
+import { ZERO_VALUE, EMPTY_SUBTREE_HASHES } from '../constants';
 import { poseidon2 } from '../crypto';
 
 /**
@@ -17,24 +17,17 @@ export class MerkleTree {
   #zeros: bigint[];
   layers: bigint[][];
 
-  constructor(
-    levels: number,
-    elements: bigint[] = [],
-    { zeroElement = ZERO_VALUE } = {}
-  ) {
+  constructor(levels: number) {
     this.levels = levels;
     this.capacity = 2 ** levels;
-    this.zeroElement = zeroElement;
-    if (elements.length > this.capacity) {
-      throw new Error('Tree is full');
-    }
+    this.zeroElement = ZERO_VALUE;
     this.#zeros = [];
     this.layers = [];
-    this.layers[0] = elements;
+    this.layers[0] = [];
     this.#zeros[0] = this.zeroElement;
 
-    for (let i = 1; i <= levels; i++) {
-      this.#zeros[i] = poseidon2(this.#zeros[i - 1], this.#zeros[i - 1]);
+    for (let i = 0; i < levels; i++) {
+      this.#zeros[i] = EMPTY_SUBTREE_HASHES[i];
     }
     this.#rebuild();
   }
@@ -59,43 +52,12 @@ export class MerkleTree {
       : this.#zeros[this.levels];
   }
 
-  insert(element: bigint) {
-    if (this.layers[0].length >= this.capacity) {
-      throw new Error('Tree is full');
-    }
-    this.update(this.layers[0].length, element);
-  }
-
   bulkInsert(elements: bigint[]) {
     if (this.layers[0].length + elements.length > this.capacity) {
       throw new Error('Tree is full');
     }
     this.layers[0].push(...elements);
     this.#rebuild();
-  }
-
-  // TODO: update does not work debug
-
-  update(index: number, element: bigint) {
-    // index 0 and 1 and element is the commitment hash
-    if (
-      isNaN(Number(index)) ||
-      index < 0 ||
-      index > this.layers[0].length ||
-      index >= this.capacity
-    ) {
-      throw new Error('Insert index out of bounds: ' + index);
-    }
-    this.layers[0][index] = element;
-    for (let level = 1; level <= this.levels; level++) {
-      index >>= 1;
-      this.layers[level][index] = poseidon2(
-        this.layers[level - 1][index * 2],
-        index * 2 + 1 < this.layers[level - 1].length
-          ? this.layers[level - 1][index * 2 + 1]
-          : this.#zeros[level - 1]
-      );
-    }
   }
 
   path(index: number) {

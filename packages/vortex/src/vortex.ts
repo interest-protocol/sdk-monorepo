@@ -18,6 +18,10 @@ export class Vortex {
   registry: SharedObjectData;
   vortex: SharedObjectData;
 
+  newCommitmentEventType: string;
+  nullifierSpentEventType: string;
+  newEncryptionKeyEventType: string;
+
   constructor({
     registry,
     packageId,
@@ -27,6 +31,10 @@ export class Vortex {
     this.#suiClient = new SuiClient({
       url: fullNodeUrl,
     });
+
+    this.newCommitmentEventType = `${packageId}::vortex::NewCommitment`;
+    this.nullifierSpentEventType = `${packageId}::vortex::NullifierSpent`;
+    this.newEncryptionKeyEventType = `${packageId}::vortex::NewEncryptionKey`;
 
     this.packageId = packageId;
     this.registry = registry;

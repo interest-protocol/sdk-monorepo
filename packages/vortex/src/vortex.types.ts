@@ -27,3 +27,12 @@ export interface ExtDataHashArgs {
 }
 
 export interface NewExtDataArgs extends MaybeTx, ExtDataHashArgs {}
+
+export interface Proof {
+  proofA: number[];
+  proofB: number[];
+  proofC: number[];
+  publicInputs: [string, string, string, string, string, string, string];
+  proofSerializedHex: string;
+  publicInputsHex: string;
+}
