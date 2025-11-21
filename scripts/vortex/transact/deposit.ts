@@ -5,10 +5,11 @@ import {
   MERKLE_TREE_HEIGHT,
   ZERO_VALUE,
   Utxo,
+  poseidon2,
 } from '@interest-protocol/vortex-sdk';
 import { fromHex, toHex } from '@mysten/sui/utils';
 import { prove, verify } from '../pkg/nodejs/vortex';
-import { poseidon2 } from 'poseidon-lite';
+
 import invariant from 'tiny-invariant';
 
 function getMerklePath(
@@ -45,11 +46,11 @@ function getMerklePath(
     if (isLeft) {
       // Current is left child, sibling is right
       wasmPath.push([currentHash.toString(), sibling.toString()]);
-      currentHash = poseidon2([currentHash, sibling]);
+      currentHash = poseidon2(currentHash, sibling);
     } else {
       // Current is right child, sibling is left
       wasmPath.push([sibling.toString(), currentHash.toString()]);
-      currentHash = poseidon2([sibling, currentHash]);
+      currentHash = poseidon2(sibling, currentHash);
     }
   }
 
@@ -67,39 +68,52 @@ export const deposit = async () => {
 
   const nextIndex = await vortex.nextIndex();
 
-  const utxo = new Utxo({
-    amount: 500n,
+  const inputUtxo0 = new Utxo({
+    amount: 0n,
     index: BigInt(nextIndex),
     keypair: vortexKeypair,
   });
 
-  const utxo2 = new Utxo({
+  const inputUtxo1 = new Utxo({
     amount: 0n,
     index: BigInt(nextIndex) + 1n,
     keypair: vortexKeypair,
   });
 
-  const commitment0 = utxo.commitment();
-  const commitment1 = utxo2.commitment();
+  // Output UTXOs: the actual deposit. Commitment Utxos do not need an index.
+  const outputUtxo0 = new Utxo({
+    amount: 500n,
+    index: 0n,
+    keypair: vortexKeypair,
+  });
 
-  const nullifier0 = utxo.nullifier();
-  const nullifier1 = utxo2.nullifier();
+  const outputUtxo1 = new Utxo({
+    amount: 0n,
+    index: 0n,
+    keypair: vortexKeypair,
+  });
 
-  const utxoPayload0 = utxo.payload();
-  const utxoPayload1 = utxo2.payload();
+  const commitment0 = outputUtxo0.commitment();
+  const commitment1 = outputUtxo1.commitment();
+
+  const nullifier0 = inputUtxo0.nullifier();
+  const nullifier1 = inputUtxo1.nullifier();
 
   const encryptedUtxo0 = VortexKeypair.encryptUtxoFor(
-    utxoPayload0,
+    outputUtxo0.payload(),
     vortexKeypair.encryptionKey
   );
   const encryptedUtxo1 = VortexKeypair.encryptUtxoFor(
-    utxoPayload1,
+    outputUtxo1.payload(),
     vortexKeypair.encryptionKey
   );
 
+  // Deposit
+  const publicAmount = 500n;
+
   const extDataHash = computeExtDataHash({
     recipient: keypair.toSuiAddress(),
-    value: utxoPayload0.amount,
+    value: publicAmount,
     valueSign: true,
     relayer: '0x0',
     relayerFee: 0n,
@@ -117,7 +131,7 @@ export const deposit = async () => {
   const input = {
     // Public inputs
     root: merkleTree.root(), // Empty tree
-    publicAmount: utxoPayload0.amount, // Depositing
+    publicAmount, // Depositing
     extDataHash: extDataHashBigInt, // No external data
     inputNullifier0: nullifier0, // No inputs
     inputNullifier1: nullifier1,
@@ -126,30 +140,30 @@ export const deposit = async () => {
     // Private inputs - No input UTXOs (fresh deposit)
     inPrivateKey0: vortexKeypair.privateKey,
     inPrivateKey1: vortexKeypair.privateKey,
-    inAmount0: utxoPayload0.amount,
-    inAmount1: utxoPayload1.amount,
-    inBlinding0: utxoPayload0.blinding,
-    inBlinding1: utxoPayload1.blinding,
-    inPathIndex0: utxoPayload0.index,
-    inPathIndex1: utxoPayload1.index,
-    merklePath0: getMerklePath(merkleTree, utxo),
-    merklePath1: getMerklePath(merkleTree, utxo2),
+    inAmount0: inputUtxo0.amount,
+    inAmount1: inputUtxo1.amount,
+    inBlinding0: inputUtxo0.blinding,
+    inBlinding1: inputUtxo1.blinding,
+    inPathIndex0: inputUtxo0.index,
+    inPathIndex1: inputUtxo1.index,
+    merklePath0: getMerklePath(merkleTree, outputUtxo0),
+    merklePath1: getMerklePath(merkleTree, outputUtxo1),
     // Private inputs - Output UTXOs
     outPublicKey0: vortexKeypair.publicKey,
     outPublicKey1: vortexKeypair.publicKey,
-    outAmount0: utxoPayload0.amount,
-    outAmount1: utxoPayload1.amount,
-    outBlinding0: utxoPayload0.blinding,
-    outBlinding1: utxoPayload1.blinding,
+    outAmount0: outputUtxo0.amount,
+    outAmount1: outputUtxo1.amount,
+    outBlinding0: outputUtxo0.blinding,
+    outBlinding1: outputUtxo1.blinding,
   };
+
+  console.log(input);
 
   console.log('Generating proof (this may take 5-15 seconds)...');
 
   const proofJson = prove(JSON.stringify(input), provingKey);
 
-  // Verify proof
   const isValid = verify(proofJson, verifyingKey);
-
   return isValid;
 };
 
