@@ -63,43 +63,112 @@ function getMerklePath(
   merkleTree: MerkleTree,
   utxo: Utxo | null
 ): [string, string][] {
+  console.log('\n=== GET_MERKLE_PATH DEBUG ===');
+
+  // Handle zero-amount UTXOs
   if (!utxo || utxo.amount === 0n) {
+    console.log('Zero-amount UTXO, returning zero path');
     return Array(MERKLE_TREE_HEIGHT)
       .fill(null)
       .map(() => [ZERO_VALUE.toString(), ZERO_VALUE.toString()]);
   }
 
-  // For deposits, input UTXOs don't exist in the tree yet, so return zero paths
   const utxoIndex = Number(utxo.index);
-  const treeSize = merkleTree.layers[0]?.length ?? 0;
+  const treeSize = merkleTree.elements().length;
+
+  console.log('UTXO Index:', utxoIndex);
+  console.log('Tree size:', treeSize);
+  console.log('UTXO amount:', utxo.amount.toString());
+
+  // For deposits, input UTXOs don't exist yet
   if (utxoIndex < 0 || utxoIndex >= treeSize) {
+    console.log('Index out of bounds, returning zero path');
     return Array(MERKLE_TREE_HEIGHT)
       .fill(null)
       .map(() => [ZERO_VALUE.toString(), ZERO_VALUE.toString()]);
   }
 
+  // Get Merkle path
   const { pathElements, pathIndices } = merkleTree.path(utxoIndex);
   const commitment = utxo.commitment();
 
-  let currentHash = commitment; // Start at leaf
+  console.log('Commitment (calculated):', commitment.toString());
+
+  // Verify commitment matches what's in the tree
+  const storedCommitment = merkleTree.elements()[utxoIndex]!;
+  console.log('Commitment (stored):    ', storedCommitment.toString());
+  console.log('Commitments match:', storedCommitment === commitment);
+
+  invariant(
+    storedCommitment === commitment,
+    `Commitment mismatch at index ${utxoIndex}: expected ${commitment}, got ${storedCommitment}`
+  );
+
+  // Build WASM-compatible path (always [left, right] format)
   const wasmPath: [string, string][] = [];
+  let currentHash = commitment;
+
+  console.log('\n--- Path Construction ---');
+  console.log(
+    'Starting with commitment:',
+    currentHash.toString().slice(0, 20) + '...'
+  );
 
   for (let i = 0; i < MERKLE_TREE_HEIGHT; i++) {
     const sibling = pathElements[i];
     const isLeft = pathIndices[i] === 0;
 
-    invariant(sibling !== undefined, 'Sibling is undefined');
+    invariant(sibling !== undefined, `Sibling undefined at level ${i}`);
 
-    if (isLeft) {
-      // Current is left child, sibling is right
-      wasmPath.push([currentHash.toString(), sibling.toString()]);
-      currentHash = poseidon2(currentHash, sibling);
-    } else {
-      // Current is right child, sibling is left
-      wasmPath.push([sibling.toString(), currentHash.toString()]);
-      currentHash = poseidon2(sibling, currentHash);
+    const leftHash = isLeft ? currentHash : sibling;
+    const rightHash = isLeft ? sibling : currentHash;
+
+    console.log(`Level ${i}:`);
+    console.log(`  isLeft: ${isLeft}`);
+    console.log(`  current: ${currentHash.toString().slice(0, 20)}...`);
+    console.log(`  sibling: ${sibling.toString().slice(0, 20)}...`);
+    console.log(`  left:    ${leftHash.toString().slice(0, 20)}...`);
+    console.log(`  right:   ${rightHash.toString().slice(0, 20)}...`);
+
+    // Verify current hash appears in the pair (critical Rust check)
+    if (currentHash !== leftHash && currentHash !== rightHash) {
+      console.error(
+        `ERROR at level ${i}: current hash not in [left, right] pair!`
+      );
+      throw new Error(
+        `Invalid path at level ${i}: current hash must be either left or right`
+      );
     }
+
+    wasmPath.push([leftHash.toString(), rightHash.toString()]);
+
+    const nextHash = poseidon2(leftHash, rightHash);
+    console.log(`  hash(left, right): ${nextHash.toString().slice(0, 20)}...`);
+
+    currentHash = nextHash;
   }
+
+  const calculatedRoot = currentHash;
+  const expectedRoot = merkleTree.root();
+
+  console.log('\n--- Root Verification ---');
+  console.log('Calculated root:', calculatedRoot.toString());
+  console.log('Expected root:  ', expectedRoot.toString());
+  console.log('Roots match:', calculatedRoot === expectedRoot);
+
+  invariant(
+    calculatedRoot === expectedRoot,
+    `Root mismatch: calculated ${calculatedRoot}, expected ${expectedRoot}`
+  );
+
+  console.log('\n=== PATH CONSTRUCTION SUCCESS ===');
+  console.log('WASM Path (first 3 levels):');
+  for (let i = 0; i < Math.min(3, wasmPath.length); i++) {
+    console.log(
+      `  Level ${i}: [${wasmPath[i]![0].slice(0, 15)}..., ${wasmPath[i]![1].slice(0, 15)}...]`
+    );
+  }
+  console.log('=================================\n');
 
   return wasmPath;
 }

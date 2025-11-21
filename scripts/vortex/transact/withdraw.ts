@@ -13,7 +13,7 @@ import {
 import { logInfo } from '@interest-protocol/logger';
 import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
 import { prove } from '../pkg/nodejs/vortex';
-
+import invariant from 'tiny-invariant';
 import { Transaction } from '@mysten/sui/transactions';
 import { BN } from 'bn.js';
 
@@ -61,6 +61,13 @@ export const withdraw = async ({
 
   merkleTree.bulkInsert(
     parsedCommitmentEvents.map((event) => event.commitment)
+  );
+
+  console.log('TypeScript tree root:', merkleTree.root().toString());
+  console.log('On-chain root:      ', await vortex.root());
+  console.log(
+    'Roots match:',
+    merkleTree.root().toString() === (await vortex.root()).toString()
   );
 
   // Consuming 500
@@ -130,17 +137,54 @@ export const withdraw = async ({
 
   const extDataHashBigInt = bytesToBigInt(reverseBytes(extDataHash));
 
-  // Prepare circuit input
+  console.log('\n=== WITHDRAW TRANSACTION DEBUG ===');
+  console.log('Total UTXOs found:', utxos.length);
+  console.log('Input UTXO 0:', {
+    index: inputUtxo0.index,
+    amount: inputUtxo0.amount,
+    commitment: inputUtxo0.commitment().toString().slice(0, 20) + '...',
+    nullifier: nullifier0.toString().slice(0, 20) + '...',
+  });
+  console.log('Input UTXO 1:', {
+    index: inputUtxo1.index,
+    amount: inputUtxo1.amount,
+    commitment: inputUtxo1.commitment().toString().slice(0, 20) + '...',
+    nullifier: nullifier1.toString().slice(0, 20) + '...',
+  });
+
+  console.log('\n=== MERKLE TREE STATE ===');
+  console.log('Tree root (TS):      ', merkleTree.root().toString());
+  console.log('Tree root (on-chain):', await vortex.root());
+  console.log('Tree size:', merkleTree.elements().length);
+  console.log('Commitments in tree:');
+  merkleTree.elements().forEach((c, i) => {
+    console.log(`  [${i}]: ${c.toString().slice(0, 20)}...`);
+  });
+
+  // Verify the tree root matches before generating paths
+  const onChainRoot = await vortex.root();
+  const tsRoot = merkleTree.root().toString();
+  invariant(
+    tsRoot === onChainRoot,
+    `Tree roots don't match! TS: ${tsRoot}, Chain: ${onChainRoot}`
+  );
+
+  console.log('\n=== GENERATING MERKLE PATHS ===');
+  const merklePath0 = getMerklePath(merkleTree, inputUtxo0);
+  const merklePath1 = getMerklePath(merkleTree, inputUtxo1);
+
+  console.log('\n=== PREPARING CIRCUIT INPUT ===');
   const input = {
     // Public inputs
-    root: merkleTree.root(), // Empty tree
-    publicAmount: proofPublicAmount.toString(), // Withdrawing
-    extDataHash: extDataHashBigInt, // No external data
-    inputNullifier0: nullifier0, // No inputs
+    root: merkleTree.root(),
+    publicAmount: proofPublicAmount.toString(),
+    extDataHash: extDataHashBigInt,
+    inputNullifier0: nullifier0,
     inputNullifier1: nullifier1,
     outputCommitment0: commitment0,
-    outputCommitment1: commitment1, // Unused output
-    // Private inputs - No input UTXOs (fresh deposit)
+    outputCommitment1: commitment1,
+
+    // Private inputs - Input UTXOs
     inPrivateKey0: vortexKeypair.privateKey,
     inPrivateKey1: vortexKeypair.privateKey,
     inAmount0: inputUtxo0.amount,
@@ -149,8 +193,9 @@ export const withdraw = async ({
     inBlinding1: inputUtxo1.blinding,
     inPathIndex0: inputUtxo0.index,
     inPathIndex1: inputUtxo1.index,
-    merklePath0: getMerklePath(merkleTree, outputUtxo0),
-    merklePath1: getMerklePath(merkleTree, outputUtxo1),
+    merklePath0: merklePath0,
+    merklePath1: merklePath1,
+
     // Private inputs - Output UTXOs
     outPublicKey0: vortexKeypair.publicKey,
     outPublicKey1: vortexKeypair.publicKey,
@@ -159,6 +204,42 @@ export const withdraw = async ({
     outBlinding0: outputUtxo0.blinding,
     outBlinding1: outputUtxo1.blinding,
   };
+
+  console.log('Circuit input summary:');
+  console.log('  root:', input.root.toString().slice(0, 20) + '...');
+  console.log('  publicAmount:', input.publicAmount.slice(0, 20) + '...');
+  console.log('  inAmount0:', input.inAmount0);
+  console.log('  inAmount1:', input.inAmount1);
+  console.log('  outAmount0:', input.outAmount0);
+  console.log('  outAmount1:', input.outAmount1);
+  console.log('  merklePath0 levels:', merklePath0.length);
+  console.log('  merklePath1 levels:', merklePath1.length);
+
+  console.log('\n=== GENERATING PROOF ===');
+  console.log('This may take 5-15 seconds...');
+
+  try {
+    const proofJson = prove(JSON.stringify(input), provingKey);
+    const proof: Proof = JSON.parse(proofJson);
+    console.log('✅ PROOF GENERATED SUCCESSFULLY');
+
+    // ... rest of your code
+  } catch (error) {
+    console.error('\n❌ PROOF GENERATION FAILED');
+    console.error('Error:', error);
+
+    // Additional debug info
+    console.log('\nInput that failed:');
+    console.log(
+      JSON.stringify(
+        input,
+        (key, value) => (typeof value === 'bigint' ? value.toString() : value),
+        2
+      )
+    );
+
+    throw error;
+  }
 
   const proofJson = prove(JSON.stringify(input), provingKey);
   const proof: Proof = JSON.parse(proofJson);
