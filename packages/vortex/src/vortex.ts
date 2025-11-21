@@ -5,11 +5,14 @@ import {
   RegisterArgs,
   SharedObjectData,
   NewExtDataArgs,
+  Action,
+  NewProofArgs,
 } from './vortex.types';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import { bcs } from '@mysten/sui/bcs';
 import invariant from 'tiny-invariant';
 import { pathOr } from 'ramda';
+import { BN254_FIELD_MODULUS } from './constants';
 
 export class Vortex {
   #suiClient: SuiClient;
@@ -71,7 +74,7 @@ export class Vortex {
     tx = new Transaction(),
     recipient,
     value,
-    valueSign,
+    action,
     relayer,
     relayerFee,
     encryptedOutput1,
@@ -82,7 +85,7 @@ export class Vortex {
       arguments: [
         tx.pure.address(recipient),
         tx.pure.u64(value),
-        tx.pure.bool(valueSign),
+        tx.pure.bool(action === Action.Deposit), // true for deposit, false for withdraw
         tx.pure.address(relayer),
         tx.pure.u64(relayerFee),
         tx.pure.vector('u8', encryptedOutput1),
@@ -91,6 +94,40 @@ export class Vortex {
     });
 
     return { tx, extData };
+  }
+
+  newProof({
+    tx = new Transaction(),
+    proofPoints,
+    root,
+    publicValue,
+    action,
+    extDataHash,
+    inputNullifier0,
+    inputNullifier1,
+    outputCommitment0,
+    outputCommitment1,
+  }: NewProofArgs) {
+    const value =
+      action === Action.Deposit
+        ? publicValue
+        : BN254_FIELD_MODULUS - publicValue;
+
+    const proof = tx.moveCall({
+      target: `${this.packageId}::vortex_proof::new`,
+      arguments: [
+        tx.pure.vector('u8', proofPoints),
+        tx.pure.u256(root),
+        tx.pure.u256(value),
+        tx.pure.u256(extDataHash),
+        tx.pure.u256(inputNullifier0),
+        tx.pure.u256(inputNullifier1),
+        tx.pure.u256(outputCommitment0),
+        tx.pure.u256(outputCommitment1),
+      ],
+    });
+
+    return { tx, proof };
   }
 
   async tvl() {

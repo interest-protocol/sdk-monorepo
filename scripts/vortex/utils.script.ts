@@ -3,9 +3,7 @@ import {
   Utxo,
   Vortex,
   MerkleTree,
-  MERKLE_TREE_HEIGHT,
-  ZERO_VALUE,
-  poseidon2,
+  getMerklePath,
 } from '@interest-protocol/vortex-sdk';
 
 import {
@@ -18,18 +16,17 @@ import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { SuiClient } from '@mysten/sui/client';
 import { Transaction } from '@mysten/sui/transactions';
 import { PROVING_KEY } from './proving-key';
-import invariant from 'tiny-invariant';
 
 export const VORTEX_PACKAGE_ID =
-  '0x797c21c787bb7c99a2b76394515e95aabd3afb5950577ada8f7ff266c28a6b08';
+  '0x18d21af67be4a18620af3ef2d4d26a74cb192f36b64835370317ee272a383746';
 
 export const VORTEX_POOL_OBJECT_ID =
-  '0xc8121e16de5a2f671b70ea0172efbca3040059b24591421d27fc57369f1c6fad';
+  '0xc9df8c17f5afaae979543b4e8da5d56c9add765021631694c51e920e6d0e9d47';
 
 export const REGISTRY_OBJECT_ID =
-  '0x6680bfb1a2cf02d41f2af22aa58bc52360123bd8f9576b7391f718162de0a435';
+  '0xc38398ab36002351e998b356876082e9ed78d01bf233ccf570233ccfa3a9cf81';
 
-export const INITIAL_SHARED_VERSION = '17';
+export const INITIAL_SHARED_VERSION = '20';
 
 const relayerKeypair = Ed25519Keypair.fromSecretKey(process.env.RELAYER_KEY!);
 const recipientKeypair = Ed25519Keypair.fromSecretKey(
@@ -57,120 +54,6 @@ export interface Env {
     merkleTree: MerkleTree,
     utxo: Utxo | null
   ) => [string, string][];
-}
-
-function getMerklePath(
-  merkleTree: MerkleTree,
-  utxo: Utxo | null
-): [string, string][] {
-  console.log('\n=== GET_MERKLE_PATH DEBUG ===');
-
-  // Handle zero-amount UTXOs
-  if (!utxo || utxo.amount === 0n) {
-    console.log('Zero-amount UTXO, returning zero path');
-    return Array(MERKLE_TREE_HEIGHT)
-      .fill(null)
-      .map(() => [ZERO_VALUE.toString(), ZERO_VALUE.toString()]);
-  }
-
-  const utxoIndex = Number(utxo.index);
-  const treeSize = merkleTree.elements().length;
-
-  console.log('UTXO Index:', utxoIndex);
-  console.log('Tree size:', treeSize);
-  console.log('UTXO amount:', utxo.amount.toString());
-
-  // For deposits, input UTXOs don't exist yet
-  if (utxoIndex < 0 || utxoIndex >= treeSize) {
-    console.log('Index out of bounds, returning zero path');
-    return Array(MERKLE_TREE_HEIGHT)
-      .fill(null)
-      .map(() => [ZERO_VALUE.toString(), ZERO_VALUE.toString()]);
-  }
-
-  // Get Merkle path
-  const { pathElements, pathIndices } = merkleTree.path(utxoIndex);
-  const commitment = utxo.commitment();
-
-  console.log('Commitment (calculated):', commitment.toString());
-
-  // Verify commitment matches what's in the tree
-  const storedCommitment = merkleTree.elements()[utxoIndex]!;
-  console.log('Commitment (stored):    ', storedCommitment.toString());
-  console.log('Commitments match:', storedCommitment === commitment);
-
-  invariant(
-    storedCommitment === commitment,
-    `Commitment mismatch at index ${utxoIndex}: expected ${commitment}, got ${storedCommitment}`
-  );
-
-  // Build WASM-compatible path (always [left, right] format)
-  const wasmPath: [string, string][] = [];
-  let currentHash = commitment;
-
-  console.log('\n--- Path Construction ---');
-  console.log(
-    'Starting with commitment:',
-    currentHash.toString().slice(0, 20) + '...'
-  );
-
-  for (let i = 0; i < MERKLE_TREE_HEIGHT; i++) {
-    const sibling = pathElements[i];
-    const isLeft = pathIndices[i] === 0;
-
-    invariant(sibling !== undefined, `Sibling undefined at level ${i}`);
-
-    const leftHash = isLeft ? currentHash : sibling;
-    const rightHash = isLeft ? sibling : currentHash;
-
-    console.log(`Level ${i}:`);
-    console.log(`  isLeft: ${isLeft}`);
-    console.log(`  current: ${currentHash.toString().slice(0, 20)}...`);
-    console.log(`  sibling: ${sibling.toString().slice(0, 20)}...`);
-    console.log(`  left:    ${leftHash.toString().slice(0, 20)}...`);
-    console.log(`  right:   ${rightHash.toString().slice(0, 20)}...`);
-
-    // Verify current hash appears in the pair (critical Rust check)
-    if (currentHash !== leftHash && currentHash !== rightHash) {
-      console.error(
-        `ERROR at level ${i}: current hash not in [left, right] pair!`
-      );
-      throw new Error(
-        `Invalid path at level ${i}: current hash must be either left or right`
-      );
-    }
-
-    wasmPath.push([leftHash.toString(), rightHash.toString()]);
-
-    const nextHash = poseidon2(leftHash, rightHash);
-    console.log(`  hash(left, right): ${nextHash.toString().slice(0, 20)}...`);
-
-    currentHash = nextHash;
-  }
-
-  const calculatedRoot = currentHash;
-  const expectedRoot = merkleTree.root();
-
-  console.log('\n--- Root Verification ---');
-  console.log('Calculated root:', calculatedRoot.toString());
-  console.log('Expected root:  ', expectedRoot.toString());
-  console.log('Roots match:', calculatedRoot === expectedRoot);
-
-  invariant(
-    calculatedRoot === expectedRoot,
-    `Root mismatch: calculated ${calculatedRoot}, expected ${expectedRoot}`
-  );
-
-  console.log('\n=== PATH CONSTRUCTION SUCCESS ===');
-  console.log('WASM Path (first 3 levels):');
-  for (let i = 0; i < Math.min(3, wasmPath.length); i++) {
-    console.log(
-      `  Level ${i}: [${wasmPath[i]![0].slice(0, 15)}..., ${wasmPath[i]![1].slice(0, 15)}...]`
-    );
-  }
-  console.log('=================================\n');
-
-  return wasmPath;
 }
 
 export const getEnv = async (): Promise<Env> => {

@@ -4,6 +4,7 @@ import {
   computeExtDataHash,
   reverseBytes,
   bytesToBigInt,
+  toProveInput,
 } from '@interest-protocol/vortex-sdk';
 import { fromHex } from '@mysten/sui/utils';
 import { prove, verify } from '../pkg/nodejs/vortex';
@@ -11,15 +12,8 @@ import { prove, verify } from '../pkg/nodejs/vortex';
 import invariant from 'tiny-invariant';
 
 export const deposit = async () => {
-  const {
-    VortexKeypair,
-    keypair,
-    Utxo,
-    provingKey,
-    verifyingKey,
-    vortex,
-    getMerklePath,
-  } = await getEnv();
+  const { VortexKeypair, keypair, Utxo, provingKey, verifyingKey, vortex } =
+    await getEnv();
   const vortexKeypair = await VortexKeypair.fromSuiWallet(
     keypair.toSuiAddress(),
     async (message) => keypair.signPersonalMessage(message)
@@ -84,34 +78,20 @@ export const deposit = async () => {
   const extDataHashBigInt = bytesToBigInt(reverseBytes(extDataHash));
 
   // Prepare circuit input
-  const input = {
-    // Public inputs
-    root: merkleTree.root(), // Empty tree
-    publicAmount, // Depositing
-    extDataHash: extDataHashBigInt, // No external data
-    inputNullifier0: nullifier0, // No inputs
-    inputNullifier1: nullifier1,
-    outputCommitment0: commitment0,
-    outputCommitment1: commitment1, // Unused output
-    // Private inputs - No input UTXOs (fresh deposit)
-    inPrivateKey0: vortexKeypair.privateKey,
-    inPrivateKey1: vortexKeypair.privateKey,
-    inAmount0: inputUtxo0.amount,
-    inAmount1: inputUtxo1.amount,
-    inBlinding0: inputUtxo0.blinding,
-    inBlinding1: inputUtxo1.blinding,
-    inPathIndex0: inputUtxo0.index,
-    inPathIndex1: inputUtxo1.index,
-    merklePath0: getMerklePath(merkleTree, outputUtxo0),
-    merklePath1: getMerklePath(merkleTree, outputUtxo1),
-    // Private inputs - Output UTXOs
-    outPublicKey0: vortexKeypair.publicKey,
-    outPublicKey1: vortexKeypair.publicKey,
-    outAmount0: outputUtxo0.amount,
-    outAmount1: outputUtxo1.amount,
-    outBlinding0: outputUtxo0.blinding,
-    outBlinding1: outputUtxo1.blinding,
-  };
+  const input = toProveInput({
+    merkleTree,
+    publicAmount,
+    extDataHashBigInt,
+    nullifier0,
+    nullifier1,
+    commitment0,
+    commitment1,
+    vortexKeypair,
+    inputUtxo0,
+    inputUtxo1,
+    outputUtxo0,
+    outputUtxo1,
+  });
 
   console.log('Generating proof (this may take 5-15 seconds)...');
 
