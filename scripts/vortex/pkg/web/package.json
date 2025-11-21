@@ -1,0 +1,15 @@
+{
+  "name": "vortex",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "vortex_bg.wasm",
+    "vortex.js",
+    "vortex.d.ts"
+  ],
+  "main": "vortex.js",
+  "types": "vortex.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
