@@ -163,7 +163,7 @@ export class MerkleTree {
    * Get all leaves in the tree
    */
   elements(): bigint[] {
-    return [...this.leaves];
+    return this.leaves;
   }
 
   /**
@@ -188,14 +188,6 @@ export class MerkleTree {
       leaves: this.leaves,
       root: this._root,
     };
-  }
-
-  /**
-   * Backward compatibility property
-   * Returns leaves as first layer
-   */
-  get layers(): bigint[][] {
-    return [this.leaves];
   }
 
   /**

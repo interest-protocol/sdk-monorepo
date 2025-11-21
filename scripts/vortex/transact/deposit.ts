@@ -83,7 +83,7 @@ export const deposit = async () => {
   const input = toProveInput({
     merkleTree,
     publicAmount,
-    extDataHashBigInt,
+    extDataHash: extDataHashBigInt,
     nullifier0,
     nullifier1,
     commitment0,

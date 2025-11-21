@@ -24,7 +24,6 @@ export function getMerklePath(
 ): [string, string][] {
   // Handle zero-amount UTXOs
   if (!utxo || utxo.amount === 0n) {
-    console.log('Zero-amount UTXO, returning zero path');
     return Array(MERKLE_TREE_HEIGHT)
       .fill(null)
       .map(() => [ZERO_VALUE.toString(), ZERO_VALUE.toString()]);
@@ -93,7 +92,7 @@ export function getMerklePath(
 interface ToProveInputArgs {
   merkleTree: MerkleTree;
   publicAmount: bigint;
-  extDataHashBigInt: bigint;
+  extDataHash: bigint;
   nullifier0: bigint;
   nullifier1: bigint;
   commitment0: bigint;
@@ -108,7 +107,7 @@ interface ToProveInputArgs {
 export const toProveInput = ({
   merkleTree,
   publicAmount,
-  extDataHashBigInt,
+  extDataHash,
   nullifier0,
   nullifier1,
   commitment0,
@@ -122,7 +121,7 @@ export const toProveInput = ({
   return {
     root: merkleTree.root(),
     publicAmount,
-    extDataHash: extDataHashBigInt,
+    extDataHash,
     inputNullifier0: nullifier0,
     inputNullifier1: nullifier1,
     outputCommitment0: commitment0,
