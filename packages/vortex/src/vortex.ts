@@ -7,6 +7,7 @@ import {
   NewExtDataArgs,
   Action,
   NewProofArgs,
+  TransactArgs,
 } from './vortex.types';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import { bcs } from '@mysten/sui/bcs';
@@ -88,8 +89,8 @@ export class Vortex {
         tx.pure.bool(action === Action.Deposit), // true for deposit, false for withdraw
         tx.pure.address(relayer),
         tx.pure.u64(relayerFee),
-        tx.pure.vector('u8', encryptedOutput1),
         tx.pure.vector('u8', encryptedOutput0),
+        tx.pure.vector('u8', encryptedOutput1),
       ],
     });
 
@@ -128,6 +129,15 @@ export class Vortex {
     });
 
     return { tx, proof };
+  }
+
+  transact({ tx = new Transaction(), proof, extData, deposit }: TransactArgs) {
+    tx.moveCall({
+      target: `${this.packageId}::vortex::transact`,
+      arguments: [this.mutableVortexRef(tx), proof, extData, deposit],
+    });
+
+    return { tx };
   }
 
   async tvl() {

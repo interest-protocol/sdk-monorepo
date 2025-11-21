@@ -6,18 +6,17 @@ import {
   Proof,
   reverseBytes,
   bytesToBigInt,
+  toProveInput,
+  Action,
 } from '@interest-protocol/vortex-sdk';
 import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
 import { prove } from '../pkg/nodejs/vortex';
-
-import { Transaction } from '@mysten/sui/transactions';
 
 export const deposit = async ({
   VortexKeypair,
   keypair,
   vortex,
   provingKey,
-  getMerklePath,
 }: Env) => {
   const vortexKeypair = await VortexKeypair.fromSuiWallet(
     keypair.toSuiAddress(),
@@ -83,34 +82,20 @@ export const deposit = async ({
   const extDataHashBigInt = bytesToBigInt(reverseBytes(extDataHash));
 
   // Prepare circuit input
-  const input = {
-    // Public inputs
-    root: merkleTree.root(), // Empty tree
-    publicAmount, // Depositing
-    extDataHash: extDataHashBigInt, // No external data
-    inputNullifier0: nullifier0, // No inputs
-    inputNullifier1: nullifier1,
-    outputCommitment0: commitment0,
-    outputCommitment1: commitment1, // Unused output
-    // Private inputs - No input UTXOs (fresh deposit)
-    inPrivateKey0: vortexKeypair.privateKey,
-    inPrivateKey1: vortexKeypair.privateKey,
-    inAmount0: inputUtxo0.amount,
-    inAmount1: inputUtxo1.amount,
-    inBlinding0: inputUtxo0.blinding,
-    inBlinding1: inputUtxo1.blinding,
-    inPathIndex0: inputUtxo0.index,
-    inPathIndex1: inputUtxo1.index,
-    merklePath0: getMerklePath(merkleTree, outputUtxo0),
-    merklePath1: getMerklePath(merkleTree, outputUtxo1),
-    // Private inputs - Output UTXOs
-    outPublicKey0: vortexKeypair.publicKey,
-    outPublicKey1: vortexKeypair.publicKey,
-    outAmount0: outputUtxo0.amount,
-    outAmount1: outputUtxo1.amount,
-    outBlinding0: outputUtxo0.blinding,
-    outBlinding1: outputUtxo1.blinding,
-  };
+  const input = toProveInput({
+    merkleTree,
+    publicAmount,
+    extDataHashBigInt,
+    nullifier0,
+    nullifier1,
+    commitment0,
+    commitment1,
+    vortexKeypair,
+    inputUtxo0,
+    inputUtxo1,
+    outputUtxo0,
+    outputUtxo1,
+  });
 
   const proof: Proof = JSON.parse(prove(JSON.stringify(input), provingKey));
 
@@ -129,12 +114,6 @@ export const deposit = async ({
     extDataHash,
     encryptedUtxo0,
     encryptedUtxo1,
-    inputNullifier0: nullifier0,
-    inputNullifier1: nullifier1,
-    outputCommitment0: commitment0,
-    outputCommitment1: commitment1,
-    root: merkleTree.root(),
-    extDataHashBigInt,
     publicInputs,
   };
 };
@@ -145,48 +124,44 @@ export const deposit = async ({
     const { proof, encryptedUtxo0, encryptedUtxo1, publicInputs } =
       await deposit(env);
 
-    const tx = new Transaction();
-
     const { keypair, vortex, suiClient } = env;
 
-    const extData = tx.moveCall({
-      target: `${vortex.packageId}::vortex_ext_data::new`,
-      arguments: [
-        tx.pure.address(keypair.toSuiAddress()),
-        tx.pure.u64(500),
-        tx.pure.bool(true),
-        tx.pure.address(normalizeSuiAddress('0x0')),
-        tx.pure.u64(0n),
-        tx.pure.vector('u8', fromHex(encryptedUtxo0)),
-        tx.pure.vector('u8', fromHex(encryptedUtxo1)),
-      ],
+    const { extData, tx } = vortex.newExtData({
+      recipient: keypair.toSuiAddress(),
+      value: publicInputs.publicAmount,
+      action: Action.Deposit,
+      relayer: normalizeSuiAddress('0x0'),
+      relayerFee: 0n,
+      encryptedOutput0: fromHex(encryptedUtxo0),
+      encryptedOutput1: fromHex(encryptedUtxo1),
     });
 
-    const moveProof = tx.moveCall({
-      target: `${vortex.packageId}::vortex_proof::new`,
-      arguments: [
-        tx.pure.vector('u8', fromHex('0x' + proof.proofSerializedHex)),
-        tx.pure.u256(publicInputs.root),
-        tx.pure.u256(publicInputs.publicAmount),
-        tx.pure.u256(publicInputs.extDataHash),
-        tx.pure.u256(publicInputs.inputNullifier0),
-        tx.pure.u256(publicInputs.inputNullifier1),
-        tx.pure.u256(publicInputs.outputCommitment0),
-        tx.pure.u256(publicInputs.outputCommitment1),
-      ],
+    tx.setSender(keypair.toSuiAddress());
+
+    const { proof: moveProof, tx: tx2 } = vortex.newProof({
+      tx,
+      proofPoints: fromHex('0x' + proof.proofSerializedHex),
+      root: publicInputs.root,
+      publicValue: publicInputs.publicAmount,
+      action: Action.Deposit,
+      extDataHash: publicInputs.extDataHash,
+      inputNullifier0: publicInputs.inputNullifier0,
+      inputNullifier1: publicInputs.inputNullifier1,
+      outputCommitment0: publicInputs.outputCommitment0,
+      outputCommitment1: publicInputs.outputCommitment1,
     });
 
     const suiCoin = tx.splitCoins(tx.gas, [tx.pure.u64(500n)]);
 
-    tx.setSender(keypair.toSuiAddress());
-
-    tx.moveCall({
-      target: `${vortex.packageId}::vortex::transact`,
-      arguments: [vortex.mutableVortexRef(tx), moveProof, extData, suiCoin],
+    const { tx: tx3 } = vortex.transact({
+      tx: tx2,
+      proof: moveProof,
+      extData: extData,
+      deposit: suiCoin,
     });
 
     const result = await keypair.signAndExecuteTransaction({
-      transaction: tx,
+      transaction: tx3,
       client: suiClient,
     });
 

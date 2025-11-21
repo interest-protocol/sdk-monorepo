@@ -15,7 +15,7 @@ export const reverseBytes = (bytes: Uint8Array): Uint8Array => {
 };
 
 export const bytesToBigInt = (bytes: Uint8Array): bigint => {
-  return BigInt('0x' + toHex(reverseBytes(bytes)));
+  return BigInt('0x' + toHex(bytes));
 };
 
 export function getMerklePath(

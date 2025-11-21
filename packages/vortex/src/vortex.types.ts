@@ -1,4 +1,5 @@
 import { MaybeTx } from '@interest-protocol/sui-core-sdk';
+import { TransactionResult } from '@mysten/sui/transactions';
 
 export enum Action {
   Deposit,
@@ -60,4 +61,10 @@ export interface NewProofArgs extends MaybeTx {
   inputNullifier1: bigint;
   outputCommitment0: bigint;
   outputCommitment1: bigint;
+}
+
+export interface TransactArgs extends MaybeTx {
+  proof: TransactionResult;
+  extData: TransactionResult;
+  deposit: TransactionResult;
 }

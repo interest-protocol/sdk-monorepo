@@ -14,10 +14,12 @@ import invariant from 'tiny-invariant';
 export const deposit = async () => {
   const { VortexKeypair, keypair, Utxo, provingKey, verifyingKey, vortex } =
     await getEnv();
+
   const vortexKeypair = await VortexKeypair.fromSuiWallet(
     keypair.toSuiAddress(),
     async (message) => keypair.signPersonalMessage(message)
   );
+
   const merkleTree = new MerkleTree(26);
 
   const nextIndex = await vortex.nextIndex();
@@ -103,8 +105,6 @@ export const deposit = async () => {
 (async () => {
   try {
     const isValid = await deposit();
-
-    console.log('isValid', typeof isValid, isValid);
 
     invariant(isValid, 'Proof verification failed');
 
