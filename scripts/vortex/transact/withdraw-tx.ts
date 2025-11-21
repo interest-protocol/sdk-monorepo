@@ -12,7 +12,7 @@ import {
   toProveInput,
   Action,
 } from '@interest-protocol/vortex-sdk';
-import { logInfo } from '@interest-protocol/logger';
+
 import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
 import { prove } from '../pkg/nodejs/vortex';
 
@@ -35,6 +35,7 @@ export const withdraw = async ({
     query: {
       MoveEventType: vortex.newCommitmentEventType,
     },
+    order: 'ascending',
   });
 
   const parsedCommitmentEvents = parseNewCommitmentEvent(commitmentEvents).sort(
@@ -54,8 +55,6 @@ export const withdraw = async ({
 
   utxos.sort((a, b) => new BN(b.amount).cmp(new BN(a.amount)));
 
-  logInfo('utxos', utxos);
-
   const merkleTree = new MerkleTree(26);
 
   merkleTree.bulkInsert(
@@ -63,8 +62,6 @@ export const withdraw = async ({
   );
 
   const inputTxos = utxos.slice(0, 2);
-
-  console.log('inputTxos', inputTxos);
 
   // Consuming 500
   const inputUtxo0 = new Utxo({
@@ -202,7 +199,7 @@ export const withdraw = async ({
       tx,
       proofPoints: fromHex('0x' + proof.proofSerializedHex),
       root: publicInputs.root,
-      publicValue: BigInt(publicInputs.publicAmount),
+      publicValue: extDataPayload.value,
       action: Action.Withdraw,
       extDataHash: publicInputs.extDataHash,
       inputNullifier0: publicInputs.inputNullifier0,

@@ -134,8 +134,8 @@ export const toProveInput = ({
     inBlinding1: inputUtxo1.blinding,
     inPathIndex0: inputUtxo0.index,
     inPathIndex1: inputUtxo1.index,
-    merklePath0: getMerklePath(merkleTree, outputUtxo0),
-    merklePath1: getMerklePath(merkleTree, outputUtxo1),
+    merklePath0: getMerklePath(merkleTree, inputUtxo0),
+    merklePath1: getMerklePath(merkleTree, inputUtxo1),
 
     outPublicKey0: vortexKeypair.publicKey,
     outPublicKey1: vortexKeypair.publicKey,
