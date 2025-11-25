@@ -20,8 +20,7 @@ export const deposit = async ({
   merkleTree,
 }: DepositArgs) => {
   invariant(unspentUtxos.length <= 2, 'Unspent UTXOs must be at most 2');
-  invariant(amount > 0n, 'Amount must be greater than 0');
-  invariant(DEPOSIT_FEE > amount, 'Deposit fee must be greater than amount');
+  invariant(amount > DEPOSIT_FEE, 'Amount must be greater than deposit fee');
 
   // Deposits we do not need a recipient, so we use a random one.
   const randomRecipient = normalizeSuiAddress(
