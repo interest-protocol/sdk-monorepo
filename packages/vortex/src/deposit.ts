@@ -3,12 +3,13 @@ import { prove, verify } from './prover/vortex';
 import invariant from 'tiny-invariant';
 import { VortexKeypair } from './entities/keypair';
 import { Utxo } from './entities/utxo';
-import { TREASURY_ADDRESS } from './constants';
+import { TREASURY_ADDRESS, DEPOSIT_FEE } from './constants';
 import { computeExtDataHash } from './utils/ext-data';
 import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
 import { bytesToBigInt, reverseBytes, toProveInput } from './utils';
 import { Proof, Action, DepositArgs } from './vortex.types';
 import { PROVING_KEY, VERIFYING_KEY } from './keys';
+import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 
 export const deposit = async ({
   tx = new Transaction(),
@@ -17,15 +18,16 @@ export const deposit = async ({
   vortex,
   vortexKeypair,
   merkleTree,
-  depositFee,
-  recipient,
 }: DepositArgs) => {
-  invariant(amount > 0n, 'Amount must be greater than 0');
-
-  const nextIndex = await vortex.nextIndex();
-
-  // Validate unspentUtxos if provided
   invariant(unspentUtxos.length <= 2, 'Unspent UTXOs must be at most 2');
+  invariant(amount > 0n, 'Amount must be greater than 0');
+  invariant(DEPOSIT_FEE > amount, 'Deposit fee must be greater than amount');
+
+  // Deposits we do not need a recipient, so we use a random one.
+  const randomRecipient = normalizeSuiAddress(
+    Ed25519Keypair.generate().toSuiAddress()
+  );
+  const randomVortexKeypair = VortexKeypair.generate();
 
   // Determine input UTXOs
   const inputUtxo0 =
@@ -44,20 +46,20 @@ export const deposit = async ({
           keypair: vortexKeypair,
         });
 
-  const depositAmount = amount - depositFee;
+  const publicAmount = amount - DEPOSIT_FEE;
+  const nextIndex = await vortex.nextIndex();
 
-  // Calculate public amount: if using unspent UTXOs, include their amounts
-  const publicAmount =
-    unspentUtxos.length > 0
-      ? depositAmount + inputUtxo0.amount + inputUtxo1.amount
-      : depositAmount;
-
+  // Calculate output UTXO0 amount: if using unspent UTXOs, include their amounts
   const outputUtxo0 = new Utxo({
-    amount: depositAmount,
+    amount:
+      unspentUtxos.length > 0
+        ? publicAmount + inputUtxo0.amount + inputUtxo1.amount
+        : publicAmount,
     index: nextIndex,
     keypair: vortexKeypair,
   });
 
+  // Dummy UTXO1 for obfuscation
   const outputUtxo1 = new Utxo({
     amount: 0n,
     index: nextIndex + 1n,
@@ -76,14 +78,15 @@ export const deposit = async ({
     vortexKeypair.encryptionKey
   );
 
+  // UTXO1 is a dummy UTXO for obfuscation, so we use a random Vortex keypair.
   const encryptedUtxo1 = VortexKeypair.encryptUtxoFor(
     outputUtxo1.payload(),
-    vortexKeypair.encryptionKey
+    randomVortexKeypair.encryptionKey
   );
 
   const extDataHash = computeExtDataHash({
-    recipient: normalizeSuiAddress(recipient),
-    value: depositAmount,
+    recipient: randomRecipient,
+    value: publicAmount,
     valueSign: true,
     // No relayer for deposits
     relayer: '0x0',
@@ -116,12 +119,10 @@ export const deposit = async ({
 
   invariant(verify(proofJson, VERIFYING_KEY), 'Proof verification failed');
 
-  tx.setSender(recipient);
-
   const { extData, tx: tx2 } = vortex.newExtData({
     tx,
-    recipient,
-    value: depositAmount,
+    recipient: randomRecipient,
+    value: publicAmount,
     action: Action.Deposit,
     relayer: normalizeSuiAddress('0x0'),
     relayerFee: 0n,
@@ -133,7 +134,7 @@ export const deposit = async ({
     tx: tx2,
     proofPoints: fromHex('0x' + proof.proofSerializedHex),
     root: merkleTree.root(),
-    publicValue: depositAmount,
+    publicValue: publicAmount,
     action: Action.Deposit,
     extDataHash: extDataHashBigInt,
     inputNullifier0: nullifier0,
@@ -142,8 +143,8 @@ export const deposit = async ({
     outputCommitment1: commitment1,
   });
 
-  const suiCoinFee = tx3.splitCoins(tx3.gas, [tx3.pure.u64(depositFee)]);
-  const suiCoinDeposit = tx3.splitCoins(tx3.gas, [tx3.pure.u64(depositAmount)]);
+  const suiCoinFee = tx3.splitCoins(tx3.gas, [tx3.pure.u64(DEPOSIT_FEE)]);
+  const suiCoinDeposit = tx3.splitCoins(tx3.gas, [tx3.pure.u64(publicAmount)]);
 
   tx3.transferObjects([suiCoinFee], tx3.pure.address(TREASURY_ADDRESS));
 

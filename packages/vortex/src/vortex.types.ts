@@ -79,6 +79,4 @@ export interface DepositArgs extends MaybeTx {
   vortexKeypair: VortexKeypair;
   merkleTree: MerkleTree;
   unspentUtxos?: Utxo[];
-  depositFee: bigint;
-  recipient: string;
 }
