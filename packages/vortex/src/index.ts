@@ -5,3 +5,4 @@ export * from './vortex.types';
 export * from './crypto';
 export * from './utils';
 export * from './deposit';
+export * from './withdraw';
