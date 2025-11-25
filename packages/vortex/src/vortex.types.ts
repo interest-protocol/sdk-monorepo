@@ -1,5 +1,9 @@
 import { MaybeTx } from '@interest-protocol/sui-core-sdk';
 import { TransactionResult } from '@mysten/sui/transactions';
+import { Vortex } from './vortex';
+import { VortexKeypair } from './entities/keypair';
+import { MerkleTree } from './entities/merkle-tree';
+import { Utxo } from './entities/utxo';
 
 export enum Action {
   Deposit,
@@ -67,4 +71,14 @@ export interface TransactArgs extends MaybeTx {
   proof: TransactionResult;
   extData: TransactionResult;
   deposit: TransactionResult;
+}
+
+export interface DepositArgs extends MaybeTx {
+  amount: bigint;
+  vortex: Vortex;
+  vortexKeypair: VortexKeypair;
+  merkleTree: MerkleTree;
+  unspentUtxos?: Utxo[];
+  depositFee: bigint;
+  recipient: string;
 }

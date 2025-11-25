@@ -5,7 +5,7 @@ interface UtxoConstructorArgs {
   amount: bigint;
   blinding?: bigint;
   keypair?: VortexKeypair;
-  index: bigint;
+  index?: bigint;
 }
 
 export class Utxo {
@@ -18,7 +18,7 @@ export class Utxo {
     this.amount = amount;
     this.blinding = blinding ?? Utxo.blinding();
     this.keypair = keypair ?? VortexKeypair.generate();
-    this.index = index;
+    this.index = index ?? 0n;
   }
 
   static blinding() {
@@ -48,26 +48,5 @@ export class Utxo {
       blinding: this.blinding,
       index: this.index,
     };
-  }
-
-  toJSON(): string {
-    const utxoPayload = {
-      amount: this.amount,
-      blinding: this.blinding,
-      keypair: this.keypair.publicKey,
-      index: this.index,
-      commitment: this.commitment(),
-      nullifier: this.nullifier(),
-      error: null,
-    } as Record<string, any>;
-
-    try {
-      utxoPayload.commitment = this.commitment();
-      utxoPayload.nullifier = this.nullifier();
-    } catch (error) {
-      utxoPayload.error = error;
-    }
-
-    return JSON.stringify(utxoPayload, null, 2);
   }
 }

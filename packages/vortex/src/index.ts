@@ -4,3 +4,4 @@ export * from './entities';
 export * from './vortex.types';
 export * from './crypto';
 export * from './utils';
+export * from './deposit';

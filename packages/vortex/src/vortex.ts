@@ -13,7 +13,13 @@ import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import { bcs } from '@mysten/sui/bcs';
 import invariant from 'tiny-invariant';
 import { pathOr } from 'ramda';
-import { BN254_FIELD_MODULUS } from './constants';
+import {
+  BN254_FIELD_MODULUS,
+  VORTEX_PACKAGE_ID,
+  REGISTRY_OBJECT_ID,
+  INITIAL_SHARED_VERSION,
+  VORTEX_POOL_OBJECT_ID,
+} from './constants';
 
 export class Vortex {
   #suiClient: SuiClient;
@@ -169,7 +175,7 @@ export class Vortex {
 
     invariant(result[0], 'Root devInspectAndGetReturnValues failed');
 
-    return result[0][0] as string;
+    return BigInt(result[0][0] as string);
   }
 
   async nextIndex() {
@@ -186,7 +192,7 @@ export class Vortex {
 
     invariant(result[0], 'Next index devInspectAndGetReturnValues failed');
 
-    return result[0][0] as string;
+    return BigInt(result[0][0] as string);
   }
 
   async isNullifierSpent(nullifier: bigint) {
@@ -241,3 +247,16 @@ export class Vortex {
     });
   }
 }
+
+export const vortexSDK = new Vortex({
+  packageId: VORTEX_PACKAGE_ID,
+  registry: {
+    objectId: REGISTRY_OBJECT_ID,
+    initialSharedVersion: INITIAL_SHARED_VERSION,
+  },
+  vortex: {
+    objectId: VORTEX_POOL_OBJECT_ID,
+    initialSharedVersion: INITIAL_SHARED_VERSION,
+  },
+  fullNodeUrl: getFullnodeUrl('testnet'),
+});

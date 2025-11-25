@@ -12,7 +12,8 @@
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "allowJs": true
   },
   "@interest-protocol/*": ["../*/src"],
   "exclude": ["node_modules", "dist"]
