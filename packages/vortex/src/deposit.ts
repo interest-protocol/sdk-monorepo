@@ -3,7 +3,11 @@ import { prove, verify } from './prover/vortex';
 import invariant from 'tiny-invariant';
 import { VortexKeypair } from './entities/keypair';
 import { Utxo } from './entities/utxo';
-import { TREASURY_ADDRESS, DEPOSIT_FEE } from './constants';
+import {
+  TREASURY_ADDRESS,
+  DEPOSIT_FEE,
+  BN254_FIELD_MODULUS,
+} from './constants';
 import { computeExtDataHash } from './utils/ext-data';
 import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
 import { bytesToBigInt, reverseBytes, toProveInput } from './utils';
@@ -21,6 +25,10 @@ export const deposit = async ({
 }: DepositArgs) => {
   invariant(unspentUtxos.length <= 2, 'Unspent UTXOs must be at most 2');
   invariant(amount > DEPOSIT_FEE, 'Amount must be greater than deposit fee');
+  invariant(
+    BN254_FIELD_MODULUS > amount,
+    'Amount must be less than field modulus'
+  );
 
   // Deposits we do not need a recipient, so we use a random one.
   const randomRecipient = normalizeSuiAddress(
