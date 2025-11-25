@@ -1,53 +1,64 @@
 import { Transaction } from '@mysten/sui/transactions';
-import { prove, verify } from './prover/vortex';
-import invariant from 'tiny-invariant';
-import { VortexKeypair } from './entities/keypair';
+import { MaybeTx } from '@interest-protocol/sui-core-sdk';
 import { Utxo } from './entities/utxo';
-import {
-  TREASURY_ADDRESS,
-  DEPOSIT_FEE_IN_BASIS_POINTS,
-  BASIS_POINTS,
-  BN254_FIELD_MODULUS,
-} from './constants';
-import { computeExtDataHash } from './utils/ext-data';
-import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
-import { bytesToBigInt, reverseBytes, toProveInput } from './utils';
-import { Proof, Action, DepositArgs } from './vortex.types';
-import { PROVING_KEY, VERIFYING_KEY } from './keys';
-import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
+import { Vortex } from './vortex';
+import { VortexKeypair } from './entities/keypair';
+import { MerkleTree } from './entities/merkle-tree';
+import invariant from 'tiny-invariant';
+import { BN } from 'bn.js';
+import { normalizeSuiAddress } from '@mysten/sui/utils';
 
-export const deposit = async ({
+import { fromHex } from '@mysten/sui/utils';
+import {
+  bytesToBigInt,
+  reverseBytes,
+  toProveInput,
+  computeExtDataHash,
+} from './utils';
+import { BN254_FIELD_MODULUS } from './constants';
+import { PROVING_KEY, VERIFYING_KEY } from './keys';
+import { prove, verify } from './prover/vortex';
+import { Proof, Action } from './vortex.types';
+
+interface WithdrawArgs extends MaybeTx {
+  tx?: Transaction;
+  amount: bigint;
+  unspentUtxos: Utxo[];
+  vortex: Vortex;
+  vortexKeypair: VortexKeypair;
+  merkleTree: MerkleTree;
+  recipient: string;
+  relayer: string;
+  relayerFee: bigint;
+}
+
+export const withdraw = async ({
   tx = new Transaction(),
   amount,
   unspentUtxos = [],
   vortex,
   vortexKeypair,
   merkleTree,
-}: DepositArgs) => {
-  invariant(unspentUtxos.length <= 2, 'Unspent UTXOs must be at most 2');
+  recipient,
+  relayer,
+  relayerFee,
+}: WithdrawArgs) => {
+  invariant(1 >= unspentUtxos.length, 'Must have at least 1 unspent UTXO');
+
+  unspentUtxos.sort((a, b) => new BN(b.amount).cmp(new BN(a.amount)));
+
+  const totalUnspentUtxosAmount = unspentUtxos
+    .slice(0, 2)
+    .reduce((acc, utxo) => acc + utxo.amount, 0n);
+
   invariant(
-    BN254_FIELD_MODULUS > amount,
-    'Amount must be less than field modulus'
+    totalUnspentUtxosAmount >= amount + relayerFee,
+    'Total unspent UTXOs amount must be greater than or equal to amount'
   );
 
-  const depositFee = (amount * DEPOSIT_FEE_IN_BASIS_POINTS) / BASIS_POINTS;
-
-  invariant(depositFee > 0n, 'Deposit fee must be greater than 0');
-
-  // Deposits we do not need a recipient, so we use a random one.
-  const randomRecipient = normalizeSuiAddress(
-    Ed25519Keypair.generate().toSuiAddress()
-  );
   const randomVortexKeypair = VortexKeypair.generate();
 
-  // Determine input UTXOs
-  const inputUtxo0 =
-    unspentUtxos.length > 0 && unspentUtxos[0].amount > 0n
-      ? unspentUtxos[0]
-      : new Utxo({
-          amount: 0n,
-          keypair: vortexKeypair,
-        });
+  const inputUtxo0 = unspentUtxos[0];
 
   const inputUtxo1 =
     unspentUtxos.length > 1 && unspentUtxos[1].amount > 0n
@@ -57,20 +68,18 @@ export const deposit = async ({
           keypair: vortexKeypair,
         });
 
-  const publicAmount = amount - depositFee;
+  const totalWithdrawAmount = inputUtxo0.amount + inputUtxo1.amount;
+
+  const changeAmount = totalWithdrawAmount - amount - relayerFee;
+
   const nextIndex = await vortex.nextIndex();
 
-  // Calculate output UTXO0 amount: if using unspent UTXOs, include their amounts
   const outputUtxo0 = new Utxo({
-    amount:
-      unspentUtxos.length > 0
-        ? publicAmount + inputUtxo0.amount + inputUtxo1.amount
-        : publicAmount,
+    amount: changeAmount,
     index: nextIndex,
     keypair: vortexKeypair,
   });
 
-  // Dummy UTXO1 for obfuscation
   const outputUtxo1 = new Utxo({
     amount: 0n,
     index: nextIndex + 1n,
@@ -96,12 +105,11 @@ export const deposit = async ({
   );
 
   const extDataHash = computeExtDataHash({
-    recipient: randomRecipient,
-    value: publicAmount,
-    valueSign: true,
-    // No relayer for deposits
-    relayer: '0x0',
-    relayerFee: 0n,
+    recipient,
+    value: amount,
+    valueSign: false,
+    relayer: normalizeSuiAddress(relayer),
+    relayerFee,
     encryptedOutput0: fromHex(encryptedUtxo0),
     encryptedOutput1: fromHex(encryptedUtxo1),
   });
@@ -111,7 +119,7 @@ export const deposit = async ({
   // Prepare circuit input
   const input = toProveInput({
     merkleTree,
-    publicAmount,
+    publicAmount: BN254_FIELD_MODULUS - (amount + relayerFee),
     extDataHash: extDataHashBigInt,
     nullifier0,
     nullifier1,
@@ -132,11 +140,11 @@ export const deposit = async ({
 
   const { extData, tx: tx2 } = vortex.newExtData({
     tx,
-    recipient: randomRecipient,
-    value: publicAmount,
-    action: Action.Deposit,
-    relayer: normalizeSuiAddress('0x0'),
-    relayerFee: 0n,
+    recipient,
+    value: amount,
+    action: Action.Withdraw,
+    relayer: normalizeSuiAddress(relayer),
+    relayerFee,
     encryptedOutput0: fromHex(encryptedUtxo0),
     encryptedOutput1: fromHex(encryptedUtxo1),
   });
@@ -145,8 +153,8 @@ export const deposit = async ({
     tx: tx2,
     proofPoints: fromHex('0x' + proof.proofSerializedHex),
     root: merkleTree.root(),
-    publicValue: publicAmount,
-    action: Action.Deposit,
+    publicValue: amount + relayerFee,
+    action: Action.Withdraw,
     extDataHash: extDataHashBigInt,
     inputNullifier0: nullifier0,
     inputNullifier1: nullifier1,
@@ -154,18 +162,13 @@ export const deposit = async ({
     outputCommitment1: commitment1,
   });
 
-  const [suiCoinDeposit, suiCoinFee] = tx3.splitCoins(tx3.gas, [
-    tx3.pure.u64(publicAmount),
-    tx3.pure.u64(depositFee),
-  ]);
-
-  tx3.transferObjects([suiCoinFee], tx3.pure.address(TREASURY_ADDRESS));
+  const zeroSuiCoin = tx3.splitCoins(tx3.gas, [tx3.pure.u64(0n)]);
 
   const { tx: tx4 } = vortex.transact({
     tx: tx3,
     proof: moveProof,
     extData: extData,
-    deposit: suiCoinDeposit,
+    deposit: zeroSuiCoin,
   });
 
   return tx4;
