@@ -67,10 +67,15 @@ export interface NewProofArgs extends MaybeTx {
   outputCommitment1: bigint;
 }
 
+interface NestedResult {
+  $kind: 'NestedResult';
+  NestedResult: [number, number];
+}
+
 export interface TransactArgs extends MaybeTx {
   proof: TransactionResult;
   extData: TransactionResult;
-  deposit: TransactionResult;
+  deposit: TransactionResult | NestedResult;
 }
 
 export interface DepositArgs extends MaybeTx {

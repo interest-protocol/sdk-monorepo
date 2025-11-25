@@ -5,7 +5,8 @@ import { VortexKeypair } from './entities/keypair';
 import { Utxo } from './entities/utxo';
 import {
   TREASURY_ADDRESS,
-  DEPOSIT_FEE,
+  DEPOSIT_FEE_IN_BASIS_POINTS,
+  BASIS_POINTS,
   BN254_FIELD_MODULUS,
 } from './constants';
 import { computeExtDataHash } from './utils/ext-data';
@@ -24,11 +25,14 @@ export const deposit = async ({
   merkleTree,
 }: DepositArgs) => {
   invariant(unspentUtxos.length <= 2, 'Unspent UTXOs must be at most 2');
-  invariant(amount > DEPOSIT_FEE, 'Amount must be greater than deposit fee');
   invariant(
     BN254_FIELD_MODULUS > amount,
     'Amount must be less than field modulus'
   );
+
+  const depositFee = (amount * DEPOSIT_FEE_IN_BASIS_POINTS) / BASIS_POINTS;
+
+  invariant(depositFee > 0n, 'Deposit fee must be greater than 0');
 
   // Deposits we do not need a recipient, so we use a random one.
   const randomRecipient = normalizeSuiAddress(
@@ -53,7 +57,7 @@ export const deposit = async ({
           keypair: vortexKeypair,
         });
 
-  const publicAmount = amount - DEPOSIT_FEE;
+  const publicAmount = amount - depositFee;
   const nextIndex = await vortex.nextIndex();
 
   // Calculate output UTXO0 amount: if using unspent UTXOs, include their amounts
@@ -150,8 +154,10 @@ export const deposit = async ({
     outputCommitment1: commitment1,
   });
 
-  const suiCoinFee = tx3.splitCoins(tx3.gas, [tx3.pure.u64(DEPOSIT_FEE)]);
-  const suiCoinDeposit = tx3.splitCoins(tx3.gas, [tx3.pure.u64(publicAmount)]);
+  const [suiCoinDeposit, suiCoinFee] = tx3.splitCoins(tx3.gas, [
+    tx3.pure.u64(publicAmount),
+    tx3.pure.u64(depositFee),
+  ]);
 
   tx3.transferObjects([suiCoinFee], tx3.pure.address(TREASURY_ADDRESS));
 

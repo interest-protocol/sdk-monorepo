@@ -98,4 +98,7 @@ export const VORTEX_SIGNATURE_DOMAIN = 'VORTEXFI.XYZ';
 export const TREASURY_ADDRESS =
   '0x894261575b948c035d002adc3ca4d73c683c01a1bfafac183870940bf9afef1a';
 
-export const DEPOSIT_FEE = 500n;
+// 0.5% deposit fee
+export const DEPOSIT_FEE_IN_BASIS_POINTS = 50n;
+
+export const BASIS_POINTS = 10_000n;
