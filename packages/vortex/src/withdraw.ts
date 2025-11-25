@@ -1,9 +1,6 @@
 import { Transaction } from '@mysten/sui/transactions';
-import { MaybeTx } from '@interest-protocol/sui-core-sdk';
 import { Utxo } from './entities/utxo';
-import { Vortex } from './vortex';
 import { VortexKeypair } from './entities/keypair';
-import { MerkleTree } from './entities/merkle-tree';
 import invariant from 'tiny-invariant';
 import { BN } from 'bn.js';
 import { normalizeSuiAddress } from '@mysten/sui/utils';
@@ -18,19 +15,7 @@ import {
 import { BN254_FIELD_MODULUS } from './constants';
 import { PROVING_KEY, VERIFYING_KEY } from './keys';
 import { prove, verify } from './prover/vortex';
-import { Proof, Action } from './vortex.types';
-
-interface WithdrawArgs extends MaybeTx {
-  tx?: Transaction;
-  amount: bigint;
-  unspentUtxos: Utxo[];
-  vortex: Vortex;
-  vortexKeypair: VortexKeypair;
-  merkleTree: MerkleTree;
-  recipient: string;
-  relayer: string;
-  relayerFee: bigint;
-}
+import { Proof, Action, WithdrawArgs } from './vortex.types';
 
 export const withdraw = async ({
   tx = new Transaction(),

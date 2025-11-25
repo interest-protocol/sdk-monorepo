@@ -85,3 +85,14 @@ export interface DepositArgs extends MaybeTx {
   merkleTree: MerkleTree;
   unspentUtxos?: Utxo[];
 }
+
+export interface WithdrawArgs extends MaybeTx {
+  amount: bigint;
+  unspentUtxos: Utxo[];
+  vortex: Vortex;
+  vortexKeypair: VortexKeypair;
+  merkleTree: MerkleTree;
+  recipient: string;
+  relayer: string;
+  relayerFee: bigint;
+}
