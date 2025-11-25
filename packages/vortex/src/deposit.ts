@@ -57,15 +57,12 @@ export const deposit = async ({
           keypair: vortexKeypair,
         });
 
-  const publicAmount = amount - depositFee;
+  const amountMinusFrontendFee = amount - depositFee;
   const nextIndex = await vortex.nextIndex();
 
   // Calculate output UTXO0 amount: if using unspent UTXOs, include their amounts
   const outputUtxo0 = new Utxo({
-    amount:
-      unspentUtxos.length > 0
-        ? publicAmount + inputUtxo0.amount + inputUtxo1.amount
-        : publicAmount,
+    amount: amountMinusFrontendFee + inputUtxo0.amount + inputUtxo1.amount,
     index: nextIndex,
     keypair: vortexKeypair,
   });
@@ -97,7 +94,7 @@ export const deposit = async ({
 
   const extDataHash = computeExtDataHash({
     recipient: randomRecipient,
-    value: publicAmount,
+    value: amountMinusFrontendFee,
     valueSign: true,
     // No relayer for deposits
     relayer: '0x0',
@@ -111,7 +108,7 @@ export const deposit = async ({
   // Prepare circuit input
   const input = toProveInput({
     merkleTree,
-    publicAmount,
+    publicAmount: amountMinusFrontendFee,
     extDataHash: extDataHashBigInt,
     nullifier0,
     nullifier1,
@@ -133,7 +130,7 @@ export const deposit = async ({
   const { extData, tx: tx2 } = vortex.newExtData({
     tx,
     recipient: randomRecipient,
-    value: publicAmount,
+    value: amountMinusFrontendFee,
     action: Action.Deposit,
     relayer: normalizeSuiAddress('0x0'),
     relayerFee: 0n,
@@ -145,7 +142,7 @@ export const deposit = async ({
     tx: tx2,
     proofPoints: fromHex('0x' + proof.proofSerializedHex),
     root: merkleTree.root(),
-    publicValue: publicAmount,
+    publicValue: amountMinusFrontendFee,
     action: Action.Deposit,
     extDataHash: extDataHashBigInt,
     inputNullifier0: nullifier0,
@@ -155,7 +152,7 @@ export const deposit = async ({
   });
 
   const [suiCoinDeposit, suiCoinFee] = tx3.splitCoins(tx3.gas, [
-    tx3.pure.u64(publicAmount),
+    tx3.pure.u64(amountMinusFrontendFee),
     tx3.pure.u64(depositFee),
   ]);
 
