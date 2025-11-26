@@ -148,3 +148,4 @@ export const toProveInput = ({
 
 export * from './ext-data';
 export * from './events';
+export * from './prove';

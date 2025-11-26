@@ -1,6 +1,10 @@
 // packages/vortex/src/entities/merkle-tree.ts
 
-import { ZERO_VALUE, EMPTY_SUBTREE_HASHES } from '../constants';
+import {
+  ZERO_VALUE,
+  EMPTY_SUBTREE_HASHES,
+  MERKLE_TREE_HEIGHT,
+} from '../constants';
 import { poseidon2 } from '../crypto';
 
 /**
@@ -250,3 +254,5 @@ export class MerkleTree {
     return (this._nextIndex / this.capacity) * 100;
   }
 }
+
+export const emptyMerkleTree = new MerkleTree(MERKLE_TREE_HEIGHT);

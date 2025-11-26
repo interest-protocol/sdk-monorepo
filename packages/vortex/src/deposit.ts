@@ -1,5 +1,5 @@
 import { Transaction } from '@mysten/sui/transactions';
-import { prove, verify } from './prover/vortex';
+import { prove, verify } from './utils';
 import invariant from 'tiny-invariant';
 import { VortexKeypair } from './entities/keypair';
 import { Utxo } from './entities/utxo';
@@ -13,7 +13,6 @@ import { computeExtDataHash } from './utils/ext-data';
 import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
 import { bytesToBigInt, reverseBytes, toProveInput } from './utils';
 import { Proof, Action, DepositArgs } from './vortex.types';
-import { PROVING_KEY, VERIFYING_KEY } from './keys';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 
 export const deposit = async ({
@@ -121,11 +120,11 @@ export const deposit = async ({
     outputUtxo1,
   });
 
-  const proofJson: string = prove(JSON.stringify(input), PROVING_KEY);
+  const proofJson: string = prove(JSON.stringify(input));
 
   const proof: Proof = JSON.parse(proofJson);
 
-  invariant(verify(proofJson, VERIFYING_KEY), 'Proof verification failed');
+  invariant(verify(proofJson), 'Proof verification failed');
 
   const { extData, tx: tx2 } = vortex.newExtData({
     tx,

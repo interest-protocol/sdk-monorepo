@@ -10,8 +10,8 @@ export function computeExtDataHash({
   valueSign,
   relayer,
   relayerFee,
-  encryptedOutput1,
   encryptedOutput0,
+  encryptedOutput1,
 }: ExtDataHashArgs): Uint8Array {
   // Serialize each field using BCS encoding (matching Move's to_bytes())
 

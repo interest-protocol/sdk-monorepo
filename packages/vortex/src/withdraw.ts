@@ -13,8 +13,7 @@ import {
   computeExtDataHash,
 } from './utils';
 import { BN254_FIELD_MODULUS } from './constants';
-import { PROVING_KEY, VERIFYING_KEY } from './keys';
-import { prove, verify } from './prover/vortex';
+import { prove, verify } from './utils';
 import { Proof, Action, WithdrawArgs } from './vortex.types';
 
 export const withdraw = async ({
@@ -117,11 +116,11 @@ export const withdraw = async ({
     outputUtxo1,
   });
 
-  const proofJson: string = prove(JSON.stringify(input), PROVING_KEY);
+  const proofJson: string = prove(JSON.stringify(input));
 
   const proof: Proof = JSON.parse(proofJson);
 
-  invariant(verify(proofJson, VERIFYING_KEY), 'Proof verification failed');
+  invariant(verify(proofJson), 'Proof verification failed');
 
   const { extData, tx: tx2 } = vortex.newExtData({
     tx,
