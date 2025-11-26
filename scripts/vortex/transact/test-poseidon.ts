@@ -3,6 +3,17 @@ import { SUI_FRAMEWORK_ADDRESS } from '@mysten/sui/utils';
 import { Transaction } from '@mysten/sui/transactions';
 import { getEnv } from '../utils.script';
 
+const catchError = (error: any, network: 'testnet' | 'devnet') => {
+  return {
+    effects: {
+      status: {
+        status: `${network}-failure`,
+        error: error.message,
+      },
+    },
+  };
+};
+
 (async () => {
   const { keypair } = await getEnv();
 
@@ -23,38 +34,25 @@ import { getEnv } from '../utils.script';
 
   tx.setSender(keypair.toSuiAddress());
 
-  const result = await keypair
-    .signAndExecuteTransaction({
-      transaction: tx,
-      client: testnetSuiClient,
-    })
-    .catch((error) => {
-      return {
-        effects: {
-          status: {
-            status: 'testnet-failure',
-            error: error.message,
-          },
-        },
-      };
-    });
+  const [resultDevnet, resultTestnet] = await Promise.all([
+    keypair
+      .signAndExecuteTransaction({
+        transaction: tx,
+        client: devnetSuiClient,
+      })
+      .catch((error) => {
+        return catchError(error, 'devnet');
+      }),
+    keypair
+      .signAndExecuteTransaction({
+        transaction: tx,
+        client: testnetSuiClient,
+      })
+      .catch((error) => {
+        return catchError(error, 'testnet');
+      }),
+  ]);
 
-  const result2 = await keypair
-    .signAndExecuteTransaction({
-      transaction: tx,
-      client: devnetSuiClient,
-    })
-    .catch((error) => {
-      return {
-        effects: {
-          status: {
-            status: 'devnet-failure',
-            error: error.message,
-          },
-        },
-      };
-    });
-
-  console.log('devnet', result2.effects.status);
-  console.log('testnet', result.effects.status);
+  console.log('devnet', resultDevnet.effects.status);
+  console.log('testnet', resultTestnet.effects.status);
 })();
