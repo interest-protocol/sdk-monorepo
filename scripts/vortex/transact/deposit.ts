@@ -1,5 +1,6 @@
 import { getEnv } from '../utils.script';
 import { deposit, emptyMerkleTree } from '@interest-protocol/vortex-sdk';
+import { logSuccess, logError } from '@interest-protocol/logger';
 
 (async () => {
   try {
@@ -24,8 +25,8 @@ import { deposit, emptyMerkleTree } from '@interest-protocol/vortex-sdk';
       client: suiClient,
     });
 
-    console.log(result);
+    logSuccess('deposit', result);
   } catch (error) {
-    console.log(error);
+    logError('deposit', error);
   }
 })();

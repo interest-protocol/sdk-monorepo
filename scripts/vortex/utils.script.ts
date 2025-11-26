@@ -1,9 +1,4 @@
-import {
-  VortexKeypair,
-  Utxo,
-  Vortex,
-  vortexSDK,
-} from '@interest-protocol/vortex-sdk';
+import { VortexKeypair, Utxo, vortexSDK } from '@interest-protocol/vortex-sdk';
 
 import {
   executeTx,
@@ -32,26 +27,7 @@ const recipientKeypair = Ed25519Keypair.fromSecretKey(
   process.env.RECIPIENT_KEY!
 );
 
-export interface Env {
-  VortexKeypair: typeof VortexKeypair;
-  relayerKeypair: Ed25519Keypair;
-  recipientKeypair: Ed25519Keypair;
-  Utxo: typeof Utxo;
-  suiClient: SuiClient;
-  executeTx: (tx: Transaction, client?: SuiClient) => Promise<void>;
-  keypair: Ed25519Keypair;
-  POW_10_9: bigint;
-  devInspectTransactionBlock: (
-    tx: Transaction,
-    sender: string,
-    client?: SuiClient
-  ) => Promise<any>;
-  vortex: Vortex;
-  verifyingKey: string;
-  provingKey: string;
-}
-
-export const getEnv = async (): Promise<Env> => {
+export const getEnv = async () => {
   return {
     VortexKeypair,
     relayerKeypair,

@@ -38,13 +38,13 @@ const catchError = (error: any, network: 'testnet' | 'devnet') => ({
         transaction: tx,
         client: devnetSuiClient,
       })
-      .catch((error) => catchError(error, 'devnet')),
+      .catch((error: any) => catchError(error, 'devnet')),
     keypair
       .signAndExecuteTransaction({
         transaction: tx,
         client: testnetSuiClient,
       })
-      .catch((error) => catchError(error, 'testnet')),
+      .catch((error: any) => catchError(error, 'testnet')),
   ]);
 
   console.log('devnet', resultDevnet.effects.status);

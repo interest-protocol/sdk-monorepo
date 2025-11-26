@@ -258,5 +258,5 @@ export const vortexSDK = new Vortex({
     objectId: VORTEX_POOL_OBJECT_ID,
     initialSharedVersion: INITIAL_SHARED_VERSION,
   },
-  fullNodeUrl: getFullnodeUrl('testnet'),
+  fullNodeUrl: getFullnodeUrl('devnet'),
 });
