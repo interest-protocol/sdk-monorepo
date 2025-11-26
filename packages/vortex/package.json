@@ -16,7 +16,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "rollup -c rollup.config.js",
-    "postbuild": "mkdir -p dist && cp src/pkg/nodejs/vortex_bg.wasm dist/vortex_bg.wasm",
+    "postbuild": "mkdir -p dist && cp src/pkg/nodejs/vortex_bg.nodejs.wasm dist/vortex_bg.nodejs.wasm && cp src/pkg/web/vortex_bg.web.wasm dist/vortex_bg.web.wasm",
     "build:types": "tsc --emitDeclarationOnly"
   },
   "keywords": [],

@@ -321,7 +321,7 @@ exports.__wbindgen_init_externref_table = function () {
   table.set(offset + 3, false);
 };
 
-const wasmPath = `${__dirname}/vortex_bg.wasm`;
+const wasmPath = `${__dirname}/vortex_bg.nodejs.wasm`;
 const wasmBytes = require('fs').readFileSync(wasmPath);
 const wasmModule = new WebAssembly.Module(wasmBytes);
 const wasm = (exports.__wasm = new WebAssembly.Instance(
