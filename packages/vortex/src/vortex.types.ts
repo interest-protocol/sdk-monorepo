@@ -96,3 +96,9 @@ export interface WithdrawArgs extends MaybeTx {
   relayer: string;
   relayerFee: bigint;
 }
+
+export interface ParsedCommitmentEvent {
+  commitment: bigint;
+  index: bigint;
+  encryptedOutput: string;
+}

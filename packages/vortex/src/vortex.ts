@@ -215,6 +215,30 @@ export class Vortex {
     return result[0][0] as boolean;
   }
 
+  async areNullifiersSpent(nullifiers: bigint[]) {
+    const tx = new Transaction();
+
+    nullifiers.forEach((nullifier) => {
+      tx.moveCall({
+        target: `${this.packageId}::vortex::is_nullifier_spent`,
+        arguments: [this.immutableVortexRef(tx), tx.pure.u256(nullifier)],
+      });
+    });
+
+    const result = await devInspectAndGetReturnValues(
+      this.#suiClient,
+      tx,
+      nullifiers.map(() => [bcs.Bool])
+    );
+
+    invariant(
+      result[0],
+      'Is nullifier spent devInspectAndGetReturnValues failed'
+    );
+
+    return result.flat() as boolean[];
+  }
+
   immutableVortexRef(tx: Transaction) {
     return tx.sharedObjectRef({
       objectId: this.vortex.objectId,

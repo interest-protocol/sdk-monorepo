@@ -254,5 +254,3 @@ export class MerkleTree {
     return (this._nextIndex / this.capacity) * 100;
   }
 }
-
-export const emptyMerkleTree = new MerkleTree(MERKLE_TREE_HEIGHT);

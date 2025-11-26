@@ -1,6 +1,7 @@
 import { getEnv } from '../utils.script';
-import { deposit, emptyMerkleTree } from '@interest-protocol/vortex-sdk';
+import { deposit } from '@interest-protocol/vortex-sdk';
 import { logSuccess, logError } from '@interest-protocol/logger';
+import { getUnspentUtxosAndMerkleTree } from '../events';
 
 (async () => {
   try {
@@ -11,11 +12,19 @@ import { logSuccess, logError } from '@interest-protocol/logger';
       (message) => keypair.signPersonalMessage(message)
     );
 
+    // @dev Should come from the indexer
+    const { unspentUtxos, merkleTree } = await getUnspentUtxosAndMerkleTree({
+      suiClient,
+      vortex,
+      senderVortexKeypair,
+    });
+
     const transaction = await deposit({
-      amount: 1_000n,
+      amount: 2_000n,
       vortex,
       vortexKeypair: senderVortexKeypair,
-      merkleTree: emptyMerkleTree,
+      merkleTree,
+      unspentUtxos,
     });
 
     transaction.setSender(keypair.toSuiAddress());

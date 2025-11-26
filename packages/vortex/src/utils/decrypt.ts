@@ -3,26 +3,44 @@ import { parseNewCommitmentEvent } from './events';
 import { UtxoPayload } from '../entities/keypair';
 import { VortexKeypair } from '../entities/keypair';
 import { Utxo } from '../entities/utxo';
-import { BN } from 'bn.js';
 
-export const getUnspentUtxos = (
-  commitmentEvents: PaginatedEvents,
-  senderVortexKeypair: VortexKeypair
-) => {
-  const parsedCommitmentEvents = parseNewCommitmentEvent(commitmentEvents);
+import { Vortex } from '../vortex';
 
-  const unspentUtxos = [] as UtxoPayload[];
+interface GetUnspentUtxosArgs {
+  commitmentEvents: PaginatedEvents;
+  senderVortexKeypair: VortexKeypair;
+  vortex: Vortex;
+}
 
-  parsedCommitmentEvents.forEach((event) => {
+export const getUnspentUtxos = async ({
+  commitmentEvents,
+  senderVortexKeypair,
+  vortex,
+}: GetUnspentUtxosArgs) => {
+  const commitments = parseNewCommitmentEvent(commitmentEvents);
+
+  const allUtxos = [] as UtxoPayload[];
+
+  commitments.forEach((commitment) => {
     try {
-      const utxo = senderVortexKeypair.decryptUtxo(event.encryptedOutput);
-      unspentUtxos.push({ ...utxo, index: event.index });
-    } catch {}
+      const utxo = senderVortexKeypair.decryptUtxo(commitment.encryptedOutput);
+      allUtxos.push(utxo);
+    } catch {
+      // Do nothing
+    }
   });
 
-  unspentUtxos.sort((a, b) => new BN(b.index).cmp(new BN(a.index)));
-
-  return unspentUtxos.map(
+  const utxos = allUtxos.map(
     (utxo) => new Utxo({ ...utxo, keypair: senderVortexKeypair })
   );
+
+  const nullifiers = utxos.map((utxo) => utxo.nullifier());
+
+  const isNullifierSpentArray = await vortex.areNullifiersSpent(nullifiers);
+
+  const unspentUtxos = utxos.filter(
+    (_, index) => !isNullifierSpentArray[index]
+  );
+
+  return unspentUtxos;
 };
