@@ -3,16 +3,14 @@ import { SUI_FRAMEWORK_ADDRESS } from '@mysten/sui/utils';
 import { Transaction } from '@mysten/sui/transactions';
 import { getEnv } from '../utils.script';
 
-const catchError = (error: any, network: 'testnet' | 'devnet') => {
-  return {
-    effects: {
-      status: {
-        status: `${network}-failure`,
-        error: error.message,
-      },
+const catchError = (error: any, network: 'testnet' | 'devnet') => ({
+  effects: {
+    status: {
+      status: `${network}-failure`,
+      error: error.message,
     },
-  };
-};
+  },
+});
 
 (async () => {
   const { keypair } = await getEnv();
@@ -40,17 +38,13 @@ const catchError = (error: any, network: 'testnet' | 'devnet') => {
         transaction: tx,
         client: devnetSuiClient,
       })
-      .catch((error) => {
-        return catchError(error, 'devnet');
-      }),
+      .catch((error) => catchError(error, 'devnet')),
     keypair
       .signAndExecuteTransaction({
         transaction: tx,
         client: testnetSuiClient,
       })
-      .catch((error) => {
-        return catchError(error, 'testnet');
-      }),
+      .catch((error) => catchError(error, 'testnet')),
   ]);
 
   console.log('devnet', resultDevnet.effects.status);
