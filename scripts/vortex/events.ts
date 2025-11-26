@@ -55,7 +55,7 @@ export const getUnspentUtxosAndMerkleTree = async ({
 
   const unspentUtxos = await getUnspentUtxos({
     commitmentEvents,
-    senderVortexKeypair,
+    vortexKeypair: senderVortexKeypair,
     vortex,
   });
 

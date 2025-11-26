@@ -8,13 +8,13 @@ import { Vortex } from '../vortex';
 
 interface GetUnspentUtxosArgs {
   commitmentEvents: PaginatedEvents;
-  senderVortexKeypair: VortexKeypair;
+  vortexKeypair: VortexKeypair;
   vortex: Vortex;
 }
 
 export const getUnspentUtxos = async ({
   commitmentEvents,
-  senderVortexKeypair,
+  vortexKeypair,
   vortex,
 }: GetUnspentUtxosArgs) => {
   const commitments = parseNewCommitmentEvent(commitmentEvents);
@@ -23,7 +23,7 @@ export const getUnspentUtxos = async ({
 
   commitments.forEach((commitment) => {
     try {
-      const utxo = senderVortexKeypair.decryptUtxo(commitment.encryptedOutput);
+      const utxo = vortexKeypair.decryptUtxo(commitment.encryptedOutput);
       allUtxos.push(utxo);
     } catch {
       // Do nothing
@@ -31,7 +31,7 @@ export const getUnspentUtxos = async ({
   });
 
   const utxos = allUtxos.map(
-    (utxo) => new Utxo({ ...utxo, keypair: senderVortexKeypair })
+    (utxo) => new Utxo({ ...utxo, keypair: vortexKeypair })
   );
 
   const nullifiers = utxos.map((utxo) => utxo.nullifier());

@@ -21,7 +21,7 @@ import { logSuccess, logError } from '@interest-protocol/logger';
 
     const unspentUtxos = await getUnspentUtxos({
       vortex,
-      senderVortexKeypair,
+      vortexKeypair: senderVortexKeypair,
       commitmentEvents,
     });
 
