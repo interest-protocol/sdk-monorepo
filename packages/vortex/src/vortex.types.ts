@@ -2,7 +2,7 @@ import { MaybeTx } from '@interest-protocol/sui-core-sdk';
 import { TransactionResult } from '@mysten/sui/transactions';
 import { Vortex } from './vortex';
 import { VortexKeypair } from './entities/keypair';
-import { MerkleTree } from './entities/merkle-tree';
+import { MerkleTree } from 'fixed-merkle-tree';
 import { Utxo } from './entities/utxo';
 
 export enum Action {

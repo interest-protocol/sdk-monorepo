@@ -689,6 +689,9 @@ importers:
       bn.js:
         specifier: ^5.2.2
         version: 5.2.2
+      fixed-merkle-tree:
+        specifier: ^0.7.3
+        version: 0.7.3
       ramda:
         specifier: ^0.30.1
         version: 0.30.1
@@ -1144,6 +1147,9 @@ importers:
       ethers:
         specifier: ^6.15.0
         version: 6.15.0
+      fixed-merkle-tree:
+        specifier: ^0.7.3
+        version: 0.7.3
       poseidon-lite:
         specifier: ^0.3.0
         version: 0.3.0
@@ -4873,6 +4879,9 @@ packages:
 
   fix-dts-default-cjs-exports@1.0.1:
     resolution: {integrity: sha512-pVIECanWFC61Hzl2+oOCtoJ3F17kglZC/6N94eRWycFgBH35hHx0Li604ZIzhseh97mf2p0cv7vVrOZGoqhlEg==}
+
+  fixed-merkle-tree@0.7.3:
+    resolution: {integrity: sha512-b50ZBpDfp/Nru120IdeS0IyqbVjOien1OSdWMDdcxS9uVHLV668xndNkEnn9t1WFOvc5aw1owl6l4N8mP5mkKg==}
 
   flat-cache@4.0.1:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
@@ -11574,6 +11583,8 @@ snapshots:
       magic-string: 0.30.21
       mlly: 1.8.0
       rollup: 4.52.5
+
+  fixed-merkle-tree@0.7.3: {}
 
   flat-cache@4.0.1:
     dependencies:

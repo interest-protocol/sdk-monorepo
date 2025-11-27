@@ -136,7 +136,7 @@ export const withdraw = async ({
   const { proof: moveProof, tx: tx3 } = vortex.newProof({
     tx: tx2,
     proofPoints: fromHex('0x' + proof.proofSerializedHex),
-    root: merkleTree.root(),
+    root: BigInt(merkleTree.root),
     publicValue: amount + relayerFee,
     action: Action.Withdraw,
     extDataHash: extDataHashBigInt,

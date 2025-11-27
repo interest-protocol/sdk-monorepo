@@ -1,6 +1,6 @@
 import { toHex } from '@mysten/sui/utils';
 import invariant from 'tiny-invariant';
-import { MerkleTree } from '../entities/merkle-tree';
+import { MerkleTree } from 'fixed-merkle-tree';
 import { Utxo } from '../entities/utxo';
 import { VortexKeypair } from '../entities/keypair';
 import { ZERO_VALUE, MERKLE_TREE_HEIGHT } from '../constants';
@@ -30,7 +30,7 @@ export function getMerklePath(
   }
 
   const utxoIndex = Number(utxo.index);
-  const treeSize = merkleTree.elements().length;
+  const treeSize = merkleTree.elements.length;
 
   // For deposits, input UTXOs don't exist yet
   if (utxoIndex < 0 || utxoIndex >= treeSize) {
@@ -44,7 +44,7 @@ export function getMerklePath(
   const commitment = utxo.commitment();
 
   // Verify commitment matches what's in the tree
-  const storedCommitment = merkleTree.elements()[utxoIndex]!;
+  const storedCommitment = BigInt(merkleTree.elements[utxoIndex]!);
 
   invariant(
     storedCommitment === commitment,
@@ -56,7 +56,7 @@ export function getMerklePath(
   let currentHash = commitment;
 
   for (let i = 0; i < MERKLE_TREE_HEIGHT; i++) {
-    const sibling = pathElements[i];
+    const sibling = BigInt(pathElements[i]!);
     const isLeft = pathIndices[i] === 0;
 
     invariant(sibling !== undefined, `Sibling undefined at level ${i}`);
@@ -79,7 +79,7 @@ export function getMerklePath(
   }
 
   const calculatedRoot = currentHash;
-  const expectedRoot = merkleTree.root();
+  const expectedRoot = BigInt(merkleTree.root);
 
   invariant(
     calculatedRoot === expectedRoot,
@@ -119,7 +119,7 @@ export const toProveInput = ({
   outputUtxo1,
 }: ToProveInputArgs) => {
   return {
-    root: merkleTree.root(),
+    root: BigInt(merkleTree.root),
     publicAmount,
     extDataHash,
     inputNullifier0: nullifier0,

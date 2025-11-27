@@ -5,8 +5,7 @@ import { BN } from 'bn.js';
 import { parseNewCommitmentEvent } from '@interest-protocol/vortex-sdk';
 
 import {
-  MERKLE_TREE_HEIGHT,
-  MerkleTree,
+  buildMerkleTree,
   getUnspentUtxos,
 } from '@interest-protocol/vortex-sdk';
 
@@ -49,7 +48,7 @@ export const getUnspentUtxosAndMerkleTree = async ({
 
   const parsedCommitmentEvents = parseNewCommitmentEvent(commitmentEvents);
 
-  const merkleTree = new MerkleTree(MERKLE_TREE_HEIGHT);
+  const merkleTree = buildMerkleTree();
 
   parsedCommitmentEvents.sort((a, b) => new BN(a.index).cmp(new BN(b.index)));
 
@@ -61,7 +60,7 @@ export const getUnspentUtxosAndMerkleTree = async ({
 
   // @dev Should come from the indexer
   merkleTree.bulkInsert(
-    parsedCommitmentEvents.map((event) => event.commitment)
+    parsedCommitmentEvents.map((event) => event.commitment.toString())
   );
 
   return { unspentUtxos, merkleTree };
