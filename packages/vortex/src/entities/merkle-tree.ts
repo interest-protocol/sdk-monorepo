@@ -10,3 +10,5 @@ export const buildMerkleTree = () =>
       poseidon2(BigInt(left), BigInt(right)).toString(),
     zeroElement: ZERO_VALUE.toString(),
   });
+
+export type MerkleTree = FixedMerkleTree;
