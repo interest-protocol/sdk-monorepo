@@ -7,11 +7,6 @@ export const ZERO_VALUE =
 
 export const EMPTY_COMMITMENT = ZERO_VALUE;
 
-export enum Output {
-  HasCommitments,
-  NoCommitments,
-}
-
 export const EMPTY_SUBTREE_HASHES = [
   ZERO_VALUE,
   929670100605127589096201729966801143828059989180770638007278601230757123028n,
