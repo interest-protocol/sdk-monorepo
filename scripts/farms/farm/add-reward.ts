@@ -2,7 +2,7 @@ import { getEnv } from '../utils.script';
 import { coinWithBalance } from '@mysten/sui/transactions';
 
 const COIN_TYPE =
-  '0xcee208b8ae33196244b389e61ffd1202e7a1ae06c8ec210d33402ff649038892::aida::AIDA';
+  '0xc466c28d87b3d5cd34f3d5c088751532d71a38d93a8aae4551dd56272cfb4355::manifest::MANIFEST';
 
 (async () => {
   const { farmsSdk, executeTx, suiClient, keypair, manifestType, farmId } =
