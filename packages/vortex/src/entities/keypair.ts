@@ -8,11 +8,13 @@ import { randomBytes } from '@noble/ciphers/utils.js';
 import { x25519 } from '@noble/curves/ed25519.js';
 import { xsalsa20poly1305 } from '@noble/ciphers/salsa.js';
 import { blake2b } from '@noble/hashes/blake2.js';
+import { normalizeSuiAddress } from '@mysten/sui/utils';
 
 export interface UtxoPayload {
   amount: bigint;
   blinding: bigint;
   index: bigint;
+  vortexPool: string;
 }
 
 interface EncryptedMessage {
@@ -175,7 +177,7 @@ export class VortexKeypair {
     utxo: UtxoPayload,
     recipientEncryptionKey: string
   ): string {
-    const utxoString = `${utxo.amount.toString()}|${utxo.blinding.toString()}|${utxo.index.toString()}`;
+    const utxoString = `${utxo.amount.toString()}|${utxo.blinding.toString()}|${utxo.index.toString()}|${utxo.vortexPool.toString()}`;
     const bytes = Buffer.from(utxoString, 'utf8');
     return VortexKeypair.encryptFor(bytes, recipientEncryptionKey);
   }
@@ -185,12 +187,13 @@ export class VortexKeypair {
     const decryptedStr = decrypted.toString('utf8');
     const parts = decryptedStr.split('|');
 
-    invariant(parts.length === 3, 'Invalid UTXO format after decryption');
+    invariant(parts.length === 4, 'Invalid UTXO format after decryption');
 
     return {
       amount: BigInt(parts[0]),
       blinding: BigInt(parts[1]),
       index: BigInt(parts[2]),
+      vortexPool: normalizeSuiAddress(parts[3]),
     };
   }
 

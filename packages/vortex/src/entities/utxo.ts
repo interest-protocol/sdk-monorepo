@@ -59,6 +59,7 @@ export class Utxo {
       amount: this.amount,
       blinding: this.blinding,
       index: this.index,
+      vortexPool: this.vortexPool,
     };
   }
 }

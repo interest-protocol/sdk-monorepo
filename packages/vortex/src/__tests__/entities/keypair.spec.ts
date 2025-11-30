@@ -78,6 +78,7 @@ describe(VortexKeypair.name, () => {
         amount: 1000n,
         blinding: 999n,
         index: 5n,
+        vortexPool: '0x123',
       };
 
       const encrypted = VortexKeypair.encryptUtxoFor(
@@ -99,6 +100,7 @@ describe(VortexKeypair.name, () => {
         amount: 1000n,
         blinding: 999n,
         index: 5n,
+        vortexPool: '0x123',
       };
 
       const encrypted = VortexKeypair.encryptUtxoFor(
