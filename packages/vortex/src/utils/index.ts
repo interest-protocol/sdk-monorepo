@@ -144,7 +144,7 @@ export const toProveInput = ({
     outputCommitment1: commitment1,
     hashedAccountSecret: accountSecret === 0n ? 0n : poseidon1(accountSecret),
 
-    accountSecret,
+    accountSecret: accountSecret === 0n ? 12345n : accountSecret,
     inPrivateKey0: vortexKeypair.privateKey,
     inPrivateKey1: vortexKeypair.privateKey,
     inAmount0: inputUtxo0.amount,

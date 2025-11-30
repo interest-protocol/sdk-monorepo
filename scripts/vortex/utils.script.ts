@@ -1,4 +1,9 @@
-import { VortexKeypair, Utxo, vortexSDK } from '@interest-protocol/vortex-sdk';
+import {
+  VortexKeypair,
+  Utxo,
+  vortexSDK,
+  VORTEX_POOL_IDS,
+} from '@interest-protocol/vortex-sdk';
 
 import {
   executeTx,
@@ -9,14 +14,14 @@ import {
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { SuiClient } from '@mysten/sui/client';
 import { Transaction } from '@mysten/sui/transactions';
+import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 
 const relayerKeypair = Ed25519Keypair.fromSecretKey(process.env.RELAYER_KEY!);
 const recipientKeypair = Ed25519Keypair.fromSecretKey(
   process.env.RECIPIENT_KEY!
 );
 
-const SUI_VORTEX_POOL_OBJECT_ID =
-  '0x3f442283f74552cee1dca31e242fd3f031fb095241056b18ce207ebb1d9d1a8e';
+const SUI_VORTEX_POOL_OBJECT_ID = VORTEX_POOL_IDS[SUI_TYPE_ARG];
 
 export const getEnv = async () => {
   return {
