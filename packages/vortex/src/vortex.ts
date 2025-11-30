@@ -7,48 +7,54 @@ import {
   NewExtDataArgs,
   Action,
   NewProofArgs,
+  VortexPool,
   TransactArgs,
+  IsNullifierSpentArgs,
+  AreNullifiersSpentArgs,
+  NewArgs,
 } from './vortex.types';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import { bcs } from '@mysten/sui/bcs';
 import invariant from 'tiny-invariant';
+import { normalizeSuiAddress } from '@mysten/sui/utils';
 import { pathOr } from 'ramda';
 import {
   BN254_FIELD_MODULUS,
   VORTEX_PACKAGE_ID,
   REGISTRY_OBJECT_ID,
   INITIAL_SHARED_VERSION,
-  VORTEX_POOL_OBJECT_ID,
 } from './constants';
+import { parseVortexPool } from './utils';
 
 export class Vortex {
   #suiClient: SuiClient;
 
   packageId: string;
   registry: SharedObjectData;
-  vortex: SharedObjectData;
 
-  newCommitmentEventType: string;
-  nullifierSpentEventType: string;
-  newEncryptionKeyEventType: string;
+  #newPoolEventType: string;
+  #newAccountEventType: string;
+  #newCommitmentEventType: string;
+  #nullifierSpentEventType: string;
+  #newEncryptionKeyEventType: string;
 
   constructor({
     registry,
     packageId,
-    vortex,
     fullNodeUrl = getFullnodeUrl('devnet'),
   }: ConstructorArgs) {
     this.#suiClient = new SuiClient({
       url: fullNodeUrl,
     });
 
-    this.newCommitmentEventType = `${packageId}::vortex::NewCommitment`;
-    this.nullifierSpentEventType = `${packageId}::vortex::NullifierSpent`;
-    this.newEncryptionKeyEventType = `${packageId}::vortex::NewEncryptionKey`;
+    this.#newPoolEventType = `${packageId}::vortex_events::NewPool`;
+    this.#newAccountEventType = `${packageId}::vortex_events::NewAccount`;
+    this.#newCommitmentEventType = `${packageId}::vortex_events::NewCommitment`;
+    this.#nullifierSpentEventType = `${packageId}::vortex_events::NullifierSpent`;
+    this.#newEncryptionKeyEventType = `${packageId}::vortex_events::NewEncryptionKey`;
 
     this.packageId = packageId;
     this.registry = registry;
-    this.vortex = vortex;
   }
 
   register({ tx = new Transaction(), encryptionKey }: RegisterArgs) {
@@ -58,6 +64,52 @@ export class Vortex {
     });
 
     return { tx };
+  }
+
+  newPool({ tx = new Transaction(), coinType }: NewArgs) {
+    const vortexPool = tx.moveCall({
+      target: `${this.packageId}::vortex::new`,
+      arguments: [this.mutableRegistryRef(tx)],
+      typeArguments: [coinType],
+    });
+
+    return { tx, vortexPool };
+  }
+
+  newPoolAndShare({ tx = new Transaction(), coinType }: NewArgs) {
+    const vortexPool = tx.moveCall({
+      target: `${this.packageId}::vortex::new`,
+      arguments: [this.mutableRegistryRef(tx)],
+      typeArguments: [coinType],
+    });
+
+    tx.moveCall({
+      target: `${this.packageId}::vortex::share`,
+      arguments: [tx.object(vortexPool)],
+      typeArguments: [coinType],
+    });
+
+    return { tx };
+  }
+
+  async vortexAddress(coinType: string) {
+    const tx = new Transaction();
+
+    tx.moveCall({
+      target: `${this.packageId}::vortex::vortex_address`,
+      arguments: [this.immutableRegistryRef(tx)],
+      typeArguments: [coinType],
+    });
+
+    const result = await devInspectAndGetReturnValues(this.#suiClient, tx, [
+      [bcs.option(bcs.Address)],
+    ]);
+
+    invariant(result[0], 'Vortex address devInspectAndGetReturnValues failed');
+
+    const option = result[0][0] as string | null;
+
+    return option ? normalizeSuiAddress(option) : null;
   }
 
   async encryptionKey(user: string) {
@@ -103,8 +155,9 @@ export class Vortex {
     return { tx, extData };
   }
 
-  newProof({
+  async newProof({
     tx = new Transaction(),
+    vortexPool,
     proofPoints,
     root,
     publicValue,
@@ -120,9 +173,12 @@ export class Vortex {
         ? publicValue
         : BN254_FIELD_MODULUS - publicValue;
 
+    const vortex = await this.#getVortexPool(vortexPool);
+
     const proof = tx.moveCall({
       target: `${this.packageId}::vortex_proof::new`,
       arguments: [
+        tx.pure.address(vortex.objectId),
         tx.pure.vector('u8', proofPoints),
         tx.pure.u256(root),
         tx.pure.u256(value),
@@ -132,23 +188,33 @@ export class Vortex {
         tx.pure.u256(outputCommitment0),
         tx.pure.u256(outputCommitment1),
       ],
+      typeArguments: [vortex.coinType],
     });
 
     return { tx, proof };
   }
 
-  transact({ tx = new Transaction(), proof, extData, deposit }: TransactArgs) {
+  async transact({
+    tx = new Transaction(),
+    vortexPool,
+    proof,
+    extData,
+    deposit,
+  }: TransactArgs) {
+    const vortex = await this.#getVortexPool(vortexPool);
+
     tx.moveCall({
       target: `${this.packageId}::vortex::transact`,
-      arguments: [this.mutableVortexRef(tx), proof, extData, deposit],
+      arguments: [tx.object(vortex.objectId), proof, extData, deposit],
+      typeArguments: [vortex.coinType],
     });
 
     return { tx };
   }
 
-  async tvl() {
+  async tvl(vortex: string) {
     const object = await this.#suiClient.getObject({
-      id: this.vortex.objectId,
+      id: vortex,
       options: {
         showContent: true,
       },
@@ -161,12 +227,12 @@ export class Vortex {
     return BigInt(pathOr(0, ['fields', 'balance'], content));
   }
 
-  async root() {
+  async root(vortex: string) {
     const tx = new Transaction();
 
     tx.moveCall({
       target: `${this.packageId}::vortex::root`,
-      arguments: [this.immutableVortexRef(tx)],
+      arguments: [tx.object(vortex)],
     });
 
     const result = await devInspectAndGetReturnValues(this.#suiClient, tx, [
@@ -178,12 +244,15 @@ export class Vortex {
     return BigInt(result[0][0] as string);
   }
 
-  async nextIndex() {
+  async nextIndex(vortexPool: string | VortexPool) {
     const tx = new Transaction();
+
+    const vortex = await this.#getVortexPool(vortexPool);
 
     tx.moveCall({
       target: `${this.packageId}::vortex::next_index`,
-      arguments: [this.immutableVortexRef(tx)],
+      arguments: [tx.object(vortex.objectId)],
+      typeArguments: [vortex.coinType],
     });
 
     const result = await devInspectAndGetReturnValues(this.#suiClient, tx, [
@@ -195,12 +264,15 @@ export class Vortex {
     return BigInt(result[0][0] as string);
   }
 
-  async isNullifierSpent(nullifier: bigint) {
+  async isNullifierSpent({ nullifier, vortexPool }: IsNullifierSpentArgs) {
+    const vortex = await this.#getVortexPool(vortexPool);
+
     const tx = new Transaction();
 
     tx.moveCall({
       target: `${this.packageId}::vortex::is_nullifier_spent`,
-      arguments: [this.immutableVortexRef(tx), tx.pure.u256(nullifier)],
+      arguments: [tx.object(vortex.objectId), tx.pure.u256(nullifier)],
+      typeArguments: [vortex.coinType],
     });
 
     const result = await devInspectAndGetReturnValues(this.#suiClient, tx, [
@@ -215,13 +287,18 @@ export class Vortex {
     return result[0][0] as boolean;
   }
 
-  async areNullifiersSpent(nullifiers: bigint[]) {
+  async areNullifiersSpent({ nullifiers, vortexPool }: AreNullifiersSpentArgs) {
+    const vortex = await this.#getVortexPool(vortexPool);
+
+    if (nullifiers.length === 0) return [];
+
     const tx = new Transaction();
 
     nullifiers.forEach((nullifier) => {
       tx.moveCall({
         target: `${this.packageId}::vortex::is_nullifier_spent`,
-        arguments: [this.immutableVortexRef(tx), tx.pure.u256(nullifier)],
+        arguments: [tx.object(vortex.objectId), tx.pure.u256(nullifier)],
+        typeArguments: [vortex.coinType],
       });
     });
 
@@ -239,12 +316,37 @@ export class Vortex {
     return result.flat() as boolean[];
   }
 
-  immutableVortexRef(tx: Transaction) {
-    return tx.sharedObjectRef({
-      objectId: this.vortex.objectId,
-      initialSharedVersion: this.vortex.initialSharedVersion,
-      mutable: false,
+  async getVortexPool(objectId: string): Promise<VortexPool> {
+    const objectResponse = await this.#suiClient.getObject({
+      id: objectId,
+      options: {
+        showContent: true,
+      },
     });
+
+    invariant(objectResponse.data, 'Vortex pool object data not found');
+
+    return parseVortexPool(objectResponse.data);
+  }
+
+  getNewPoolEvent(coinType: string) {
+    return `${this.#newPoolEventType}<${coinType}>`;
+  }
+
+  getNewAccountEvent() {
+    return this.#newAccountEventType;
+  }
+
+  getNewCommitmentEvent(coinType: string) {
+    return `${this.#newCommitmentEventType}<${coinType}>`;
+  }
+
+  getNullifierSpentEvent(coinType: string) {
+    return `${this.#nullifierSpentEventType}<${coinType}>`;
+  }
+
+  getNewEncryptionKeyEvent() {
+    return this.#newEncryptionKeyEventType;
   }
 
   immutableRegistryRef(tx: Transaction) {
@@ -255,14 +357,6 @@ export class Vortex {
     });
   }
 
-  mutableVortexRef(tx: Transaction) {
-    return tx.sharedObjectRef({
-      objectId: this.vortex.objectId,
-      initialSharedVersion: this.vortex.initialSharedVersion,
-      mutable: true,
-    });
-  }
-
   mutableRegistryRef(tx: Transaction) {
     return tx.sharedObjectRef({
       objectId: this.registry.objectId,
@@ -270,16 +364,16 @@ export class Vortex {
       mutable: true,
     });
   }
+
+  async #getVortexPool(vortex: string | VortexPool): Promise<VortexPool> {
+    return typeof vortex === 'string' ? this.getVortexPool(vortex) : vortex;
+  }
 }
 
 export const vortexSDK = new Vortex({
   packageId: VORTEX_PACKAGE_ID,
   registry: {
     objectId: REGISTRY_OBJECT_ID,
-    initialSharedVersion: INITIAL_SHARED_VERSION,
-  },
-  vortex: {
-    objectId: VORTEX_POOL_OBJECT_ID,
     initialSharedVersion: INITIAL_SHARED_VERSION,
   },
   fullNodeUrl: getFullnodeUrl('devnet'),

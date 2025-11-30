@@ -19,9 +19,11 @@ export const deposit = async ({
   tx = new Transaction(),
   amount,
   unspentUtxos = [],
-  vortex,
+  vortexSdk,
   vortexKeypair,
+  vortexPool,
   merkleTree,
+  accountSecret = 0n,
 }: DepositArgs) => {
   invariant(unspentUtxos.length <= 2, 'Unspent UTXOs must be at most 2');
   invariant(
@@ -32,6 +34,9 @@ export const deposit = async ({
   const depositFee = (amount * DEPOSIT_FEE_IN_BASIS_POINTS) / BASIS_POINTS;
 
   invariant(depositFee > 0n, 'Deposit fee must be greater than 0');
+
+  const vortexObjectId =
+    typeof vortexPool === 'string' ? vortexPool : vortexPool.objectId;
 
   // Deposits we do not need a recipient, so we use a random one.
   const randomRecipient = normalizeSuiAddress(
@@ -46,6 +51,7 @@ export const deposit = async ({
       : new Utxo({
           amount: 0n,
           keypair: vortexKeypair,
+          vortexPool: vortexObjectId,
         });
 
   const inputUtxo1 =
@@ -54,16 +60,18 @@ export const deposit = async ({
       : new Utxo({
           amount: 0n,
           keypair: vortexKeypair,
+          vortexPool: vortexObjectId,
         });
 
   const amountMinusFrontendFee = amount - depositFee;
-  const nextIndex = await vortex.nextIndex();
+  const nextIndex = await vortexSdk.nextIndex(vortexPool);
 
   // Calculate output UTXO0 amount: if using unspent UTXOs, include their amounts
   const outputUtxo0 = new Utxo({
     amount: amountMinusFrontendFee + inputUtxo0.amount + inputUtxo1.amount,
     index: nextIndex,
     keypair: vortexKeypair,
+    vortexPool: vortexObjectId,
   });
 
   // Dummy UTXO1 for obfuscation
@@ -71,6 +79,7 @@ export const deposit = async ({
     amount: 0n,
     index: nextIndex + 1n,
     keypair: vortexKeypair,
+    vortexPool: vortexObjectId,
   });
 
   const [nullifier0, nullifier1, commitment0, commitment1] = [
@@ -106,6 +115,8 @@ export const deposit = async ({
 
   // Prepare circuit input
   const input = toProveInput({
+    vortexObjectId,
+    accountSecret,
     merkleTree,
     publicAmount: amountMinusFrontendFee,
     extDataHash: extDataHashBigInt,
@@ -126,7 +137,7 @@ export const deposit = async ({
 
   invariant(verify(proofJson), 'Proof verification failed');
 
-  const { extData, tx: tx2 } = vortex.newExtData({
+  const { extData, tx: tx2 } = vortexSdk.newExtData({
     tx,
     recipient: randomRecipient,
     value: amountMinusFrontendFee,
@@ -137,8 +148,9 @@ export const deposit = async ({
     encryptedOutput1: fromHex(encryptedUtxo1),
   });
 
-  const { proof: moveProof, tx: tx3 } = vortex.newProof({
+  const { proof: moveProof, tx: tx3 } = await vortexSdk.newProof({
     tx: tx2,
+    vortexPool,
     proofPoints: fromHex('0x' + proof.proofSerializedHex),
     root: BigInt(merkleTree.root),
     publicValue: amountMinusFrontendFee,
@@ -157,7 +169,8 @@ export const deposit = async ({
 
   tx3.transferObjects([suiCoinFee], tx3.pure.address(TREASURY_ADDRESS));
 
-  const { tx: tx4 } = vortex.transact({
+  const { tx: tx4 } = await vortexSdk.transact({
+    vortexPool,
     tx: tx3,
     proof: moveProof,
     extData: extData,

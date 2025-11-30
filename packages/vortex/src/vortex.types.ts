@@ -21,7 +21,6 @@ export interface SharedObjectData {
 
 export interface ConstructorArgs {
   registry: SharedObjectData;
-  vortex: SharedObjectData;
   fullNodeUrl?: string;
   packageId: string;
 }
@@ -56,6 +55,7 @@ export interface NewExtDataArgs extends MaybeTx {
 }
 
 export interface NewProofArgs extends MaybeTx {
+  vortexPool: string | VortexPool;
   proofPoints: Uint8Array;
   root: bigint;
   publicValue: bigint;
@@ -72,33 +72,62 @@ interface NestedResult {
   NestedResult: [number, number];
 }
 
+export interface VortexPool {
+  objectId: string;
+  version: string;
+  digest: string;
+  type: string;
+  balance: bigint;
+  coinType: string;
+}
+
 export interface TransactArgs extends MaybeTx {
+  vortexPool: string | VortexPool;
   proof: TransactionResult;
   extData: TransactionResult;
   deposit: TransactionResult | NestedResult;
 }
 
+export interface NewArgs extends MaybeTx {
+  coinType: string;
+}
+
 export interface DepositArgs extends MaybeTx {
   amount: bigint;
-  vortex: Vortex;
+  vortexSdk: Vortex;
+  vortexPool: string | VortexPool;
   vortexKeypair: VortexKeypair;
   merkleTree: MerkleTree;
   unspentUtxos?: Utxo[];
+  accountSecret?: bigint;
 }
 
 export interface WithdrawArgs extends MaybeTx {
   amount: bigint;
+  vortexPool: string | VortexPool;
   unspentUtxos: Utxo[];
-  vortex: Vortex;
+  vortexSdk: Vortex;
   vortexKeypair: VortexKeypair;
   merkleTree: MerkleTree;
   recipient: string;
   relayer: string;
   relayerFee: bigint;
+  accountSecret?: bigint;
 }
 
 export interface ParsedCommitmentEvent {
   commitment: bigint;
   index: bigint;
   encryptedOutput: string;
+  coinType: string;
+}
+
+export interface IsNullifierSpentArgs {
+  nullifier: bigint;
+  vortexPool: string | VortexPool;
+}
+
+export interface AreNullifiersSpentArgs {
+  nullifiers: bigint[];
+  vortexPool: string | VortexPool;
 }

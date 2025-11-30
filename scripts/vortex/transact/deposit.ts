@@ -5,7 +5,13 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
 
 (async () => {
   try {
-    const { keypair, vortex, suiClient, VortexKeypair } = await getEnv();
+    const {
+      keypair,
+      vortexSdk,
+      suiClient,
+      VortexKeypair,
+      suiVortexPoolObjectId,
+    } = await getEnv();
 
     const senderVortexKeypair = await VortexKeypair.fromSuiWallet(
       keypair.toSuiAddress(),
@@ -15,13 +21,15 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
     // @dev Should come from the indexer
     const { unspentUtxos, merkleTree } = await getUnspentUtxosAndMerkleTree({
       suiClient,
-      vortex,
+      vortexSdk,
+      suiVortexPoolObjectId,
       senderVortexKeypair,
     });
 
     const transaction = await deposit({
       amount: 2_000n,
-      vortex,
+      vortexSdk,
+      vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,
       merkleTree,
       unspentUtxos,

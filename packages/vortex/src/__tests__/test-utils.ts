@@ -50,10 +50,6 @@ export const testVortex = new Vortex({
     objectId: TEST_REGISTRY_SHARED_OBJECT_ID,
     initialSharedVersion: TEST_REGISTRY_INITIAL_SHARED_VERSION,
   },
-  vortex: {
-    objectId: TEST_VORTEX_SHARED_OBJECT_ID,
-    initialSharedVersion: TEST_VORTEX_INITIAL_SHARED_VERSION,
-  },
   packageId: TEST_VORTEX_PACKAGE_ID,
 });
 

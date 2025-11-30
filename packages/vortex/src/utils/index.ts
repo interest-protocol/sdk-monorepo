@@ -1,10 +1,18 @@
-import { toHex } from '@mysten/sui/utils';
+import {
+  normalizeSuiAddress,
+  toHex,
+  normalizeStructTag,
+} from '@mysten/sui/utils';
 import invariant from 'tiny-invariant';
 import { MerkleTree } from 'fixed-merkle-tree';
 import { Utxo } from '../entities/utxo';
 import { VortexKeypair } from '../entities/keypair';
 import { ZERO_VALUE, MERKLE_TREE_HEIGHT } from '../constants';
 import { poseidon2 } from '../crypto';
+import { SuiObjectData } from '@mysten/sui/client';
+import { pathOr } from 'ramda';
+import { poseidon1 } from '../crypto';
+import { BN254_FIELD_MODULUS } from '../constants';
 
 export const reverseBytes = (bytes: Uint8Array): Uint8Array => {
   const reversed = new Uint8Array(bytes.length);
@@ -90,6 +98,7 @@ export function getMerklePath(
 }
 
 interface ToProveInputArgs {
+  vortexObjectId: string;
   merkleTree: MerkleTree;
   publicAmount: bigint;
   extDataHash: bigint;
@@ -102,6 +111,7 @@ interface ToProveInputArgs {
   inputUtxo1: Utxo;
   outputUtxo0: Utxo;
   outputUtxo1: Utxo;
+  accountSecret: bigint;
 }
 
 export const toProveInput = ({
@@ -117,8 +127,14 @@ export const toProveInput = ({
   inputUtxo1,
   outputUtxo0,
   outputUtxo1,
+  vortexObjectId,
+  accountSecret,
 }: ToProveInputArgs) => {
   return {
+    vortex:
+      BigInt(
+        normalizeSuiAddress(vortexObjectId, !vortexObjectId.startsWith('0x'))
+      ) % BN254_FIELD_MODULUS,
     root: BigInt(merkleTree.root),
     publicAmount,
     extDataHash,
@@ -126,6 +142,9 @@ export const toProveInput = ({
     inputNullifier1: nullifier1,
     outputCommitment0: commitment0,
     outputCommitment1: commitment1,
+    hashedAccountSecret: accountSecret === 0n ? 0n : poseidon1(accountSecret),
+
+    accountSecret,
     inPrivateKey0: vortexKeypair.privateKey,
     inPrivateKey1: vortexKeypair.privateKey,
     inAmount0: inputUtxo0.amount,
@@ -143,6 +162,29 @@ export const toProveInput = ({
     outAmount1: outputUtxo1.amount,
     outBlinding0: outputUtxo0.blinding,
     outBlinding1: outputUtxo1.blinding,
+  };
+};
+
+const extractCoinType = (typeString: string) => {
+  const match = typeString.match(/<(.+)>/)?.[1];
+  invariant(match, 'Coin type not found');
+  return match;
+};
+
+export const parseVortexPool = (data: SuiObjectData) => {
+  invariant(
+    data.content?.dataType === 'moveObject',
+    'Vortex pool content type not found'
+  );
+  invariant(data.content?.type, 'Vortex pool content not found');
+
+  return {
+    objectId: data.objectId,
+    version: data.version,
+    digest: data.digest,
+    type: data.content.type,
+    balance: BigInt(pathOr(0, ['fields', 'balance'], data.content)),
+    coinType: normalizeStructTag(extractCoinType(data.content.type)),
   };
 };
 

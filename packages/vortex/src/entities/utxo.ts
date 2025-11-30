@@ -1,11 +1,12 @@
 import { VortexKeypair } from './keypair';
-import { poseidon3 } from '../crypto';
-
+import { poseidon3, poseidon4 } from '../crypto';
+import { normalizeSuiAddress } from '@mysten/sui/utils';
 interface UtxoConstructorArgs {
   amount: bigint;
   blinding?: bigint;
   keypair?: VortexKeypair;
   index?: bigint;
+  vortexPool: string;
 }
 
 export class Utxo {
@@ -13,12 +14,20 @@ export class Utxo {
   blinding: bigint;
   keypair: VortexKeypair;
   index: bigint;
+  vortexPool: string;
 
-  constructor({ amount, blinding, keypair, index }: UtxoConstructorArgs) {
+  constructor({
+    amount,
+    blinding,
+    keypair,
+    index,
+    vortexPool,
+  }: UtxoConstructorArgs) {
     this.amount = amount;
     this.blinding = blinding ?? Utxo.blinding();
     this.keypair = keypair ?? VortexKeypair.generate();
     this.index = index ?? 0n;
+    this.vortexPool = vortexPool;
   }
 
   static blinding() {
@@ -26,10 +35,13 @@ export class Utxo {
   }
 
   commitment() {
-    return poseidon3(
+    return poseidon4(
       this.amount,
       BigInt(this.keypair.publicKey),
-      this.blinding
+      this.blinding,
+      BigInt(
+        normalizeSuiAddress(this.vortexPool, !this.vortexPool.startsWith('0x'))
+      )
     );
   }
 

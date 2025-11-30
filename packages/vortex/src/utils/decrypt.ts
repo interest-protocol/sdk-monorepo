@@ -5,17 +5,20 @@ import { VortexKeypair } from '../entities/keypair';
 import { Utxo } from '../entities/utxo';
 
 import { Vortex } from '../vortex';
+import { VortexPool } from '../vortex.types';
 
 interface GetUnspentUtxosArgs {
   commitmentEvents: PaginatedEvents;
   vortexKeypair: VortexKeypair;
-  vortex: Vortex;
+  vortexSdk: Vortex;
+  vortexPool: string | VortexPool;
 }
 
 export const getUnspentUtxos = async ({
   commitmentEvents,
   vortexKeypair,
-  vortex,
+  vortexSdk,
+  vortexPool,
 }: GetUnspentUtxosArgs) => {
   const commitments = parseNewCommitmentEvent(commitmentEvents);
 
@@ -30,13 +33,20 @@ export const getUnspentUtxos = async ({
     }
   });
 
+  const vortexObjectId =
+    typeof vortexPool === 'string' ? vortexPool : vortexPool.objectId;
+
   const utxos = allUtxos.map(
-    (utxo) => new Utxo({ ...utxo, keypair: vortexKeypair })
+    (utxo) =>
+      new Utxo({ ...utxo, keypair: vortexKeypair, vortexPool: vortexObjectId })
   );
 
   const nullifiers = utxos.map((utxo) => utxo.nullifier());
 
-  const isNullifierSpentArray = await vortex.areNullifiersSpent(nullifiers);
+  const isNullifierSpentArray = await vortexSdk.areNullifiersSpent({
+    nullifiers,
+    vortexPool,
+  });
 
   const unspentUtxos = utxos.filter(
     (_, index) => !isNullifierSpentArray[index]

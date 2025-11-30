@@ -1,6 +1,6 @@
+/* eslint-disable */
 let wasm;
 
-/* eslint-disable */
 function debugString(val) {
   // primitive types
   const type = typeof val;

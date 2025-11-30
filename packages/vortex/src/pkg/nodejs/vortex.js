@@ -1,5 +1,5 @@
-/* eslint-disable */
 let imports = {};
+/* eslint-disable */
 imports['__wbindgen_placeholder__'] = module.exports;
 
 function debugString(val) {

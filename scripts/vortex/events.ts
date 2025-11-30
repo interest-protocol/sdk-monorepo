@@ -8,25 +8,27 @@ import {
   buildMerkleTree,
   getUnspentUtxos,
 } from '@interest-protocol/vortex-sdk';
+import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 
 interface GetUnspentUtxosAndMerkleTreeArgs {
   suiClient: SuiClient;
-  vortex: Vortex;
+  vortexSdk: Vortex;
+  suiVortexPoolObjectId: string;
   senderVortexKeypair: VortexKeypair;
 }
 
 interface GetParsedCommitmentEventsArgs {
   suiClient: SuiClient;
-  vortex: Vortex;
+  vortexSdk: Vortex;
 }
 
 export const getParsedCommitmentEvents = async ({
   suiClient,
-  vortex,
+  vortexSdk,
 }: GetParsedCommitmentEventsArgs) => {
   const commitmentEvents = await suiClient.queryEvents({
     query: {
-      MoveEventType: vortex.newCommitmentEventType,
+      MoveEventType: vortexSdk.getNewCommitmentEvent(SUI_TYPE_ARG),
     },
   });
 
@@ -35,13 +37,14 @@ export const getParsedCommitmentEvents = async ({
 
 export const getUnspentUtxosAndMerkleTree = async ({
   suiClient,
-  vortex,
+  vortexSdk,
   senderVortexKeypair,
+  suiVortexPoolObjectId,
 }: GetUnspentUtxosAndMerkleTreeArgs) => {
   // @dev Should come from the indexer
   const commitmentEvents = await suiClient.queryEvents({
     query: {
-      MoveEventType: vortex.newCommitmentEventType,
+      MoveEventType: vortexSdk.getNewCommitmentEvent(SUI_TYPE_ARG),
     },
     order: 'ascending',
   });
@@ -55,7 +58,8 @@ export const getUnspentUtxosAndMerkleTree = async ({
   const unspentUtxos = await getUnspentUtxos({
     commitmentEvents,
     vortexKeypair: senderVortexKeypair,
-    vortex,
+    vortexSdk,
+    vortexPool: suiVortexPoolObjectId,
   });
 
   // @dev Should come from the indexer

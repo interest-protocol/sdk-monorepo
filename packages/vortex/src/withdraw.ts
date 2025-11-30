@@ -20,12 +20,14 @@ export const withdraw = async ({
   tx = new Transaction(),
   amount,
   unspentUtxos = [],
-  vortex,
+  vortexPool,
   vortexKeypair,
   merkleTree,
   recipient,
   relayer,
   relayerFee,
+  vortexSdk,
+  accountSecret = 0n,
 }: WithdrawArgs) => {
   invariant(1 >= unspentUtxos.length, 'Must have at least 1 unspent UTXO');
 
@@ -40,6 +42,9 @@ export const withdraw = async ({
     'Total unspent UTXOs amount must be greater than or equal to amount'
   );
 
+  const vortexObjectId =
+    typeof vortexPool === 'string' ? vortexPool : vortexPool.objectId;
+
   const randomVortexKeypair = VortexKeypair.generate();
 
   const inputUtxo0 = unspentUtxos[0];
@@ -50,24 +55,27 @@ export const withdraw = async ({
       : new Utxo({
           amount: 0n,
           keypair: vortexKeypair,
+          vortexPool: vortexObjectId,
         });
 
   const totalWithdrawAmount = inputUtxo0.amount + inputUtxo1.amount;
 
   const changeAmount = totalWithdrawAmount - amount - relayerFee;
 
-  const nextIndex = await vortex.nextIndex();
+  const nextIndex = await vortexSdk.nextIndex(vortexPool);
 
   const outputUtxo0 = new Utxo({
     amount: changeAmount,
     index: nextIndex,
     keypair: vortexKeypair,
+    vortexPool: vortexObjectId,
   });
 
   const outputUtxo1 = new Utxo({
     amount: 0n,
     index: nextIndex + 1n,
     keypair: vortexKeypair,
+    vortexPool: vortexObjectId,
   });
 
   const [nullifier0, nullifier1, commitment0, commitment1] = [
@@ -102,6 +110,8 @@ export const withdraw = async ({
 
   // Prepare circuit input
   const input = toProveInput({
+    vortexObjectId,
+    accountSecret,
     merkleTree,
     publicAmount: BN254_FIELD_MODULUS - (amount + relayerFee),
     extDataHash: extDataHashBigInt,
@@ -122,7 +132,7 @@ export const withdraw = async ({
 
   invariant(verify(proofJson), 'Proof verification failed');
 
-  const { extData, tx: tx2 } = vortex.newExtData({
+  const { extData, tx: tx2 } = vortexSdk.newExtData({
     tx,
     recipient,
     value: amount,
@@ -133,7 +143,8 @@ export const withdraw = async ({
     encryptedOutput1: fromHex(encryptedUtxo1),
   });
 
-  const { proof: moveProof, tx: tx3 } = vortex.newProof({
+  const { proof: moveProof, tx: tx3 } = await vortexSdk.newProof({
+    vortexPool,
     tx: tx2,
     proofPoints: fromHex('0x' + proof.proofSerializedHex),
     root: BigInt(merkleTree.root),
@@ -148,7 +159,8 @@ export const withdraw = async ({
 
   const zeroSuiCoin = tx3.splitCoins(tx3.gas, [tx3.pure.u64(0n)]);
 
-  const { tx: tx4 } = vortex.transact({
+  const { tx: tx4 } = await vortexSdk.transact({
+    vortexPool,
     tx: tx3,
     proof: moveProof,
     extData: extData,
