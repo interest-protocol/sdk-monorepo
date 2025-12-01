@@ -12,11 +12,14 @@ import {
   IsNullifierSpentArgs,
   AreNullifiersSpentArgs,
   NewArgs,
+  NewAccountArgs,
+  MergeCoinsArgs,
+  TransactWithAccountArgs,
 } from './vortex.types';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import { bcs } from '@mysten/sui/bcs';
 import invariant from 'tiny-invariant';
-import { normalizeSuiAddress } from '@mysten/sui/utils';
+import { normalizeSuiAddress, normalizeStructTag } from '@mysten/sui/utils';
 import { pathOr } from 'ramda';
 import {
   BN254_FIELD_MODULUS,
@@ -55,6 +58,40 @@ export class Vortex {
 
     this.packageId = packageId;
     this.registry = registry;
+  }
+
+  newAccount({ tx = new Transaction(), hashedSecret }: NewAccountArgs) {
+    const account = tx.moveCall({
+      target: `${this.packageId}::vortex_account::new`,
+      arguments: [tx.pure.u256(hashedSecret)],
+    });
+
+    return { tx, account };
+  }
+
+  mergeCoins({
+    tx = new Transaction(),
+    account,
+    coinType,
+    coins,
+  }: MergeCoinsArgs) {
+    tx.moveCall({
+      target: `${this.packageId}::vortex_account::merge_coins`,
+      arguments: [
+        tx.object(account),
+        tx.makeMoveVec({
+          elements: coins.map((coin) =>
+            tx.receivingRef({
+              objectId: coin.objectId,
+              version: coin.version,
+              digest: coin.digest,
+            })
+          ),
+          type: `0x2::transfer::Receiving<0x2::coin::Coin<${coinType}>>`,
+        }),
+      ],
+      typeArguments: [normalizeStructTag(coinType)],
+    });
   }
 
   register({ tx = new Transaction(), encryptionKey }: RegisterArgs) {
@@ -204,6 +241,40 @@ export class Vortex {
     tx.moveCall({
       target: `${this.packageId}::vortex::transact`,
       arguments: [tx.object(vortex.objectId), deposit, proof, extData],
+      typeArguments: [vortex.coinType],
+    });
+
+    return { tx };
+  }
+
+  async transactWithAccount({
+    tx = new Transaction(),
+    vortexPool,
+    account,
+    coins,
+    proof,
+    extData,
+  }: TransactWithAccountArgs) {
+    const vortex = await this.#getVortexPool(vortexPool);
+
+    tx.moveCall({
+      target: `${this.packageId}::vortex::transact_with_account`,
+      arguments: [
+        tx.object(vortex.objectId),
+        tx.object(account),
+        tx.makeMoveVec({
+          elements: coins.map((coin) =>
+            tx.receivingRef({
+              objectId: coin.objectId,
+              version: coin.version,
+              digest: coin.digest,
+            })
+          ),
+          type: `0x2::transfer::Receiving<0x2::coin::Coin<${vortex.coinType}>>`,
+        }),
+        proof,
+        extData,
+      ],
       typeArguments: [vortex.coinType],
     });
 

@@ -11,10 +11,10 @@ import {
 } from './constants';
 import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
 import { toProveInput } from './utils';
-import { Proof, Action, DepositArgs } from './vortex.types';
+import { Proof, Action, DepositWithAccountArgs } from './vortex.types';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 
-export const deposit = async ({
+export const depositWithAccount = async ({
   tx = new Transaction(),
   amount,
   unspentUtxos = [],
@@ -22,14 +22,15 @@ export const deposit = async ({
   vortexKeypair,
   vortexPool,
   merkleTree,
-}: DepositArgs) => {
+  accountSecret,
+  account,
+  coins,
+}: DepositWithAccountArgs) => {
   invariant(unspentUtxos.length <= 2, 'Unspent UTXOs must be at most 2');
   invariant(
     BN254_FIELD_MODULUS > amount,
     'Amount must be less than field modulus'
   );
-
-  const accountSecret = 0n;
 
   const depositFee = (amount * DEPOSIT_FEE_IN_BASIS_POINTS) / BASIS_POINTS;
 
@@ -63,12 +64,11 @@ export const deposit = async ({
           vortexPool: vortexObjectId,
         });
 
-  const amountMinusFrontendFee = amount - depositFee;
   const nextIndex = await vortexSdk.nextIndex(vortexPool);
 
   // Calculate output UTXO0 amount: if using unspent UTXOs, include their amounts
   const outputUtxo0 = new Utxo({
-    amount: amountMinusFrontendFee + inputUtxo0.amount + inputUtxo1.amount,
+    amount: amount + inputUtxo0.amount + inputUtxo1.amount,
     index: nextIndex,
     keypair: vortexKeypair,
     vortexPool: vortexObjectId,
@@ -105,7 +105,7 @@ export const deposit = async ({
     vortexObjectId,
     accountSecret,
     merkleTree,
-    publicAmount: amountMinusFrontendFee,
+    publicAmount: amount,
     nullifier0,
     nullifier1,
     commitment0,
@@ -126,7 +126,7 @@ export const deposit = async ({
   const { extData, tx: tx2 } = vortexSdk.newExtData({
     tx,
     recipient: randomRecipient,
-    value: amountMinusFrontendFee,
+    value: amount,
     action: Action.Deposit,
     relayer: normalizeSuiAddress('0x0'),
     relayerFee: 0n,
@@ -139,7 +139,7 @@ export const deposit = async ({
     vortexPool,
     proofPoints: fromHex('0x' + proof.proofSerializedHex),
     root: BigInt(merkleTree.root),
-    publicValue: amountMinusFrontendFee,
+    publicValue: amount,
     action: Action.Deposit,
     inputNullifier0: nullifier0,
     inputNullifier1: nullifier1,
@@ -147,19 +147,17 @@ export const deposit = async ({
     outputCommitment1: commitment1,
   });
 
-  const [suiCoinDeposit, suiCoinFee] = tx3.splitCoins(tx3.gas, [
-    tx3.pure.u64(amountMinusFrontendFee),
-    tx3.pure.u64(depositFee),
-  ]);
+  const suiCoinFee = tx3.splitCoins(tx3.gas, [tx3.pure.u64(depositFee)]);
 
   tx3.transferObjects([suiCoinFee], tx3.pure.address(TREASURY_ADDRESS));
 
-  const { tx: tx4 } = await vortexSdk.transact({
+  const { tx: tx4 } = await vortexSdk.transactWithAccount({
     vortexPool,
     tx: tx3,
     proof: moveProof,
     extData: extData,
-    deposit: suiCoinDeposit,
+    account,
+    coins,
   });
 
   return tx4;

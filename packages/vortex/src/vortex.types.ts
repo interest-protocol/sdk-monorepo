@@ -77,6 +77,14 @@ export interface TransactArgs extends MaybeTx {
   deposit: TransactionResult | NestedResult;
 }
 
+export interface TransactWithAccountArgs extends MaybeTx {
+  vortexPool: string | VortexPool;
+  account: string;
+  coins: Object[];
+  proof: TransactionResult;
+  extData: TransactionResult;
+}
+
 export interface NewArgs extends MaybeTx {
   coinType: string;
 }
@@ -88,7 +96,18 @@ export interface DepositArgs extends MaybeTx {
   vortexKeypair: VortexKeypair;
   merkleTree: MerkleTree;
   unspentUtxos?: Utxo[];
-  accountSecret?: bigint;
+}
+
+export interface DepositWithAccountArgs extends MaybeTx {
+  amount: bigint;
+  vortexSdk: Vortex;
+  vortexPool: string | VortexPool;
+  vortexKeypair: VortexKeypair;
+  merkleTree: MerkleTree;
+  unspentUtxos?: Utxo[];
+  account: string;
+  accountSecret: bigint;
+  coins: Object[];
 }
 
 export interface WithdrawArgs extends MaybeTx {
@@ -119,4 +138,20 @@ export interface IsNullifierSpentArgs {
 export interface AreNullifiersSpentArgs {
   nullifiers: bigint[];
   vortexPool: string | VortexPool;
+}
+
+export interface NewAccountArgs extends MaybeTx {
+  hashedSecret: bigint;
+}
+
+interface Object {
+  version: string;
+  digest: string;
+  objectId: string;
+}
+
+export interface MergeCoinsArgs extends MaybeTx {
+  account: string;
+  coinType: string;
+  coins: Object[];
 }

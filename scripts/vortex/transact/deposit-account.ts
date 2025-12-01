@@ -1,0 +1,63 @@
+import { getEnv } from '../utils.script';
+import { depositWithAccount } from '@interest-protocol/vortex-sdk';
+import { logSuccess, logError } from '@interest-protocol/logger';
+import { getUnspentUtxosAndMerkleTree } from '../events';
+
+(async () => {
+  try {
+    const {
+      keypair,
+      vortexSdk,
+      suiClient,
+      VortexKeypair,
+      suiVortexPoolObjectId,
+      account,
+      secret,
+    } = await getEnv();
+
+    const senderVortexKeypair = await VortexKeypair.fromSuiWallet(
+      keypair.toSuiAddress(),
+      (message) => keypair.signPersonalMessage(message)
+    );
+
+    // @dev Should come from the indexer
+    const { unspentUtxos, merkleTree } = await getUnspentUtxosAndMerkleTree({
+      suiClient,
+      vortexSdk,
+      suiVortexPoolObjectId,
+      senderVortexKeypair,
+    });
+
+    const coins = await suiClient.getCoins({
+      owner: account,
+      coinType: '0x2::sui::SUI',
+    });
+
+    const transaction = await depositWithAccount({
+      amount: coins.data.reduce((acc, coin) => acc + BigInt(coin.balance), 0n),
+      vortexSdk,
+      vortexPool: suiVortexPoolObjectId,
+      vortexKeypair: senderVortexKeypair,
+      merkleTree,
+      unspentUtxos,
+      account: account,
+      accountSecret: secret,
+      coins: coins.data.map((coin) => ({
+        objectId: coin.coinObjectId,
+        version: coin.version,
+        digest: coin.digest,
+      })),
+    });
+
+    transaction.setSender(keypair.toSuiAddress());
+
+    const result = await keypair.signAndExecuteTransaction({
+      transaction,
+      client: suiClient,
+    });
+
+    logSuccess('deposit', result);
+  } catch (error) {
+    logError('deposit', error);
+  }
+})();
