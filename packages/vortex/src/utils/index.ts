@@ -14,18 +14,6 @@ import { pathOr } from 'ramda';
 import { poseidon1 } from '../crypto';
 import { BN254_FIELD_MODULUS } from '../constants';
 
-export const reverseBytes = (bytes: Uint8Array): Uint8Array => {
-  const reversed = new Uint8Array(bytes.length);
-  for (let i = 0; i < bytes.length; i++) {
-    reversed[i] = bytes[bytes.length - 1 - i]!;
-  }
-  return reversed;
-};
-
-export const bytesToBigInt = (bytes: Uint8Array): bigint => {
-  return BigInt('0x' + toHex(bytes));
-};
-
 export function getMerklePath(
   merkleTree: MerkleTree,
   utxo: Utxo | null
@@ -101,7 +89,6 @@ interface ToProveInputArgs {
   vortexObjectId: string;
   merkleTree: MerkleTree;
   publicAmount: bigint;
-  extDataHash: bigint;
   nullifier0: bigint;
   nullifier1: bigint;
   commitment0: bigint;
@@ -117,7 +104,6 @@ interface ToProveInputArgs {
 export const toProveInput = ({
   merkleTree,
   publicAmount,
-  extDataHash,
   nullifier0,
   nullifier1,
   commitment0,
@@ -137,7 +123,6 @@ export const toProveInput = ({
       ) % BN254_FIELD_MODULUS,
     root: BigInt(merkleTree.root),
     publicAmount,
-    extDataHash,
     inputNullifier0: nullifier0,
     inputNullifier1: nullifier1,
     outputCommitment0: commitment0,
@@ -188,7 +173,6 @@ export const parseVortexPool = (data: SuiObjectData) => {
   };
 };
 
-export * from './ext-data';
 export * from './events';
 export * from './prove';
 export * from './decrypt';

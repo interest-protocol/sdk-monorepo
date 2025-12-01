@@ -6,12 +6,7 @@ import { BN } from 'bn.js';
 import { normalizeSuiAddress } from '@mysten/sui/utils';
 
 import { fromHex } from '@mysten/sui/utils';
-import {
-  bytesToBigInt,
-  reverseBytes,
-  toProveInput,
-  computeExtDataHash,
-} from './utils';
+import { toProveInput } from './utils';
 import { BN254_FIELD_MODULUS } from './constants';
 import { prove, verify } from './utils';
 import { Proof, Action, WithdrawArgs } from './vortex.types';
@@ -96,25 +91,12 @@ export const withdraw = async ({
     randomVortexKeypair.encryptionKey
   );
 
-  const extDataHash = computeExtDataHash({
-    recipient,
-    value: amount,
-    valueSign: false,
-    relayer: normalizeSuiAddress(relayer),
-    relayerFee,
-    encryptedOutput0: fromHex(encryptedUtxo0),
-    encryptedOutput1: fromHex(encryptedUtxo1),
-  });
-
-  const extDataHashBigInt = bytesToBigInt(reverseBytes(extDataHash));
-
   // Prepare circuit input
   const input = toProveInput({
     vortexObjectId,
     accountSecret,
     merkleTree,
     publicAmount: BN254_FIELD_MODULUS - (amount + relayerFee),
-    extDataHash: extDataHashBigInt,
     nullifier0,
     nullifier1,
     commitment0,
@@ -150,7 +132,6 @@ export const withdraw = async ({
     root: BigInt(merkleTree.root),
     publicValue: amount + relayerFee,
     action: Action.Withdraw,
-    extDataHash: extDataHashBigInt,
     inputNullifier0: nullifier0,
     inputNullifier1: nullifier1,
     outputCommitment0: commitment0,

@@ -1,5 +1,6 @@
 import { getEnv } from '../utils.script';
 import { Transaction } from '@mysten/sui/transactions';
+import { logSuccess } from '@interest-protocol/logger';
 
 (async () => {
   const { keypair, relayerKeypair, recipientKeypair, suiClient } =
@@ -27,5 +28,5 @@ import { Transaction } from '@mysten/sui/transactions';
     client: suiClient,
   });
 
-  console.log(result);
+  logSuccess('fund', result);
 })();

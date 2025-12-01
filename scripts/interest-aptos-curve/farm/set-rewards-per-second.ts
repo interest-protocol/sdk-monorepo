@@ -13,7 +13,7 @@ const rewardsPerSecond = BigInt(Math.floor(REWARDS_PER_SECOND * 1e8));
   const data = curveMainnetSDK.setRewardsPerSecond({
     farm: FARMS[3]!.address.toString(),
     rewardFa: WHITELISTED_FAS.MOVE.toString(),
-    rewardsPerSecond,
+    rewardsPerSecond: 0n,
   });
 
   const transactionResponse = await executeTx({ data });

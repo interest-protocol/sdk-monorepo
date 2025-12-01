@@ -25,16 +25,6 @@ export interface ConstructorArgs {
   packageId: string;
 }
 
-export interface ExtDataHashArgs {
-  recipient: string; // Sui address
-  value: bigint;
-  valueSign: boolean;
-  relayer: string; // Sui address
-  relayerFee: bigint;
-  encryptedOutput0: Uint8Array;
-  encryptedOutput1: Uint8Array;
-}
-
 export interface Proof {
   proofA: number[];
   proofB: number[];
@@ -60,7 +50,6 @@ export interface NewProofArgs extends MaybeTx {
   root: bigint;
   publicValue: bigint;
   action: Action;
-  extDataHash: bigint;
   inputNullifier0: bigint;
   inputNullifier1: bigint;
   outputCommitment0: bigint;

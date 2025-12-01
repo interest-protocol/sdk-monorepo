@@ -9,9 +9,8 @@ import {
   BASIS_POINTS,
   BN254_FIELD_MODULUS,
 } from './constants';
-import { computeExtDataHash } from './utils/ext-data';
 import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
-import { bytesToBigInt, reverseBytes, toProveInput } from './utils';
+import { toProveInput } from './utils';
 import { Proof, Action, DepositArgs } from './vortex.types';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 
@@ -100,26 +99,12 @@ export const deposit = async ({
     randomVortexKeypair.encryptionKey
   );
 
-  const extDataHash = computeExtDataHash({
-    recipient: randomRecipient,
-    value: amountMinusFrontendFee,
-    valueSign: true,
-    // No relayer for deposits
-    relayer: '0x0',
-    relayerFee: 0n,
-    encryptedOutput0: fromHex(encryptedUtxo0),
-    encryptedOutput1: fromHex(encryptedUtxo1),
-  });
-
-  const extDataHashBigInt = bytesToBigInt(reverseBytes(extDataHash));
-
   // Prepare circuit input
   const input = toProveInput({
     vortexObjectId,
     accountSecret,
     merkleTree,
     publicAmount: amountMinusFrontendFee,
-    extDataHash: extDataHashBigInt,
     nullifier0,
     nullifier1,
     commitment0,
@@ -155,7 +140,6 @@ export const deposit = async ({
     root: BigInt(merkleTree.root),
     publicValue: amountMinusFrontendFee,
     action: Action.Deposit,
-    extDataHash: extDataHashBigInt,
     inputNullifier0: nullifier0,
     inputNullifier1: nullifier1,
     outputCommitment0: commitment0,

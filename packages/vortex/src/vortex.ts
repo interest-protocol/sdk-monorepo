@@ -162,7 +162,6 @@ export class Vortex {
     root,
     publicValue,
     action,
-    extDataHash,
     inputNullifier0,
     inputNullifier1,
     outputCommitment0,
@@ -182,7 +181,6 @@ export class Vortex {
         tx.pure.vector('u8', proofPoints),
         tx.pure.u256(root),
         tx.pure.u256(value),
-        tx.pure.u256(extDataHash),
         tx.pure.u256(inputNullifier0),
         tx.pure.u256(inputNullifier1),
         tx.pure.u256(outputCommitment0),
@@ -205,7 +203,7 @@ export class Vortex {
 
     tx.moveCall({
       target: `${this.packageId}::vortex::transact`,
-      arguments: [tx.object(vortex.objectId), proof, extData, deposit],
+      arguments: [tx.object(vortex.objectId), deposit, proof, extData],
       typeArguments: [vortex.coinType],
     });
 
