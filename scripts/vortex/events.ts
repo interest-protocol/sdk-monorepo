@@ -55,11 +55,13 @@ export const getUnspentUtxosAndMerkleTree = async ({
 
   parsedCommitmentEvents.sort((a, b) => new BN(a.index).cmp(new BN(b.index)));
 
+  const vortexPool = await vortexSdk.getVortexPool(suiVortexPoolObjectId);
+
   const unspentUtxos = await getUnspentUtxos({
     commitmentEvents,
     vortexKeypair: senderVortexKeypair,
     vortexSdk,
-    vortexPool: suiVortexPoolObjectId,
+    vortexPool,
   });
 
   // @dev Should come from the indexer

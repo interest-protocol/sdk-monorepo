@@ -119,7 +119,20 @@ export interface WithdrawArgs extends MaybeTx {
   recipient: string;
   relayer: string;
   relayerFee: bigint;
-  accountSecret?: bigint;
+}
+
+export interface WithdrawWithAccountArgs extends MaybeTx {
+  vortexSdk: Vortex;
+  vortexPool: string | VortexPool;
+  vortexKeypair: VortexKeypair;
+  merkleTree: MerkleTree;
+  unspentUtxos?: Utxo[];
+  account: string;
+  accountSecret: bigint;
+  recipient: string;
+  relayer: string;
+  relayerFee: bigint;
+  amount: bigint;
 }
 
 export interface ParsedCommitmentEvent {

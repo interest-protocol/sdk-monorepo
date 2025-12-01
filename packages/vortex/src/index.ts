@@ -7,3 +7,4 @@ export * from './utils';
 export * from './deposit';
 export * from './withdraw';
 export * from './deposit-with-account';
+export * from './withdraw-with-account';

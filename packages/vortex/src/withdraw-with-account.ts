@@ -1,10 +1,9 @@
 import { Transaction } from '@mysten/sui/transactions';
-import { WithdrawArgs } from './vortex.types';
+import { WithdrawWithAccountArgs } from './vortex.types';
 import { prepareWithdraw } from './utils/withdraw';
 
-export const withdraw = async ({
+export const withdrawWithAccount = async ({
   tx = new Transaction(),
-  amount,
   unspentUtxos = [],
   vortexPool,
   vortexKeypair,
@@ -13,7 +12,10 @@ export const withdraw = async ({
   relayer,
   relayerFee,
   vortexSdk,
-}: WithdrawArgs) => {
+  account,
+  accountSecret,
+  amount,
+}: WithdrawWithAccountArgs) => {
   const {
     tx: tx3,
     moveProof,
@@ -30,17 +32,16 @@ export const withdraw = async ({
     relayer,
     relayerFee,
     vortexSdk,
-    accountSecret: 0n,
+    accountSecret,
   });
 
-  const zeroSuiCoin = tx3.splitCoins(tx3.gas, [tx3.pure.u64(0n)]);
-
-  const { tx: tx4 } = await vortexSdk.transact({
+  const { tx: tx4 } = await vortexSdk.transactWithAccount({
     vortexPool: pool,
     tx: tx3,
     proof: moveProof,
     extData: extData,
-    deposit: zeroSuiCoin,
+    account,
+    coins: [],
   });
 
   return tx4;
