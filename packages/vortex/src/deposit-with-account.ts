@@ -16,7 +16,6 @@ import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 
 export const depositWithAccount = async ({
   tx = new Transaction(),
-  amount,
   unspentUtxos = [],
   vortexSdk,
   vortexKeypair,
@@ -24,8 +23,19 @@ export const depositWithAccount = async ({
   merkleTree,
   accountSecret,
   account,
-  coins,
+  coinStructs,
 }: DepositWithAccountArgs) => {
+  const coins = coinStructs.map((coin) => ({
+    objectId: coin.coinObjectId,
+    version: coin.version,
+    digest: coin.digest,
+  }));
+
+  const amount = coinStructs.reduce(
+    (acc, coin) => acc + BigInt(coin.balance),
+    0n
+  );
+
   invariant(unspentUtxos.length <= 2, 'Unspent UTXOs must be at most 2');
   invariant(
     BN254_FIELD_MODULUS > amount,

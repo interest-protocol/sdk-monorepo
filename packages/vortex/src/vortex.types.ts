@@ -4,7 +4,7 @@ import { Vortex } from './vortex';
 import { VortexKeypair } from './entities/keypair';
 import { MerkleTree } from 'fixed-merkle-tree';
 import { Utxo } from './entities/utxo';
-
+import { CoinStruct } from '@mysten/sui/dist/cjs/client';
 export enum Action {
   Deposit,
   Withdraw,
@@ -99,7 +99,6 @@ export interface DepositArgs extends MaybeTx {
 }
 
 export interface DepositWithAccountArgs extends MaybeTx {
-  amount: bigint;
   vortexSdk: Vortex;
   vortexPool: string | VortexPool;
   vortexKeypair: VortexKeypair;
@@ -107,7 +106,7 @@ export interface DepositWithAccountArgs extends MaybeTx {
   unspentUtxos?: Utxo[];
   account: string;
   accountSecret: bigint;
-  coins: Object[];
+  coinStructs: CoinStruct[];
 }
 
 export interface WithdrawArgs extends MaybeTx {
