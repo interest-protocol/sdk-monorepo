@@ -17,11 +17,10 @@ import { SUI_TYPE_ARG } from '@mysten/sui/utils';
     tx.setSender(keypair.toSuiAddress());
 
     tx.moveCall({
-      package: '0x2',
-      module: 'transfer',
-      function: 'public_share_object',
+      package: vortexSdk.packageId,
+      module: 'vortex_account',
+      function: 'share',
       arguments: [account],
-      typeArguments: [`${vortexSdk.packageId}::vortex_account::VortexAccount`],
     });
 
     const result = await suiClient.signAndExecuteTransaction({

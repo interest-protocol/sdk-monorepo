@@ -238,13 +238,13 @@ export class Vortex {
   }: TransactArgs) {
     const vortex = await this.#getVortexPool(vortexPool);
 
-    tx.moveCall({
+    const coin = tx.moveCall({
       target: `${this.packageId}::vortex::transact`,
       arguments: [tx.object(vortex.objectId), deposit, proof, extData],
       typeArguments: [vortex.coinType],
     });
 
-    return { tx };
+    return { tx, coin };
   }
 
   async transactWithAccount({
@@ -257,7 +257,7 @@ export class Vortex {
   }: TransactWithAccountArgs) {
     const vortex = await this.#getVortexPool(vortexPool);
 
-    tx.moveCall({
+    const coin = tx.moveCall({
       target: `${this.packageId}::vortex::transact_with_account`,
       arguments: [
         tx.object(vortex.objectId),
@@ -278,7 +278,7 @@ export class Vortex {
       typeArguments: [vortex.coinType],
     });
 
-    return { tx };
+    return { tx, coin };
   }
 
   async tvl(vortex: string) {

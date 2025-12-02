@@ -35,13 +35,11 @@ export const withdraw = async ({
 
   const zeroSuiCoin = tx3.splitCoins(tx3.gas, [tx3.pure.u64(0n)]);
 
-  const { tx: tx4 } = await vortexSdk.transact({
+  return vortexSdk.transact({
     vortexPool: pool,
     tx: tx3,
     proof: moveProof,
     extData: extData,
     deposit: zeroSuiCoin,
   });
-
-  return tx4;
 };

@@ -1,17 +1,18 @@
 import { getEnv } from '../utils.script';
-import { withdrawWithAccount } from '@interest-protocol/vortex-sdk';
+import { depositWithAccount } from '@interest-protocol/vortex-sdk';
 import { logSuccess, logError } from '@interest-protocol/logger';
-import { VortexKeypair } from '@interest-protocol/vortex-sdk';
-
 import { getUnspentUtxosAndMerkleTree } from '../events';
+import { Transaction } from '@mysten/sui/transactions';
 
 (async () => {
   try {
     const {
       keypair,
-      suiClient,
       vortexSdk,
+      suiClient,
+      VortexKeypair,
       suiVortexPoolObjectId,
+      relayerKeypair,
       account,
       secret,
     } = await getEnv();
@@ -29,15 +30,17 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
       senderVortexKeypair,
     });
 
-    const { tx: transaction, coin } = await withdrawWithAccount({
-      amount: 1000000000n,
+    const coins = await suiClient.getCoins({
+      owner: account,
+      coinType: '0x2::sui::SUI',
+    });
+
+    const { tx: transaction, coin } = await depositWithAccount({
+      coinStructs: coins.data,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,
       merkleTree,
-      recipient: keypair.toSuiAddress(),
-      relayer: '0x0',
-      relayerFee: 0n,
       unspentUtxos,
       account: account,
       accountSecret: secret,
@@ -48,15 +51,25 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
       transaction.pure.address(keypair.toSuiAddress())
     );
 
-    transaction.setSender(keypair.toSuiAddress());
+    transaction.setSender(relayerKeypair.toSuiAddress());
 
-    const result = await keypair.signAndExecuteTransaction({
-      transaction,
+    const txBytes = await transaction.build({
       client: suiClient,
     });
 
-    logSuccess('withdraw', result);
+    // Rebuild in the server
+    const rebuiltTransaction = await Transaction.from(txBytes);
+
+    rebuiltTransaction.setSender(relayerKeypair.toSuiAddress());
+
+    // Relayer deposits
+    const result = await relayerKeypair.signAndExecuteTransaction({
+      transaction: rebuiltTransaction,
+      client: suiClient,
+    });
+
+    logSuccess('deposit', result);
   } catch (error) {
-    logError('withdraw', error);
+    logError('deposit', error);
   }
 })();

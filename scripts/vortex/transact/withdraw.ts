@@ -23,7 +23,7 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
       senderVortexKeypair,
     });
 
-    const transaction = await withdraw({
+    const { tx: transaction, coin } = await withdraw({
       amount: 500n,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
@@ -34,6 +34,11 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
       relayerFee: 0n,
       unspentUtxos,
     });
+
+    transaction.transferObjects(
+      [coin],
+      transaction.pure.address(keypair.toSuiAddress())
+    );
 
     transaction.setSender(keypair.toSuiAddress());
 

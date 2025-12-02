@@ -60,7 +60,7 @@ export const depositWithAccount = async ({
 
   tx3.transferObjects([suiCoinFee], tx3.pure.address(TREASURY_ADDRESS));
 
-  const { tx: tx4 } = await vortexSdk.transactWithAccount({
+  return vortexSdk.transactWithAccount({
     vortexPool,
     tx: tx3,
     proof: moveProof,
@@ -68,6 +68,4 @@ export const depositWithAccount = async ({
     account,
     coins,
   });
-
-  return tx4;
 };

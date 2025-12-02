@@ -26,7 +26,7 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
       senderVortexKeypair,
     });
 
-    const transaction = await deposit({
+    const { tx: transaction, coin } = await deposit({
       amount: 2_000n,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
@@ -34,6 +34,11 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
       merkleTree,
       unspentUtxos,
     });
+
+    transaction.transferObjects(
+      [coin],
+      transaction.pure.address(keypair.toSuiAddress())
+    );
 
     transaction.setSender(keypair.toSuiAddress());
 

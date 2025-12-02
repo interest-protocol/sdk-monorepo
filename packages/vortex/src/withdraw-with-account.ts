@@ -35,7 +35,7 @@ export const withdrawWithAccount = async ({
     accountSecret,
   });
 
-  const { tx: tx4 } = await vortexSdk.transactWithAccount({
+  return vortexSdk.transactWithAccount({
     vortexPool: pool,
     tx: tx3,
     proof: moveProof,
@@ -43,6 +43,4 @@ export const withdrawWithAccount = async ({
     account,
     coins: [],
   });
-
-  return tx4;
 };

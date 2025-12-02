@@ -33,7 +33,7 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
       coinType: '0x2::sui::SUI',
     });
 
-    const transaction = await depositWithAccount({
+    const { tx: transaction, coin } = await depositWithAccount({
       coinStructs: coins.data,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
@@ -43,6 +43,11 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
       account: account,
       accountSecret: secret,
     });
+
+    transaction.transferObjects(
+      [coin],
+      transaction.pure.address(keypair.toSuiAddress())
+    );
 
     transaction.setSender(keypair.toSuiAddress());
 

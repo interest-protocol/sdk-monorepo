@@ -53,13 +53,11 @@ export const deposit = async ({
 
   tx3.transferObjects([suiCoinFee], tx3.pure.address(TREASURY_ADDRESS));
 
-  const { tx: tx4 } = await vortexSdk.transact({
+  return vortexSdk.transact({
     vortexPool,
     tx: tx3,
     proof: moveProof,
     extData: extData,
     deposit: suiCoinDeposit,
   });
-
-  return tx4;
 };
