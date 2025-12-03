@@ -40,7 +40,8 @@ export const prepareWithdraw = async ({
   vortexSdk,
   accountSecret,
 }: PrepareWithdrawArgs) => {
-  invariant(1 >= unspentUtxos.length, 'Must have at least 1 unspent UTXO');
+  invariant(unspentUtxos.length >= 1, 'Must have at least 1 unspent UTXO');
+  invariant(unspentUtxos.length <= 2, 'Unspent UTXOs must be at most 2');
 
   unspentUtxos.sort((a, b) => new BN(b.amount).cmp(new BN(a.amount)));
 

@@ -3,6 +3,30 @@ import { depositWithAccount } from '@interest-protocol/vortex-sdk';
 import { logSuccess, logError } from '@interest-protocol/logger';
 import { getUnspentUtxosAndMerkleTree } from '../events';
 import { Transaction } from '@mysten/sui/transactions';
+import invariant from 'tiny-invariant';
+
+interface TransactionJson {
+  version: number;
+  sender: string;
+  expiration: { None: boolean };
+  gasData: {
+    budget: string;
+    price: string;
+    owner: string;
+    payment: object[];
+  };
+  inputs: object[];
+  commands: object[];
+  digest: string;
+}
+
+interface MoveCall {
+  package: string;
+  module: string;
+  function: string;
+  typeArguments: string[];
+  arguments: object[];
+}
 
 (async () => {
   try {
@@ -60,7 +84,32 @@ import { Transaction } from '@mysten/sui/transactions';
     // Rebuild in the server
     const rebuiltTransaction = await Transaction.from(txBytes);
 
-    rebuiltTransaction.setSender(relayerKeypair.toSuiAddress());
+    const transactionJson = JSON.parse(
+      await rebuiltTransaction.toJSON()
+    ) as TransactionJson;
+
+    invariant(
+      transactionJson.commands.length === 7,
+      'Transaction commands must be exactly 7'
+    );
+
+    const moveCalls = transactionJson.commands
+      .filter((command) => 'MoveCall' in command)
+      .map((command) => {
+        const moveCall = command as unknown as { MoveCall: MoveCall };
+        return `${moveCall.MoveCall.package}::${moveCall.MoveCall.module}::${moveCall.MoveCall.function}`;
+      });
+
+    invariant(moveCalls.length === 3, 'Transaction commands must be exactly 3');
+
+    invariant(
+      moveCalls.find(
+        (call) =>
+          call ===
+          '0x83522a868e4a7a8eef8864b073b4d9126a7e8ddc6398b9dd87439f70d1c18e1c::vortex::transact'
+      ) === undefined,
+      'Transaction commands must not contain vortex::transact'
+    );
 
     // Relayer deposits
     const result = await relayerKeypair.signAndExecuteTransaction({

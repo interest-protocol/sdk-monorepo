@@ -4,11 +4,17 @@ import { logSuccess, logError } from '@interest-protocol/logger';
 import { VortexKeypair } from '@interest-protocol/vortex-sdk';
 
 import { getUnspentUtxosAndMerkleTree } from '../events';
+import { Transaction } from '@mysten/sui/transactions';
 
 (async () => {
   try {
-    const { keypair, suiClient, vortexSdk, suiVortexPoolObjectId } =
-      await getEnv();
+    const {
+      keypair,
+      suiClient,
+      vortexSdk,
+      suiVortexPoolObjectId,
+      relayerKeypair,
+    } = await getEnv();
 
     const senderVortexKeypair = await VortexKeypair.fromSuiWallet(
       keypair.toSuiAddress(),
@@ -24,7 +30,7 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
     });
 
     const { tx: transaction, coin } = await withdraw({
-      amount: 1000003980n,
+      amount: 800n,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,
@@ -40,10 +46,19 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
       transaction.pure.address(keypair.toSuiAddress())
     );
 
-    transaction.setSender(keypair.toSuiAddress());
+    transaction.setSender(relayerKeypair.toSuiAddress());
 
-    const result = await keypair.signAndExecuteTransaction({
-      transaction,
+    const txBytes = await transaction.build({
+      client: suiClient,
+    });
+
+    // Rebuild in the server
+    const rebuiltTransaction = await Transaction.from(txBytes);
+
+    rebuiltTransaction.setSender(relayerKeypair.toSuiAddress());
+
+    const result = await relayerKeypair.signAndExecuteTransaction({
+      transaction: rebuiltTransaction,
       client: suiClient,
     });
 
