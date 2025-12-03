@@ -21,6 +21,8 @@ interface PrepareDepositProofArgs {
   vortexKeypair: VortexKeypairType;
   vortexPool: string | VortexPool;
   merkleTree: MerkleTree;
+  relayer: string;
+  relayerFee: bigint;
 }
 
 export const prepareDepositProof = async ({
@@ -32,6 +34,8 @@ export const prepareDepositProof = async ({
   vortexKeypair,
   vortexPool,
   merkleTree,
+  relayer,
+  relayerFee,
 }: PrepareDepositProofArgs) => {
   const vortexObjectId =
     typeof vortexPool === 'string' ? vortexPool : vortexPool.objectId;
@@ -65,7 +69,7 @@ export const prepareDepositProof = async ({
 
   // Calculate output UTXO0 amount: if using unspent UTXOs, include their amounts
   const outputUtxo0 = new Utxo({
-    amount: amount + inputUtxo0.amount + inputUtxo1.amount,
+    amount: amount + inputUtxo0.amount + inputUtxo1.amount - relayerFee,
     index: nextIndex,
     keypair: vortexKeypair,
     vortexPool: vortexObjectId,
@@ -102,7 +106,7 @@ export const prepareDepositProof = async ({
     vortexObjectId,
     accountSecret,
     merkleTree,
-    publicAmount: amount,
+    publicAmount: amount - relayerFee,
     nullifier0,
     nullifier1,
     commitment0,
@@ -125,8 +129,8 @@ export const prepareDepositProof = async ({
     recipient: randomRecipient,
     value: amount,
     action: Action.Deposit,
-    relayer: normalizeSuiAddress('0x0'),
-    relayerFee: 0n,
+    relayer,
+    relayerFee,
     encryptedOutput0: fromHex(encryptedUtxo0),
     encryptedOutput1: fromHex(encryptedUtxo1),
   });
@@ -136,7 +140,7 @@ export const prepareDepositProof = async ({
     vortexPool,
     proofPoints: fromHex('0x' + proof.proofSerializedHex),
     root: BigInt(merkleTree.root),
-    publicValue: amount,
+    publicValue: amount - relayerFee,
     action: Action.Deposit,
     inputNullifier0: nullifier0,
     inputNullifier1: nullifier1,

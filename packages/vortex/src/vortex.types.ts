@@ -96,6 +96,8 @@ export interface DepositArgs extends MaybeTx {
   vortexKeypair: VortexKeypair;
   merkleTree: MerkleTree;
   unspentUtxos?: Utxo[];
+  relayer?: string;
+  relayerFee?: bigint;
 }
 
 export interface DepositWithAccountArgs extends MaybeTx {
@@ -107,6 +109,8 @@ export interface DepositWithAccountArgs extends MaybeTx {
   account: string;
   accountSecret: bigint;
   coinStructs: CoinStruct[];
+  relayer?: string;
+  relayerFee?: bigint;
 }
 
 export interface WithdrawArgs extends MaybeTx {

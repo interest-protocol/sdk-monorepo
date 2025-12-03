@@ -59,6 +59,8 @@ interface MoveCall {
       coinType: '0x2::sui::SUI',
     });
 
+    console.log('unspentUtxos', unspentUtxos);
+
     const { tx: transaction, coin } = await depositWithAccount({
       coinStructs: coins.data,
       vortexSdk,
@@ -68,6 +70,8 @@ interface MoveCall {
       unspentUtxos,
       account: account,
       accountSecret: secret,
+      relayer: relayerKeypair.toSuiAddress(),
+      relayerFee: 300_000_000n,
     });
 
     transaction.transferObjects(

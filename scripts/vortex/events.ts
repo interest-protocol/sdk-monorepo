@@ -69,5 +69,8 @@ export const getUnspentUtxosAndMerkleTree = async ({
     parsedCommitmentEvents.map((event) => event.commitment.toString())
   );
 
-  return { unspentUtxos, merkleTree };
+  return {
+    unspentUtxos: unspentUtxos.filter((utxo) => utxo.amount > 0n),
+    merkleTree,
+  };
 };

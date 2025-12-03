@@ -10,7 +10,7 @@ import { logSuccess } from '@interest-protocol/logger';
 
   // const gasRelayer = tx.splitCoins(tx.gas, [tx.pure.u64(1_000_000_000n)]);
   // const gasRecipient = tx.splitCoins(tx.gas, [tx.pure.u64(1_000_000_000n)]);
-  const accountSui = tx.splitCoins(tx.gas, [tx.pure.u64(1_000n)]);
+  const accountSui = tx.splitCoins(tx.gas, [tx.pure.u64(1_000_000_000n)]);
 
   // tx.transferObjects(
   //   [gasRelayer],

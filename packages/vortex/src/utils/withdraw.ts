@@ -41,7 +41,6 @@ export const prepareWithdraw = async ({
   accountSecret,
 }: PrepareWithdrawArgs) => {
   invariant(unspentUtxos.length >= 1, 'Must have at least 1 unspent UTXO');
-  invariant(unspentUtxos.length <= 2, 'Unspent UTXOs must be at most 2');
 
   unspentUtxos.sort((a, b) => new BN(b.amount).cmp(new BN(a.amount)));
 
@@ -99,7 +98,9 @@ export const prepareWithdraw = async ({
 
   const encryptedUtxo0 = VortexKeypair.encryptUtxoFor(
     outputUtxo0.payload(),
-    vortexKeypair.encryptionKey
+    changeAmount === 0n
+      ? randomVortexKeypair.encryptionKey
+      : vortexKeypair.encryptionKey
   );
 
   // UTXO1 is a dummy UTXO for obfuscation, so we use a random Vortex keypair.

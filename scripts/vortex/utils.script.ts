@@ -37,7 +37,7 @@ export const getEnv = async () => {
     vortexSdk: vortexSDK,
     suiVortexPoolObjectId: SUI_VORTEX_POOL_OBJECT_ID,
     account:
-      '0xe6686aa43e74425ab9651dc5a8efc10dcdf1f5071c5fe6b3ce26a7af98cc554e',
+      '0x40f9221c8f2c5866182d05f1b99c64956ac3f340ff6627dc236451a06ccd8ce5',
     secret: 12345n,
   };
 };

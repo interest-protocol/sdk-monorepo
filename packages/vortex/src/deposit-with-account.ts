@@ -1,13 +1,9 @@
 import { Transaction } from '@mysten/sui/transactions';
 import invariant from 'tiny-invariant';
-import {
-  TREASURY_ADDRESS,
-  DEPOSIT_FEE_IN_BASIS_POINTS,
-  BASIS_POINTS,
-  BN254_FIELD_MODULUS,
-} from './constants';
+import { BN254_FIELD_MODULUS } from './constants';
 import { DepositWithAccountArgs } from './vortex.types';
 import { prepareDepositProof } from './utils/deposit';
+import { normalizeSuiAddress } from '@mysten/sui/utils';
 
 export const depositWithAccount = async ({
   tx = new Transaction(),
@@ -19,6 +15,8 @@ export const depositWithAccount = async ({
   accountSecret,
   account,
   coinStructs,
+  relayer = normalizeSuiAddress('0x0'),
+  relayerFee = 0n,
 }: DepositWithAccountArgs) => {
   const coins = coinStructs.map((coin) => ({
     objectId: coin.coinObjectId,
@@ -26,7 +24,7 @@ export const depositWithAccount = async ({
     digest: coin.digest,
   }));
 
-  const amount = coinStructs.reduce(
+  let amount = coinStructs.reduce(
     (acc, coin) => acc + BigInt(coin.balance),
     0n
   );
@@ -36,10 +34,6 @@ export const depositWithAccount = async ({
     BN254_FIELD_MODULUS > amount,
     'Amount must be less than field modulus'
   );
-
-  const depositFee = (amount * DEPOSIT_FEE_IN_BASIS_POINTS) / BASIS_POINTS;
-
-  invariant(depositFee > 0n, 'Deposit fee must be greater than 0');
 
   const {
     extData,
@@ -54,11 +48,9 @@ export const depositWithAccount = async ({
     vortexKeypair,
     vortexPool,
     merkleTree,
+    relayer,
+    relayerFee,
   });
-
-  const suiCoinFee = tx3.splitCoins(tx3.gas, [tx3.pure.u64(depositFee)]);
-
-  tx3.transferObjects([suiCoinFee], tx3.pure.address(TREASURY_ADDRESS));
 
   return vortexSdk.transactWithAccount({
     vortexPool,
