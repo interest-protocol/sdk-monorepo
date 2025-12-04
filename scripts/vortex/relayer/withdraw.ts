@@ -30,14 +30,14 @@ import { Transaction } from '@mysten/sui/transactions';
     });
 
     const { tx: transaction, coin } = await withdraw({
-      amount: 400000000n,
+      amount: 500000000n,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,
       merkleTree,
       recipient: keypair.toSuiAddress(),
-      relayer: '0x0',
-      relayerFee: 0n,
+      relayer: relayerKeypair.toSuiAddress(),
+      relayerFee: 100000000n,
       unspentUtxos,
     });
 

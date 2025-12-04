@@ -4,6 +4,7 @@ import { logSuccess, logError } from '@interest-protocol/logger';
 import { getUnspentUtxosAndMerkleTree } from '../events';
 import { Transaction } from '@mysten/sui/transactions';
 import invariant from 'tiny-invariant';
+import { VORTEX_PACKAGE_ID } from '@interest-protocol/vortex-sdk';
 
 interface TransactionJson {
   version: number;
@@ -59,8 +60,6 @@ interface MoveCall {
       coinType: '0x2::sui::SUI',
     });
 
-    console.log('unspentUtxos', unspentUtxos);
-
     const { tx: transaction, coin } = await depositWithAccount({
       coinStructs: coins.data,
       vortexSdk,
@@ -93,7 +92,7 @@ interface MoveCall {
     ) as TransactionJson;
 
     invariant(
-      transactionJson.commands.length === 7,
+      transactionJson.commands.length === 5,
       'Transaction commands must be exactly 7'
     );
 
@@ -108,9 +107,7 @@ interface MoveCall {
 
     invariant(
       moveCalls.find(
-        (call) =>
-          call ===
-          '0x83522a868e4a7a8eef8864b073b4d9126a7e8ddc6398b9dd87439f70d1c18e1c::vortex::transact'
+        (call) => call === `${VORTEX_PACKAGE_ID}::vortex::transact`
       ) === undefined,
       'Transaction commands must not contain vortex::transact'
     );

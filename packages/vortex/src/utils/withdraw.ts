@@ -49,7 +49,7 @@ export const prepareWithdraw = async ({
     .reduce((acc, utxo) => acc + utxo.amount, 0n);
 
   invariant(
-    totalUnspentUtxosAmount >= amount + relayerFee,
+    totalUnspentUtxosAmount >= amount,
     'Total unspent UTXOs amount must be greater than or equal to amount'
   );
 
@@ -71,7 +71,7 @@ export const prepareWithdraw = async ({
 
   const totalWithdrawAmount = inputUtxo0.amount + inputUtxo1.amount;
 
-  const changeAmount = totalWithdrawAmount - amount - relayerFee;
+  const changeAmount = totalWithdrawAmount - amount;
 
   const nextIndex = await vortexSdk.nextIndex(vortexPool);
 
@@ -114,7 +114,7 @@ export const prepareWithdraw = async ({
     vortexObjectId,
     accountSecret,
     merkleTree,
-    publicAmount: BN254_FIELD_MODULUS - (amount + relayerFee),
+    publicAmount: BN254_FIELD_MODULUS - amount,
     nullifier0,
     nullifier1,
     commitment0,
@@ -148,7 +148,7 @@ export const prepareWithdraw = async ({
     tx: tx2,
     proofPoints: fromHex('0x' + proof.proofSerializedHex),
     root: BigInt(merkleTree.root),
-    publicValue: amount + relayerFee,
+    publicValue: amount,
     action: Action.Withdraw,
     inputNullifier0: nullifier0,
     inputNullifier1: nullifier1,
