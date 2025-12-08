@@ -197,6 +197,23 @@ export class VortexKeypair {
     };
   }
 
+  static encryptBigIntFor(
+    value: bigint,
+    recipientEncryptionKey: string
+  ): string {
+    // Convert BigInt to hex string, then to bytes
+    const hex = value.toString(16);
+    const hexPadded = hex.length % 2 === 0 ? hex : '0' + hex;
+    const bytes = Buffer.from(hexPadded, 'hex');
+    return VortexKeypair.encryptFor(bytes, recipientEncryptionKey);
+  }
+
+  decryptBigInt(encryptedData: string): bigint {
+    const decrypted = this.#decrypt(encryptedData);
+    const hex = decrypted.toString('hex');
+    return BigInt('0x' + hex);
+  }
+
   sign(commitment: bigint, merklePath: bigint): bigint {
     invariant(this.privateKey !== null, 'Cannot sign without private key');
     return poseidon3(this.privateKey, commitment, merklePath);

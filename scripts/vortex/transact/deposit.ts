@@ -2,6 +2,8 @@ import { getEnv } from '../utils.script';
 import { deposit } from '@interest-protocol/vortex-sdk';
 import { logSuccess, logError } from '@interest-protocol/logger';
 import { getUnspentUtxosAndMerkleTree } from '../events';
+import { getMerklePath } from '@interest-protocol/vortex-sdk';
+import { Utxo } from '@interest-protocol/vortex-sdk';
 
 (async () => {
   try {
@@ -26,12 +28,17 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
       senderVortexKeypair,
     });
 
+    const root = await merkleTree.root;
+    const getMerklePathFn = async (utxo: Utxo | null) =>
+      getMerklePath(merkleTree, utxo);
+
     const { tx: transaction, coin } = await deposit({
       amount: 2_000n,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,
-      merkleTree,
+      root: BigInt(root),
+      getMerklePathFn,
       unspentUtxos,
     });
 

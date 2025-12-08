@@ -11,7 +11,8 @@ export const depositWithAccount = async ({
   vortexSdk,
   vortexKeypair,
   vortexPool,
-  merkleTree,
+  root,
+  getMerklePathFn,
   accountSecret,
   account,
   coinStructs,
@@ -31,7 +32,7 @@ export const depositWithAccount = async ({
 
   invariant(unspentUtxos.length <= 2, 'Unspent UTXOs must be at most 2');
   invariant(
-    BN254_FIELD_MODULUS > amount,
+    BN254_FIELD_MODULUS >= amount,
     'Amount must be less than field modulus'
   );
 
@@ -47,7 +48,8 @@ export const depositWithAccount = async ({
     vortexSdk,
     vortexKeypair,
     vortexPool,
-    merkleTree,
+    root,
+    getMerklePathFn,
     relayer,
     relayerFee,
   });

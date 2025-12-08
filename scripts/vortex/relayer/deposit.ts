@@ -5,6 +5,8 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
 import { Transaction } from '@mysten/sui/transactions';
 import invariant from 'tiny-invariant';
 import { VORTEX_PACKAGE_ID } from '@interest-protocol/vortex-sdk';
+import { getMerklePath } from '@interest-protocol/vortex-sdk';
+import { Utxo } from '@interest-protocol/vortex-sdk';
 
 interface TransactionJson {
   version: number;
@@ -60,17 +62,22 @@ interface MoveCall {
       coinType: '0x2::sui::SUI',
     });
 
+    const root = await merkleTree.root;
+    const getMerklePathFn = async (utxo: Utxo | null) =>
+      getMerklePath(merkleTree, utxo);
+
     const { tx: transaction, coin } = await depositWithAccount({
       coinStructs: coins.data,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,
-      merkleTree,
+      root: BigInt(root),
+      getMerklePathFn,
       unspentUtxos,
       account: account,
       accountSecret: secret,
       relayer: relayerKeypair.toSuiAddress(),
-      relayerFee: 300_000_000n,
+      relayerFee: 100000000n,
     });
 
     transaction.transferObjects(

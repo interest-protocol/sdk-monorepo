@@ -9,9 +9,8 @@ import { fromHex } from '@mysten/sui/utils';
 import { toProveInput } from '../utils';
 import { BN254_FIELD_MODULUS } from '../constants';
 import { prove, verify } from '../utils';
-import { Proof, Action } from '../vortex.types';
+import { Proof, Action, GetMerklePathFn } from '../vortex.types';
 import { Vortex } from '../vortex';
-import { MerkleTree } from 'fixed-merkle-tree';
 
 interface PrepareWithdrawArgs {
   tx?: Transaction;
@@ -19,7 +18,8 @@ interface PrepareWithdrawArgs {
   unspentUtxos: Utxo[];
   vortexPool: string | any;
   vortexKeypair: VortexKeypair;
-  merkleTree: MerkleTree;
+  root: bigint;
+  getMerklePathFn: GetMerklePathFn;
   recipient: string;
   relayer: string;
   relayerFee: bigint;
@@ -33,7 +33,8 @@ export const prepareWithdraw = async ({
   unspentUtxos = [],
   vortexPool,
   vortexKeypair,
-  merkleTree,
+  root,
+  getMerklePathFn,
   recipient,
   relayer,
   relayerFee,
@@ -113,7 +114,9 @@ export const prepareWithdraw = async ({
   const input = toProveInput({
     vortexObjectId,
     accountSecret,
-    merkleTree,
+    root,
+    merklePath0: await getMerklePathFn(inputUtxo0),
+    merklePath1: await getMerklePathFn(inputUtxo1),
     publicAmount: BN254_FIELD_MODULUS - amount,
     nullifier0,
     nullifier1,
@@ -147,7 +150,7 @@ export const prepareWithdraw = async ({
     vortexPool,
     tx: tx2,
     proofPoints: fromHex('0x' + proof.proofSerializedHex),
-    root: BigInt(merkleTree.root),
+    root,
     publicValue: amount,
     action: Action.Withdraw,
     inputNullifier0: nullifier0,

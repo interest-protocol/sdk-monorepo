@@ -5,11 +5,11 @@ import { VortexKeypair } from '../entities/keypair';
 import { Utxo } from '../entities/utxo';
 import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
 import { toProveInput } from '.';
-import { Proof, Action } from '../vortex.types';
+import { Proof, Action, GetMerklePathFn } from '../vortex.types';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { Vortex } from '../vortex';
 import { VortexKeypair as VortexKeypairType } from '../entities/keypair';
-import { MerkleTree } from 'fixed-merkle-tree';
+
 import { VortexPool } from '../vortex.types';
 
 interface PrepareDepositProofArgs {
@@ -20,7 +20,8 @@ interface PrepareDepositProofArgs {
   vortexSdk: Vortex;
   vortexKeypair: VortexKeypairType;
   vortexPool: string | VortexPool;
-  merkleTree: MerkleTree;
+  root: bigint;
+  getMerklePathFn: GetMerklePathFn;
   relayer: string;
   relayerFee: bigint;
 }
@@ -33,7 +34,8 @@ export const prepareDepositProof = async ({
   vortexSdk,
   vortexKeypair,
   vortexPool,
-  merkleTree,
+  root,
+  getMerklePathFn,
   relayer,
   relayerFee,
 }: PrepareDepositProofArgs) => {
@@ -105,7 +107,9 @@ export const prepareDepositProof = async ({
   const input = toProveInput({
     vortexObjectId,
     accountSecret,
-    merkleTree,
+    root,
+    merklePath0: await getMerklePathFn(inputUtxo0),
+    merklePath1: await getMerklePathFn(inputUtxo1),
     publicAmount: amount - relayerFee,
     nullifier0,
     nullifier1,
@@ -139,7 +143,7 @@ export const prepareDepositProof = async ({
     tx: tx2,
     vortexPool,
     proofPoints: fromHex('0x' + proof.proofSerializedHex),
-    root: BigInt(merkleTree.root),
+    root,
     publicValue: amount - relayerFee,
     action: Action.Deposit,
     inputNullifier0: nullifier0,

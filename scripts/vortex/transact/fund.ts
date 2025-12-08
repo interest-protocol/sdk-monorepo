@@ -8,19 +8,19 @@ import { logSuccess } from '@interest-protocol/logger';
 
   const tx = new Transaction();
 
-  // const gasRelayer = tx.splitCoins(tx.gas, [tx.pure.u64(1_000_000_000n)]);
-  // const gasRecipient = tx.splitCoins(tx.gas, [tx.pure.u64(1_000_000_000n)]);
+  const gasRelayer = tx.splitCoins(tx.gas, [tx.pure.u64(1_000_000_000n)]);
+  const gasRecipient = tx.splitCoins(tx.gas, [tx.pure.u64(1_000_000_000n)]);
   const accountSui = tx.splitCoins(tx.gas, [tx.pure.u64(1_000_000_000n)]);
 
-  // tx.transferObjects(
-  //   [gasRelayer],
-  //   tx.pure.address(relayerKeypair.toSuiAddress())
-  // );
+  tx.transferObjects(
+    [gasRelayer],
+    tx.pure.address(relayerKeypair.toSuiAddress())
+  );
 
-  // tx.transferObjects(
-  //   [gasRecipient],
-  //   tx.pure.address(recipientKeypair.toSuiAddress())
-  // );
+  tx.transferObjects(
+    [gasRecipient],
+    tx.pure.address(recipientKeypair.toSuiAddress())
+  );
 
   tx.transferObjects([accountSui], tx.pure.address(account));
 

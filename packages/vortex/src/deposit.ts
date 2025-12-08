@@ -12,7 +12,8 @@ export const deposit = async ({
   vortexSdk,
   vortexKeypair,
   vortexPool,
-  merkleTree,
+  root,
+  getMerklePathFn,
   relayer = normalizeSuiAddress('0x0'),
   relayerFee = 0n,
 }: DepositArgs) => {
@@ -36,7 +37,8 @@ export const deposit = async ({
     vortexSdk,
     vortexKeypair,
     vortexPool,
-    merkleTree,
+    root,
+    getMerklePathFn,
     relayer,
     relayerFee,
   });

@@ -2,13 +2,16 @@ import { MaybeTx } from '@interest-protocol/sui-core-sdk';
 import { TransactionResult } from '@mysten/sui/transactions';
 import { Vortex } from './vortex';
 import { VortexKeypair } from './entities/keypair';
-import { MerkleTree } from 'fixed-merkle-tree';
 import { Utxo } from './entities/utxo';
-import { CoinStruct } from '@mysten/sui/dist/cjs/client';
+import { CoinStruct } from '@mysten/sui/client';
+import { MerklePath } from './utils';
+
 export enum Action {
   Deposit,
   Withdraw,
 }
+
+export type GetMerklePathFn = (utxo: Utxo | null) => Promise<MerklePath>;
 
 export interface RegisterArgs extends MaybeTx {
   encryptionKey: string;
@@ -94,7 +97,8 @@ export interface DepositArgs extends MaybeTx {
   vortexSdk: Vortex;
   vortexPool: string | VortexPool;
   vortexKeypair: VortexKeypair;
-  merkleTree: MerkleTree;
+  root: bigint;
+  getMerklePathFn: GetMerklePathFn;
   unspentUtxos?: Utxo[];
   relayer?: string;
   relayerFee?: bigint;
@@ -104,7 +108,8 @@ export interface DepositWithAccountArgs extends MaybeTx {
   vortexSdk: Vortex;
   vortexPool: string | VortexPool;
   vortexKeypair: VortexKeypair;
-  merkleTree: MerkleTree;
+  root: bigint;
+  getMerklePathFn: GetMerklePathFn;
   unspentUtxos?: Utxo[];
   account: string;
   accountSecret: bigint;
@@ -119,7 +124,8 @@ export interface WithdrawArgs extends MaybeTx {
   unspentUtxos: Utxo[];
   vortexSdk: Vortex;
   vortexKeypair: VortexKeypair;
-  merkleTree: MerkleTree;
+  root: bigint;
+  getMerklePathFn: GetMerklePathFn;
   recipient: string;
   relayer: string;
   relayerFee: bigint;
@@ -129,7 +135,8 @@ export interface WithdrawWithAccountArgs extends MaybeTx {
   vortexSdk: Vortex;
   vortexPool: string | VortexPool;
   vortexKeypair: VortexKeypair;
-  merkleTree: MerkleTree;
+  root: bigint;
+  getMerklePathFn: GetMerklePathFn;
   unspentUtxos?: Utxo[];
   account: string;
   accountSecret: bigint;

@@ -1,8 +1,4 @@
-import {
-  normalizeSuiAddress,
-  toHex,
-  normalizeStructTag,
-} from '@mysten/sui/utils';
+import { normalizeSuiAddress, normalizeStructTag } from '@mysten/sui/utils';
 import invariant from 'tiny-invariant';
 import { MerkleTree } from 'fixed-merkle-tree';
 import { Utxo } from '../entities/utxo';
@@ -14,10 +10,12 @@ import { pathOr } from 'ramda';
 import { poseidon1 } from '../crypto';
 import { BN254_FIELD_MODULUS } from '../constants';
 
+export type MerklePath = [string, string][];
+
 export function getMerklePath(
   merkleTree: MerkleTree,
   utxo: Utxo | null
-): [string, string][] {
+): MerklePath {
   // Handle zero-amount UTXOs
   if (!utxo || utxo.amount === 0n) {
     return Array(MERKLE_TREE_HEIGHT)
@@ -87,7 +85,9 @@ export function getMerklePath(
 
 interface ToProveInputArgs {
   vortexObjectId: string;
-  merkleTree: MerkleTree;
+  root: bigint;
+  merklePath0: MerklePath;
+  merklePath1: MerklePath;
   publicAmount: bigint;
   nullifier0: bigint;
   nullifier1: bigint;
@@ -102,7 +102,9 @@ interface ToProveInputArgs {
 }
 
 export const toProveInput = ({
-  merkleTree,
+  root,
+  merklePath0,
+  merklePath1,
   publicAmount,
   nullifier0,
   nullifier1,
@@ -121,7 +123,7 @@ export const toProveInput = ({
       BigInt(
         normalizeSuiAddress(vortexObjectId, !vortexObjectId.startsWith('0x'))
       ) % BN254_FIELD_MODULUS,
-    root: BigInt(merkleTree.root),
+    root,
     publicAmount,
     inputNullifier0: nullifier0,
     inputNullifier1: nullifier1,
@@ -138,8 +140,8 @@ export const toProveInput = ({
     inBlinding1: inputUtxo1.blinding,
     inPathIndex0: inputUtxo0.index,
     inPathIndex1: inputUtxo1.index,
-    merklePath0: getMerklePath(merkleTree, inputUtxo0),
-    merklePath1: getMerklePath(merkleTree, inputUtxo1),
+    merklePath0,
+    merklePath1,
 
     outPublicKey0: vortexKeypair.publicKey,
     outPublicKey1: vortexKeypair.publicKey,

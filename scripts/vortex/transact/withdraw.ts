@@ -4,6 +4,8 @@ import { logSuccess, logError } from '@interest-protocol/logger';
 import { VortexKeypair } from '@interest-protocol/vortex-sdk';
 
 import { getUnspentUtxosAndMerkleTree } from '../events';
+import { getMerklePath } from '@interest-protocol/vortex-sdk';
+import { Utxo } from '@interest-protocol/vortex-sdk';
 
 (async () => {
   try {
@@ -23,12 +25,17 @@ import { getUnspentUtxosAndMerkleTree } from '../events';
       senderVortexKeypair,
     });
 
+    const root = await merkleTree.root;
+    const getMerklePathFn = async (utxo: Utxo | null) =>
+      getMerklePath(merkleTree, utxo);
+
     const { tx: transaction, coin } = await withdraw({
-      amount: 1000003980n,
+      amount: 1_500n,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,
-      merkleTree,
+      root: BigInt(root),
+      getMerklePathFn,
       recipient: keypair.toSuiAddress(),
       relayer: '0x0',
       relayerFee: 0n,
