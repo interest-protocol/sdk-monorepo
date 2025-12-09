@@ -74,7 +74,11 @@ export const prepareWithdraw = async ({
 
   const changeAmount = totalWithdrawAmount - amount;
 
-  const nextIndex = await vortexSdk.nextIndex(vortexPool);
+  const [nextIndex, merklePath0, merklePath1] = await Promise.all([
+    vortexSdk.nextIndex(vortexPool),
+    getMerklePathFn(inputUtxo0),
+    getMerklePathFn(inputUtxo1),
+  ]);
 
   const outputUtxo0 = new Utxo({
     amount: changeAmount,
@@ -115,8 +119,8 @@ export const prepareWithdraw = async ({
     vortexObjectId,
     accountSecret,
     root,
-    merklePath0: await getMerklePathFn(inputUtxo0),
-    merklePath1: await getMerklePathFn(inputUtxo1),
+    merklePath0,
+    merklePath1,
     publicAmount: BN254_FIELD_MODULUS - amount,
     nullifier0,
     nullifier1,

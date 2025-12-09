@@ -67,7 +67,11 @@ export const prepareDepositProof = async ({
           vortexPool: vortexObjectId,
         });
 
-  const nextIndex = await vortexSdk.nextIndex(vortexPool);
+  const [nextIndex, merklePath0, merklePath1] = await Promise.all([
+    vortexSdk.nextIndex(vortexPool),
+    getMerklePathFn(inputUtxo0),
+    getMerklePathFn(inputUtxo1),
+  ]);
 
   // Calculate output UTXO0 amount: if using unspent UTXOs, include their amounts
   const outputUtxo0 = new Utxo({
@@ -108,8 +112,8 @@ export const prepareDepositProof = async ({
     vortexObjectId,
     accountSecret,
     root,
-    merklePath0: await getMerklePathFn(inputUtxo0),
-    merklePath1: await getMerklePathFn(inputUtxo1),
+    merklePath0,
+    merklePath1,
     publicAmount: amount - relayerFee,
     nullifier0,
     nullifier1,
