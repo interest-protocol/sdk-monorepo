@@ -66,3 +66,5 @@ tsconfig.tsbuildinfo
 # Testing
 coverage
 EOF
+
+.npmrc
