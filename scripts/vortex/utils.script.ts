@@ -8,7 +8,7 @@ import {
 import {
   executeTx,
   keypair,
-  devnetSuiClient,
+  testnetSuiClient,
   devInspectTransactionBlock,
 } from '@interest-protocol/sui-utils';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
@@ -28,7 +28,7 @@ export const getEnv = async () => {
     VortexKeypair,
     relayerKeypair,
     recipientKeypair,
-    suiClient: devnetSuiClient,
+    suiClient: testnetSuiClient,
     Utxo,
     executeTx,
     keypair,
@@ -37,7 +37,7 @@ export const getEnv = async () => {
     vortexSdk: vortexSDK,
     suiVortexPoolObjectId: SUI_VORTEX_POOL_OBJECT_ID,
     account:
-      '0xcd36ce7193d55b9b618db240ab8bc9e1f2fd3efb5711e9511dcbd60bff954a7b',
+      '0x61195820356dd99064ce44372e2cdc1d95172dc03a6c5eab8dbb3a59fa9bc92c',
     secret: 12345n,
   };
 };

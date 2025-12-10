@@ -30,7 +30,7 @@ import { Utxo } from '@interest-protocol/vortex-sdk';
       getMerklePath(merkleTree, utxo);
 
     const { tx: transaction, coin } = await withdraw({
-      amount: 1_500n,
+      amount: 500n,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,

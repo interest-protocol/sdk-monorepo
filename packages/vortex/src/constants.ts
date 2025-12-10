@@ -73,15 +73,15 @@ export const ERROR_CODES = {
 };
 
 export const VORTEX_PACKAGE_ID =
-  '0x4d505443700db57e664f024b4cdfe315a6b80ddc4d6b9f1013c7b68682edd4ab';
+  '0x083c6d01af7707749d6c93e54deae4ef582ef71306f8faade671e9255ad4494c';
 
 export const UPGRADE_CAP =
-  '0x6c4464ca68d4bcd0c0626dcbb7c2b7ec37cb65a6cc74ffb2c16cd8cff3184004';
+  '0xc51649a7ecd42fff5bdf56ff6f7c9f0cad9cdb15c0c0ed4ce464314df821dfb4';
 
 export const REGISTRY_OBJECT_ID =
-  '0x58bde5ffed343073d012d28c6955a8ee50caaefd085196e837150bc810e996c0';
+  '0x4189526def3e9af0a5cd5f24c3a1d736fff7792bbc6f320d02db6f15e47577ba';
 
-export const INITIAL_SHARED_VERSION = '4';
+export const INITIAL_SHARED_VERSION = '395367340';
 
 export const LSK_FETCH_OFFSET = 'fetch_offset';
 
@@ -99,5 +99,5 @@ export const BASIS_POINTS = 10_000n;
 
 export const VORTEX_POOL_IDS = {
   [SUI_TYPE_ARG]:
-    '0x1d8ddda4727146fd39f8181578ae71cd0f828039c68b4bfdba8a7499dda1d84d',
+    '0x31d848dbd5a19cbfa99f880023cab2533766cca30267e9f45665acf9cfc9cc8c',
 };

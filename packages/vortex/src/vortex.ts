@@ -445,5 +445,5 @@ export const vortexSDK = new Vortex({
     objectId: REGISTRY_OBJECT_ID,
     initialSharedVersion: INITIAL_SHARED_VERSION,
   },
-  fullNodeUrl: getFullnodeUrl('devnet'),
+  fullNodeUrl: getFullnodeUrl('testnet'),
 });
