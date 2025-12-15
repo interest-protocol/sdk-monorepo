@@ -2,12 +2,16 @@ import { getEnv } from './utils.script';
 import { getUnspentUtxos } from '@interest-protocol/vortex-sdk';
 import { VortexKeypair } from '@interest-protocol/vortex-sdk';
 import { logSuccess, logError } from '@interest-protocol/logger';
-import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 
 (async () => {
   try {
-    const { vortexSdk, suiClient, keypair, suiVortexPoolObjectId } =
-      await getEnv();
+    const {
+      vortexSdk,
+      suiClient,
+      keypair,
+      suiVortexPoolObjectId,
+      testUSDCType,
+    } = await getEnv();
 
     const senderVortexKeypair = await VortexKeypair.fromSuiWallet(
       keypair.toSuiAddress(),
@@ -16,7 +20,7 @@ import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 
     const commitmentEvents = await suiClient.queryEvents({
       query: {
-        MoveEventType: vortexSdk.getNewCommitmentEvent(SUI_TYPE_ARG),
+        MoveEventType: vortexSdk.getNewCommitmentEvent(testUSDCType),
       },
       order: 'ascending',
     });

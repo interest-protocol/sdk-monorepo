@@ -43,9 +43,7 @@ export const prepareDepositProof = async ({
     typeof vortexPool === 'string' ? vortexPool : vortexPool.objectId;
 
   // Deposits we do not need a recipient, so we use a random one.
-  const randomRecipient = normalizeSuiAddress(
-    Ed25519Keypair.generate().toSuiAddress()
-  );
+
   const randomVortexKeypair = VortexKeypair.generate();
 
   // Determine input UTXOs

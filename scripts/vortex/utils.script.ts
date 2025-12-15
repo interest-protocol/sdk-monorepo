@@ -39,5 +39,9 @@ export const getEnv = async () => {
     account:
       '0x3e4604faf9363d4b5b85edd9e3ef3bbcc3391b79623f7656d2f5dac3d9c6d97b',
     secret: 12345n,
+    testUSDCType:
+      '0x72cfb3ff84f41cc1f222529d4df41ca7803bcc92678303f01eb59b9554cf8434::usdc::USDC',
+    testUSDCPoolObjectId:
+      '0x91d6bb3b8178e6b2c0f639b3d00933a43e1068a4320933134170ad9fe931c164',
   };
 };

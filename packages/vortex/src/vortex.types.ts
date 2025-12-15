@@ -11,6 +11,11 @@ export enum Action {
   Withdraw,
 }
 
+interface NestedResult {
+  $kind: 'NestedResult';
+  NestedResult: [number, number];
+}
+
 export type GetMerklePathFn = (utxo: Utxo | null) => Promise<MerklePath>;
 
 export interface RegisterArgs extends MaybeTx {
@@ -182,9 +187,7 @@ export interface StartSwapArgs extends MaybeTx {
   proof: TransactionResult;
   extData: TransactionResult;
   relayer: string;
-  relayerFee: bigint;
   minAmountOut: bigint;
-  coinInType: string;
   coinOutType: string;
 }
 
@@ -193,27 +196,32 @@ export interface FinishSwapArgs extends MaybeTx {
   coinOut: TransactionResult;
   proof: TransactionResult;
   extData: TransactionResult;
-  receipt: TransactionResult;
+  receipt: TransactionResult | NestedResult;
   coinInType: string;
+}
+
+export interface StartSwapHelperArgs extends MaybeTx {
+  amount: bigint;
+  vortexPool: string | VortexPool;
+  unspentUtxos: Utxo[];
+  vortexSdk: Vortex;
+  vortexKeypair: VortexKeypair;
+  root: bigint;
+  getMerklePathFn: GetMerklePathFn;
+  relayer: string;
+  minAmountOut: bigint;
   coinOutType: string;
 }
 
-interface CoinInPayload {
+export interface FinishSwapHelperArgs extends MaybeTx {
   amount: bigint;
+  vortexSdk: Vortex;
   vortexPool: string | VortexPool;
   vortexKeypair: VortexKeypair;
   root: bigint;
   getMerklePathFn: GetMerklePathFn;
   unspentUtxos?: Utxo[];
-}
-
-export interface SwapArgs extends MaybeTx {
-  coinInPayload: DepositArgs;
-  coinOutPayload: WithdrawArgs;
-  relayer: string;
-  relayerFee: bigint;
-  minAmountOut: bigint;
+  coinOut: TransactionResult;
+  receipt: TransactionResult | NestedResult;
   coinInType: string;
-  coinOutType: string;
-  vortexSdk: Vortex;
 }

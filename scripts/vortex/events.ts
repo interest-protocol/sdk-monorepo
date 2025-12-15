@@ -15,20 +15,23 @@ interface GetUnspentUtxosAndMerkleTreeArgs {
   vortexSdk: Vortex;
   suiVortexPoolObjectId: string;
   senderVortexKeypair: VortexKeypair;
+  coinType?: string;
 }
 
 interface GetParsedCommitmentEventsArgs {
   suiClient: SuiClient;
   vortexSdk: Vortex;
+  coinType?: string;
 }
 
 export const getParsedCommitmentEvents = async ({
   suiClient,
   vortexSdk,
+  coinType = SUI_TYPE_ARG,
 }: GetParsedCommitmentEventsArgs) => {
   const commitmentEvents = await suiClient.queryEvents({
     query: {
-      MoveEventType: vortexSdk.getNewCommitmentEvent(SUI_TYPE_ARG),
+      MoveEventType: vortexSdk.getNewCommitmentEvent(coinType),
     },
   });
 
@@ -40,11 +43,12 @@ export const getUnspentUtxosAndMerkleTree = async ({
   vortexSdk,
   senderVortexKeypair,
   suiVortexPoolObjectId,
+  coinType = SUI_TYPE_ARG,
 }: GetUnspentUtxosAndMerkleTreeArgs) => {
   // @dev Should come from the indexer
   const commitmentEvents = await suiClient.queryEvents({
     query: {
-      MoveEventType: vortexSdk.getNewCommitmentEvent(SUI_TYPE_ARG),
+      MoveEventType: vortexSdk.getNewCommitmentEvent(coinType),
     },
     order: 'ascending',
   });

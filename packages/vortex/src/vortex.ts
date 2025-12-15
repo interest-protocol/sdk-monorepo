@@ -395,27 +395,24 @@ export class Vortex {
     proof,
     extData,
     relayer,
-    relayerFee,
     minAmountOut,
-    coinInType,
     coinOutType,
   }: StartSwapArgs) {
     const vortexPool = await this.#getVortexPool(vortex);
 
-    const [receipt, coin] = tx.moveCall({
+    const [receipt, coinIn] = tx.moveCall({
       target: `${this.swapPackageId}::vortex_swap::start_swap`,
       arguments: [
         tx.object(vortexPool.objectId),
         proof,
         extData,
         tx.pure.address(relayer),
-        tx.pure.u64(relayerFee),
         tx.pure.u64(minAmountOut),
       ],
-      typeArguments: [coinInType, coinOutType],
+      typeArguments: [vortexPool.coinType, coinOutType],
     });
 
-    return { tx, receipt, coin };
+    return { tx, receipt, coinIn };
   }
 
   async finishSwap({
@@ -426,7 +423,6 @@ export class Vortex {
     extData,
     receipt,
     coinInType,
-    coinOutType,
   }: FinishSwapArgs) {
     const vortexPool = await this.#getVortexPool(vortex);
 
@@ -439,7 +435,7 @@ export class Vortex {
         proof,
         extData,
       ],
-      typeArguments: [coinInType, coinOutType],
+      typeArguments: [coinInType, vortexPool.coinType],
     });
 
     return { tx };

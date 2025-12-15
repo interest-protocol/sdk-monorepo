@@ -9,14 +9,14 @@ import { fromHex } from '@mysten/sui/utils';
 import { toProveInput } from '../utils';
 import { BN254_FIELD_MODULUS } from '../constants';
 import { prove, verify } from '../utils';
-import { Proof, Action, GetMerklePathFn } from '../vortex.types';
+import { Proof, Action, GetMerklePathFn, VortexPool } from '../vortex.types';
 import { Vortex } from '../vortex';
 
 interface PrepareWithdrawArgs {
   tx?: Transaction;
   amount: bigint;
   unspentUtxos: Utxo[];
-  vortexPool: string | any;
+  vortexPool: string | VortexPool;
   vortexKeypair: VortexKeypair;
   root: bigint;
   getMerklePathFn: GetMerklePathFn;

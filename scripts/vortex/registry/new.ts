@@ -1,13 +1,12 @@
 import { getEnv } from '../utils.script';
 import { logSuccess, logError } from '@interest-protocol/logger';
-import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 
 (async () => {
   try {
-    const { vortexSdk, suiClient, keypair } = await getEnv();
+    const { vortexSdk, suiClient, keypair, testUSDCType } = await getEnv();
 
     const { tx } = await vortexSdk.newPoolAndShare({
-      coinType: SUI_TYPE_ARG,
+      coinType: testUSDCType,
     });
 
     tx.setSender(keypair.toSuiAddress());
