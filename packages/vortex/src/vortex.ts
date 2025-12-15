@@ -15,6 +15,8 @@ import {
   NewAccountArgs,
   MergeCoinsArgs,
   TransactWithAccountArgs,
+  StartSwapArgs,
+  FinishSwapArgs,
 } from './vortex.types';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import { bcs } from '@mysten/sui/bcs';
@@ -26,6 +28,7 @@ import {
   VORTEX_PACKAGE_ID,
   REGISTRY_OBJECT_ID,
   INITIAL_SHARED_VERSION,
+  VORTEX_SWAP_PACKAGE_ID,
 } from './constants';
 import { parseVortexPool } from './utils';
 
@@ -33,6 +36,7 @@ export class Vortex {
   #suiClient: SuiClient;
 
   packageId: string;
+  swapPackageId: string;
   registry: SharedObjectData;
 
   #newPoolEventType: string;
@@ -44,6 +48,7 @@ export class Vortex {
   constructor({
     registry,
     packageId,
+    swapPackageId,
     fullNodeUrl = getFullnodeUrl('devnet'),
   }: ConstructorArgs) {
     this.#suiClient = new SuiClient({
@@ -56,6 +61,7 @@ export class Vortex {
     this.#nullifierSpentEventType = `${packageId}::vortex_events::NullifierSpent`;
     this.#newEncryptionKeyEventType = `${packageId}::vortex_events::NewEncryptionKey`;
 
+    this.swapPackageId = swapPackageId;
     this.packageId = packageId;
     this.registry = registry;
   }
@@ -168,7 +174,6 @@ export class Vortex {
 
   newExtData({
     tx = new Transaction(),
-    recipient,
     value,
     action,
     relayer,
@@ -179,7 +184,6 @@ export class Vortex {
     const extData = tx.moveCall({
       target: `${this.packageId}::vortex_ext_data::new`,
       arguments: [
-        tx.pure.address(recipient),
         tx.pure.u64(value),
         tx.pure.bool(action === Action.Deposit), // true for deposit, false for withdraw
         tx.pure.address(relayer),
@@ -385,6 +389,62 @@ export class Vortex {
     return result.flat() as boolean[];
   }
 
+  async startSwap({
+    tx = new Transaction(),
+    vortex,
+    proof,
+    extData,
+    relayer,
+    relayerFee,
+    minAmountOut,
+    coinInType,
+    coinOutType,
+  }: StartSwapArgs) {
+    const vortexPool = await this.#getVortexPool(vortex);
+
+    const [receipt, coin] = tx.moveCall({
+      target: `${this.swapPackageId}::vortex_swap::start_swap`,
+      arguments: [
+        tx.object(vortexPool.objectId),
+        proof,
+        extData,
+        tx.pure.address(relayer),
+        tx.pure.u64(relayerFee),
+        tx.pure.u64(minAmountOut),
+      ],
+      typeArguments: [coinInType, coinOutType],
+    });
+
+    return { tx, receipt, coin };
+  }
+
+  async finishSwap({
+    tx = new Transaction(),
+    vortex,
+    coinOut,
+    proof,
+    extData,
+    receipt,
+    coinInType,
+    coinOutType,
+  }: FinishSwapArgs) {
+    const vortexPool = await this.#getVortexPool(vortex);
+
+    tx.moveCall({
+      target: `${this.swapPackageId}::vortex_swap::finish_swap`,
+      arguments: [
+        tx.object(vortexPool.objectId),
+        coinOut,
+        receipt,
+        proof,
+        extData,
+      ],
+      typeArguments: [coinInType, coinOutType],
+    });
+
+    return { tx };
+  }
+
   async getVortexPool(objectId: string): Promise<VortexPool> {
     const objectResponse = await this.#suiClient.getObject({
       id: objectId,
@@ -445,5 +505,6 @@ export const vortexSDK = new Vortex({
     objectId: REGISTRY_OBJECT_ID,
     initialSharedVersion: INITIAL_SHARED_VERSION,
   },
+  swapPackageId: VORTEX_SWAP_PACKAGE_ID,
   fullNodeUrl: getFullnodeUrl('testnet'),
 });

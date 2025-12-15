@@ -36,7 +36,6 @@ import { Utxo } from '@interest-protocol/vortex-sdk';
       vortexKeypair: senderVortexKeypair,
       root: BigInt(root),
       getMerklePathFn,
-      recipient: keypair.toSuiAddress(),
       relayer: '0x0',
       relayerFee: 0n,
       unspentUtxos,

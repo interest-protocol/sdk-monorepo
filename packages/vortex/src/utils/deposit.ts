@@ -134,7 +134,6 @@ export const prepareDepositProof = async ({
 
   const { extData, tx: tx2 } = vortexSdk.newExtData({
     tx,
-    recipient: randomRecipient,
     value: amount,
     action: Action.Deposit,
     relayer,

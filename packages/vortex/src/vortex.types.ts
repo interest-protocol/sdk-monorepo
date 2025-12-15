@@ -26,6 +26,7 @@ export interface ConstructorArgs {
   registry: SharedObjectData;
   fullNodeUrl?: string;
   packageId: string;
+  swapPackageId: string;
 }
 
 export interface Proof {
@@ -38,7 +39,6 @@ export interface Proof {
 }
 
 export interface NewExtDataArgs extends MaybeTx {
-  recipient: string;
   value: bigint;
   relayer: string;
   relayerFee: bigint;
@@ -126,7 +126,6 @@ export interface WithdrawArgs extends MaybeTx {
   vortexKeypair: VortexKeypair;
   root: bigint;
   getMerklePathFn: GetMerklePathFn;
-  recipient: string;
   relayer: string;
   relayerFee: bigint;
 }
@@ -140,7 +139,6 @@ export interface WithdrawWithAccountArgs extends MaybeTx {
   unspentUtxos?: Utxo[];
   account: string;
   accountSecret: bigint;
-  recipient: string;
   relayer: string;
   relayerFee: bigint;
   amount: bigint;
@@ -177,4 +175,45 @@ export interface MergeCoinsArgs extends MaybeTx {
   account: string;
   coinType: string;
   coins: Object[];
+}
+
+export interface StartSwapArgs extends MaybeTx {
+  vortex: string | VortexPool;
+  proof: TransactionResult;
+  extData: TransactionResult;
+  relayer: string;
+  relayerFee: bigint;
+  minAmountOut: bigint;
+  coinInType: string;
+  coinOutType: string;
+}
+
+export interface FinishSwapArgs extends MaybeTx {
+  vortex: string | VortexPool;
+  coinOut: TransactionResult;
+  proof: TransactionResult;
+  extData: TransactionResult;
+  receipt: TransactionResult;
+  coinInType: string;
+  coinOutType: string;
+}
+
+interface CoinInPayload {
+  amount: bigint;
+  vortexPool: string | VortexPool;
+  vortexKeypair: VortexKeypair;
+  root: bigint;
+  getMerklePathFn: GetMerklePathFn;
+  unspentUtxos?: Utxo[];
+}
+
+export interface SwapArgs extends MaybeTx {
+  coinInPayload: DepositArgs;
+  coinOutPayload: WithdrawArgs;
+  relayer: string;
+  relayerFee: bigint;
+  minAmountOut: bigint;
+  coinInType: string;
+  coinOutType: string;
+  vortexSdk: Vortex;
 }

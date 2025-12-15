@@ -15,13 +15,13 @@ import { getEnv } from '../utils.script';
     admin: memezOwnedObjects.ADMIN,
   });
 
-  const oneYearInSeconds = 31_556_952;
+  const oneWeekInSeconds = 604800n;
 
   const { tx: tx2 } = await farmsSdk.setRewardsPerSecond({
     tx: tx as any,
     farm: farmId,
     rewardType: manifestType,
-    rewardsPerSecond: 3403631167n,
+    rewardsPerSecond: 6000992063n,
     adminWitness: authWitness,
   });
 

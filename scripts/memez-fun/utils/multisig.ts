@@ -9,7 +9,7 @@ const MULTISIG_ADDRESS =
   '0xbe222be876a0f09c953b6217fba8b64eb77853ce298513cb3efcfe19bfbaf0aa';
 
 const RECIPIENT =
-  '0xaab6feadd3236ecc1b4fa34d00356f0f826f5e3d225818cb738ccdf77dcac979';
+  '0xb0aa870a5dc5f318430a17b3fd26f7bd83b72ce08d86b8e52eba796681e46768';
 
 const COIN_TYPE = '0x2::sui::SUI';
 
@@ -22,7 +22,7 @@ const POW_9 = 10n ** 9n;
 
   tx.setSender(MULTISIG_ADDRESS);
 
-  const suiCoin = tx.splitCoins(tx.gas, [tx.pure.u64(6_001n * 1_000_000_000n)]);
+  const suiCoin = tx.splitCoins(tx.gas, [tx.pure.u64(3_000n * 1_000_000_000n)]);
 
   tx.transferObjects([suiCoin], tx.pure.address(RECIPIENT));
 

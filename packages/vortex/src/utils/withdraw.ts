@@ -20,7 +20,6 @@ interface PrepareWithdrawArgs {
   vortexKeypair: VortexKeypair;
   root: bigint;
   getMerklePathFn: GetMerklePathFn;
-  recipient: string;
   relayer: string;
   relayerFee: bigint;
   vortexSdk: Vortex;
@@ -35,7 +34,6 @@ export const prepareWithdraw = async ({
   vortexKeypair,
   root,
   getMerklePathFn,
-  recipient,
   relayer,
   relayerFee,
   vortexSdk,
@@ -141,7 +139,6 @@ export const prepareWithdraw = async ({
 
   const { extData, tx: tx2 } = vortexSdk.newExtData({
     tx,
-    recipient,
     value: amount,
     action: Action.Withdraw,
     relayer: normalizeSuiAddress(relayer),

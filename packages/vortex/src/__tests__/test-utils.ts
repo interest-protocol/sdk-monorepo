@@ -19,6 +19,9 @@ export const TEST_REGISTRY_SHARED_OBJECT_ID =
 export const TEST_UPGRADE_CAP_ID =
   '0xb76878578f39017a04a892e7250a146c13663282de80876fae7d62fb5b073f4b';
 
+export const TEST_VORTEX_SWAP_PACKAGE_ID =
+  '0x7efc1d6d42b8c6d6846172a3925f2f28cd5d71cff617ad81f8c3d45a842eabbb';
+
 export const TEST_REGISTRY_INITIAL_SHARED_VERSION = '8';
 
 export const TEST_VORTEX_INITIAL_SHARED_VERSION = '8';
@@ -51,6 +54,7 @@ export const testVortex = new Vortex({
     initialSharedVersion: TEST_REGISTRY_INITIAL_SHARED_VERSION,
   },
   packageId: TEST_VORTEX_PACKAGE_ID,
+  swapPackageId: TEST_VORTEX_SWAP_PACKAGE_ID,
 });
 
 interface AssertValueArgs {

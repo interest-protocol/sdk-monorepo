@@ -1,0 +1,14 @@
+export const USDC_PACKAGE_ID =
+  '0x72cfb3ff84f41cc1f222529d4df41ca7803bcc92678303f01eb59b9554cf8434';
+
+export const CURRENCY_OBJECT =
+  '0x7e69fedd5c524b0f80891ffdb204b1e44030f2493db805f879eabcbb782c0edc';
+
+export const USDC_TYPE =
+  '0x72cfb3ff84f41cc1f222529d4df41ca7803bcc92678303f01eb59b9554cf8434::usdc::USDC';
+
+export const TREASURY_SHARED_OBJECT =
+  '0x7d1c04533309d93fc2322d84bcc16842d96ead04c0b695889be68bbc36c222b1';
+
+export const METADATA_CAP =
+  '0x305785fc86df6a3b14593ef91917456dbeb7fffea344684792df1d35aa6f761b';

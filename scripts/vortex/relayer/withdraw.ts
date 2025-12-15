@@ -41,7 +41,6 @@ import { Transaction } from '@mysten/sui/transactions';
       vortexKeypair: senderVortexKeypair,
       root: BigInt(root),
       getMerklePathFn,
-      recipient: keypair.toSuiAddress(),
       relayer: relayerKeypair.toSuiAddress(),
       relayerFee: 100000000n,
       unspentUtxos,
