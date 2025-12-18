@@ -159,7 +159,7 @@ export const PACKAGES = {
         '0x7ec68f4115dc2944426239b13ce6804dd9971b24069fb4efe88360d29b17f0ce'
       ),
       latest: normalizeSuiAddress(
-        '0x8e20af3b13c4b28fc7688dcd26f614407420b8bae5c282be7c1b0843bcd8d715'
+        '0x9b5a8c1ff05fbae153fd27013f83f70d91dbc6dd3a85d3b8487ccea622ef9d2e'
       ),
     },
     WALLET: {
