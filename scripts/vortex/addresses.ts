@@ -1,8 +1,6 @@
 import { getEnv } from './utils.script';
-import { getUnspentUtxos } from '@interest-protocol/vortex-sdk';
-import { VortexKeypair } from '@interest-protocol/vortex-sdk';
+import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { logSuccess, logError } from '@interest-protocol/logger';
-import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 
 (async () => {
   try {

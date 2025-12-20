@@ -26,7 +26,7 @@ import { getEnv } from '../utils.script';
   const fee = tx.splitCoins(tx.gas, [0n]);
 
   const fakeSuiMetadata = await suiClient.getCoinMetadata({
-    coinType: fakeSuiTypeArg,
+    coinType: SUI_TYPE_ARG,
   });
 
   const { tx: tx2, suiCoin } = await xPumpMigratorSdk.migrate({
@@ -37,7 +37,6 @@ import { getEnv } from '../utils.script';
     ipxMemeCoinTreasury: pool.ipxMemeCoinTreasury,
     memeCoinType: pool.memeCoinType,
     quoteCoinType: pool.quoteCoinType,
-    quoteMetadataId: fakeSuiMetadata!.id!,
   });
 
   tx2.transferObjects([suiCoin], keypair.toSuiAddress());
