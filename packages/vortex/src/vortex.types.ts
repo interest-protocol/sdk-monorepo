@@ -16,7 +16,9 @@ interface NestedResult {
   NestedResult: [number, number];
 }
 
-export type GetMerklePathFn = (utxo: Utxo | null) => Promise<MerklePath>;
+export type GetMerklePathFn = (
+  utxo: Utxo | null
+) => Promise<{ path: MerklePath; root: bigint }>;
 
 export interface RegisterArgs extends MaybeTx {
   encryptionKey: string;
@@ -102,7 +104,6 @@ export interface DepositArgs extends MaybeTx {
   vortexSdk: Vortex;
   vortexPool: string | VortexPool;
   vortexKeypair: VortexKeypair;
-  root: bigint;
   getMerklePathFn: GetMerklePathFn;
   unspentUtxos?: Utxo[];
   relayer?: string;
@@ -113,7 +114,6 @@ export interface DepositWithAccountArgs extends MaybeTx {
   vortexSdk: Vortex;
   vortexPool: string | VortexPool;
   vortexKeypair: VortexKeypair;
-  root: bigint;
   getMerklePathFn: GetMerklePathFn;
   unspentUtxos?: Utxo[];
   account: string;
@@ -129,7 +129,6 @@ export interface WithdrawArgs extends MaybeTx {
   unspentUtxos: Utxo[];
   vortexSdk: Vortex;
   vortexKeypair: VortexKeypair;
-  root: bigint;
   getMerklePathFn: GetMerklePathFn;
   relayer: string;
   relayerFee: bigint;
@@ -139,7 +138,6 @@ export interface WithdrawWithAccountArgs extends MaybeTx {
   vortexSdk: Vortex;
   vortexPool: string | VortexPool;
   vortexKeypair: VortexKeypair;
-  root: bigint;
   getMerklePathFn: GetMerklePathFn;
   unspentUtxos?: Utxo[];
   account: string;
@@ -206,7 +204,6 @@ export interface StartSwapHelperArgs extends MaybeTx {
   unspentUtxos: Utxo[];
   vortexSdk: Vortex;
   vortexKeypair: VortexKeypair;
-  root: bigint;
   getMerklePathFn: GetMerklePathFn;
   relayer: string;
   minAmountOut: bigint;
@@ -218,7 +215,6 @@ export interface FinishSwapHelperArgs extends MaybeTx {
   vortexSdk: Vortex;
   vortexPool: string | VortexPool;
   vortexKeypair: VortexKeypair;
-  root: bigint;
   getMerklePathFn: GetMerklePathFn;
   unspentUtxos?: Utxo[];
   coinOut: TransactionResult;

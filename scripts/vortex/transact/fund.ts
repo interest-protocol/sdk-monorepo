@@ -3,7 +3,7 @@ import { Transaction } from '@mysten/sui/transactions';
 import { logSuccess } from '@interest-protocol/logger';
 
 (async () => {
-  const { keypair, relayerKeypair, recipientKeypair, suiClient, account } =
+  const { keypair, relayerKeypair, recipientKeypair, suiClient, account, api } =
     await getEnv();
 
   const tx = new Transaction();
@@ -12,10 +12,9 @@ import { logSuccess } from '@interest-protocol/logger';
   const gasRecipient = tx.splitCoins(tx.gas, [tx.pure.u64(1_000_000_000n)]);
   const accountSui = tx.splitCoins(tx.gas, [tx.pure.u64(1_000_000_000n)]);
 
-  tx.transferObjects(
-    [gasRelayer],
-    tx.pure.address(relayerKeypair.toSuiAddress())
-  );
+  const relayer = await api.getRelayer();
+
+  tx.transferObjects([gasRelayer], tx.pure.address(relayer.data.address));
 
   tx.transferObjects(
     [gasRecipient],

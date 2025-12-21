@@ -31,15 +31,16 @@ import { Transaction } from '@mysten/sui/transactions';
     });
 
     const root = await merkleTree.root;
-    const getMerklePathFn = async (utxo: Utxo | null) =>
-      getMerklePath(merkleTree, utxo);
+    const getMerklePathFn = async (utxo: Utxo | null) => ({
+      path: getMerklePath(merkleTree, utxo),
+      root: BigInt(root),
+    });
 
     const { tx: transaction, coin } = await withdraw({
       amount: 500000000n,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,
-      root: BigInt(root),
       getMerklePathFn,
       relayer: relayerKeypair.toSuiAddress(),
       relayerFee: 100000000n,

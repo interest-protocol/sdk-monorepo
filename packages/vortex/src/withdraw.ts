@@ -1,6 +1,7 @@
 import { Transaction } from '@mysten/sui/transactions';
 import { WithdrawArgs } from './vortex.types';
 import { prepareWithdraw } from './utils/withdraw';
+import { SUI_FRAMEWORK_ADDRESS } from '@mysten/sui/utils';
 
 export const withdraw = async ({
   tx = new Transaction(),
@@ -8,14 +9,13 @@ export const withdraw = async ({
   unspentUtxos = [],
   vortexPool,
   vortexKeypair,
-  root,
   getMerklePathFn,
   relayer,
   relayerFee,
   vortexSdk,
 }: WithdrawArgs) => {
   const {
-    tx: tx3,
+    tx: tx2,
     moveProof,
     extData,
     vortexPool: pool,
@@ -25,7 +25,6 @@ export const withdraw = async ({
     unspentUtxos,
     vortexPool,
     vortexKeypair,
-    root,
     getMerklePathFn,
     relayer,
     relayerFee,
@@ -33,13 +32,18 @@ export const withdraw = async ({
     accountSecret: 0n,
   });
 
-  const zeroSuiCoin = tx3.splitCoins(tx3.gas, [tx3.pure.u64(0n)]);
+  const vortexPoolObject = await vortexSdk.resolveVortexPool(pool);
+
+  const zeroCoin = tx2.moveCall({
+    target: `${SUI_FRAMEWORK_ADDRESS}::coin::zero`,
+    typeArguments: [vortexPoolObject.coinType],
+  });
 
   return vortexSdk.transact({
     vortexPool: pool,
-    tx: tx3,
+    tx: tx2,
     proof: moveProof,
     extData: extData,
-    deposit: zeroSuiCoin,
+    deposit: zeroCoin,
   });
 };

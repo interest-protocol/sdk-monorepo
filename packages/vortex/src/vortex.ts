@@ -213,7 +213,7 @@ export class Vortex {
         ? publicValue
         : BN254_FIELD_MODULUS - publicValue;
 
-    const vortex = await this.#getVortexPool(vortexPool);
+    const vortex = await this.resolveVortexPool(vortexPool);
 
     const proof = tx.moveCall({
       target: `${this.packageId}::vortex_proof::new`,
@@ -240,7 +240,7 @@ export class Vortex {
     extData,
     deposit,
   }: TransactArgs) {
-    const vortex = await this.#getVortexPool(vortexPool);
+    const vortex = await this.resolveVortexPool(vortexPool);
 
     const coin = tx.moveCall({
       target: `${this.packageId}::vortex::transact`,
@@ -259,7 +259,7 @@ export class Vortex {
     proof,
     extData,
   }: TransactWithAccountArgs) {
-    const vortex = await this.#getVortexPool(vortexPool);
+    const vortex = await this.resolveVortexPool(vortexPool);
 
     const coin = tx.moveCall({
       target: `${this.packageId}::vortex::transact_with_account`,
@@ -320,7 +320,7 @@ export class Vortex {
   async nextIndex(vortexPool: string | VortexPool) {
     const tx = new Transaction();
 
-    const vortex = await this.#getVortexPool(vortexPool);
+    const vortex = await this.resolveVortexPool(vortexPool);
 
     tx.moveCall({
       target: `${this.packageId}::vortex::next_index`,
@@ -338,7 +338,7 @@ export class Vortex {
   }
 
   async isNullifierSpent({ nullifier, vortexPool }: IsNullifierSpentArgs) {
-    const vortex = await this.#getVortexPool(vortexPool);
+    const vortex = await this.resolveVortexPool(vortexPool);
 
     const tx = new Transaction();
 
@@ -361,7 +361,7 @@ export class Vortex {
   }
 
   async areNullifiersSpent({ nullifiers, vortexPool }: AreNullifiersSpentArgs) {
-    const vortex = await this.#getVortexPool(vortexPool);
+    const vortex = await this.resolveVortexPool(vortexPool);
 
     if (nullifiers.length === 0) return [];
 
@@ -398,7 +398,7 @@ export class Vortex {
     minAmountOut,
     coinOutType,
   }: StartSwapArgs) {
-    const vortexPool = await this.#getVortexPool(vortex);
+    const vortexPool = await this.resolveVortexPool(vortex);
 
     const [receipt, coinIn] = tx.moveCall({
       target: `${this.swapPackageId}::vortex_swap::start_swap`,
@@ -424,7 +424,7 @@ export class Vortex {
     receipt,
     coinInType,
   }: FinishSwapArgs) {
-    const vortexPool = await this.#getVortexPool(vortex);
+    const vortexPool = await this.resolveVortexPool(vortex);
 
     tx.moveCall({
       target: `${this.swapPackageId}::vortex_swap::finish_swap`,
@@ -490,7 +490,7 @@ export class Vortex {
     });
   }
 
-  async #getVortexPool(vortex: string | VortexPool): Promise<VortexPool> {
+  async resolveVortexPool(vortex: string | VortexPool): Promise<VortexPool> {
     return typeof vortex === 'string' ? this.getVortexPool(vortex) : vortex;
   }
 }

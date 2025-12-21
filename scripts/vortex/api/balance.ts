@@ -1,34 +1,27 @@
-import { getEnv } from './utils.script';
-import { getUnspentUtxos } from '@interest-protocol/vortex-sdk';
+import { getEnv } from '../utils.script';
+import { getUnspentUtxosWithApi } from '@interest-protocol/vortex-sdk';
 import { VortexKeypair } from '@interest-protocol/vortex-sdk';
 import { logSuccess, logError } from '@interest-protocol/logger';
 
 (async () => {
   try {
-    const {
-      vortexSdk,
-      suiClient,
-      keypair,
-      testUSDCPoolObjectId,
-      testUSDCType,
-    } = await getEnv();
+    const { vortexSdk, testUSDCPoolObjectId, keypair, testUSDCType, api } =
+      await getEnv();
 
     const senderVortexKeypair = await VortexKeypair.fromSuiWallet(
       keypair.toSuiAddress(),
       (message) => keypair.signPersonalMessage(message)
     );
 
-    const commitmentEvents = await suiClient.queryEvents({
-      query: {
-        MoveEventType: vortexSdk.getNewCommitmentEvent(testUSDCType),
-      },
-      order: 'ascending',
+    const commitments = await api.getCommitments({
+      coinType: testUSDCType,
+      index: 0,
     });
 
-    const unspentUtxos = await getUnspentUtxos({
-      vortexSdk,
+    const unspentUtxos = await getUnspentUtxosWithApi({
+      commitments: commitments.data.items,
       vortexKeypair: senderVortexKeypair,
-      commitmentEvents,
+      vortexSdk,
       vortexPool: testUSDCPoolObjectId,
     });
 

@@ -63,15 +63,16 @@ interface MoveCall {
     });
 
     const root = await merkleTree.root;
-    const getMerklePathFn = async (utxo: Utxo | null) =>
-      getMerklePath(merkleTree, utxo);
+    const getMerklePathFn = async (utxo: Utxo | null) => ({
+      path: getMerklePath(merkleTree, utxo),
+      root: BigInt(root),
+    });
 
     const { tx: transaction, coin } = await depositWithAccount({
       coinStructs: coins.data,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,
-      root: BigInt(root),
       getMerklePathFn,
       unspentUtxos,
       account: account,

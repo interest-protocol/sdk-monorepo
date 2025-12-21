@@ -29,15 +29,16 @@ import { Utxo } from '@interest-protocol/vortex-sdk';
     });
 
     const root = await merkleTree.root;
-    const getMerklePathFn = async (utxo: Utxo | null) =>
-      getMerklePath(merkleTree, utxo);
+    const getMerklePathFn = async (utxo: Utxo | null) => ({
+      path: getMerklePath(merkleTree, utxo),
+      root: BigInt(root),
+    });
 
     const { tx: transaction, coin } = await deposit({
       amount: 2_000_000_000n,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,
-      root: BigInt(root),
       getMerklePathFn,
       unspentUtxos,
     });

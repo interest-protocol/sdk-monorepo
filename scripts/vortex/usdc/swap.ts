@@ -40,8 +40,10 @@ import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 
   const root = await merkleTree.root;
 
-  const getMerklePathFn = async (utxo: Utxo | null) =>
-    getMerklePath(merkleTree, utxo);
+  const getMerklePathFn = async (utxo: Utxo | null) => ({
+    path: getMerklePath(merkleTree, utxo),
+    root: BigInt(root),
+  });
 
   const {
     tx: startTx,
@@ -52,7 +54,6 @@ import { SUI_TYPE_ARG } from '@mysten/sui/utils';
     amount: 1_000_000_000n,
     vortexPool: suiVortexPoolObjectId,
     vortexKeypair: senderVortexKeypair,
-    root: BigInt(root),
     getMerklePathFn,
     unspentUtxos,
     vortexSdk,
@@ -83,15 +84,16 @@ import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 
   const finishRoot = await finishMerkleTree.root;
 
-  const finishGetMerklePathFn = async (utxo: Utxo | null) =>
-    getMerklePath(finishMerkleTree, utxo);
+  const finishGetMerklePathFn = async (utxo: Utxo | null) => ({
+    path: getMerklePath(finishMerkleTree, utxo),
+    root: BigInt(finishRoot),
+  });
 
   const { tx: finishTx } = await finishSwap({
     tx: startTx,
     amount: 5_000_000n,
     vortexPool: testUSDCPoolObjectId,
     vortexKeypair: senderVortexKeypair,
-    root: BigInt(finishRoot),
     getMerklePathFn: finishGetMerklePathFn,
     unspentUtxos: finishUnspentUtxos,
     coinOut: usdcCoin,

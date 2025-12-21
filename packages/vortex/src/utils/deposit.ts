@@ -3,10 +3,9 @@ import { prove, verify } from '.';
 import invariant from 'tiny-invariant';
 import { VortexKeypair } from '../entities/keypair';
 import { Utxo } from '../entities/utxo';
-import { fromHex, normalizeSuiAddress } from '@mysten/sui/utils';
+import { fromHex } from '@mysten/sui/utils';
 import { toProveInput } from '.';
 import { Proof, Action, GetMerklePathFn } from '../vortex.types';
-import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { Vortex } from '../vortex';
 import { VortexKeypair as VortexKeypairType } from '../entities/keypair';
 
@@ -20,7 +19,6 @@ interface PrepareDepositProofArgs {
   vortexSdk: Vortex;
   vortexKeypair: VortexKeypairType;
   vortexPool: string | VortexPool;
-  root: bigint;
   getMerklePathFn: GetMerklePathFn;
   relayer: string;
   relayerFee: bigint;
@@ -34,7 +32,6 @@ export const prepareDepositProof = async ({
   vortexSdk,
   vortexKeypair,
   vortexPool,
-  root,
   getMerklePathFn,
   relayer,
   relayerFee,
@@ -105,13 +102,15 @@ export const prepareDepositProof = async ({
     randomVortexKeypair.encryptionKey
   );
 
+  const root = BigInt(merklePath0.root);
+
   // Prepare circuit input
   const input = toProveInput({
     vortexObjectId,
     accountSecret,
     root,
-    merklePath0,
-    merklePath1,
+    merklePath0: merklePath0.path,
+    merklePath1: merklePath1.path,
     publicAmount: amount - relayerFee,
     nullifier0,
     nullifier1,

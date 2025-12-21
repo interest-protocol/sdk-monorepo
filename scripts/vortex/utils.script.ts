@@ -3,6 +3,7 @@ import {
   Utxo,
   vortexSDK,
   VORTEX_POOL_IDS,
+  VortexAPI,
 } from '@interest-protocol/vortex-sdk';
 
 import {
@@ -43,5 +44,6 @@ export const getEnv = async () => {
       '0x72cfb3ff84f41cc1f222529d4df41ca7803bcc92678303f01eb59b9554cf8434::usdc::USDC',
     testUSDCPoolObjectId:
       '0x91d6bb3b8178e6b2c0f639b3d00933a43e1068a4320933134170ad9fe931c164',
+    api: new VortexAPI({ apiUrl: 'http://0.0.0.0:5005' }),
   };
 };

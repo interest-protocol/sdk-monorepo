@@ -18,7 +18,6 @@ interface PrepareWithdrawArgs {
   unspentUtxos: Utxo[];
   vortexPool: string | VortexPool;
   vortexKeypair: VortexKeypair;
-  root: bigint;
   getMerklePathFn: GetMerklePathFn;
   relayer: string;
   relayerFee: bigint;
@@ -32,7 +31,6 @@ export const prepareWithdraw = async ({
   unspentUtxos = [],
   vortexPool,
   vortexKeypair,
-  root,
   getMerklePathFn,
   relayer,
   relayerFee,
@@ -112,13 +110,15 @@ export const prepareWithdraw = async ({
     randomVortexKeypair.encryptionKey
   );
 
+  const root = BigInt(merklePath0.root);
+
   // Prepare circuit input
   const input = toProveInput({
     vortexObjectId,
     accountSecret,
     root,
-    merklePath0,
-    merklePath1,
+    merklePath0: merklePath0.path,
+    merklePath1: merklePath1.path,
     publicAmount: BN254_FIELD_MODULUS - amount,
     nullifier0,
     nullifier1,

@@ -34,15 +34,16 @@ import { Utxo } from '@interest-protocol/vortex-sdk';
     });
 
     const root = await merkleTree.root;
-    const getMerklePathFn = async (utxo: Utxo | null) =>
-      getMerklePath(merkleTree, utxo);
+    const getMerklePathFn = async (utxo: Utxo | null) => ({
+      path: getMerklePath(merkleTree, utxo),
+      root: BigInt(root),
+    });
 
     const { tx: transaction, coin } = await withdrawWithAccount({
       amount: 1000000000n,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,
-      root: BigInt(root),
       getMerklePathFn,
       relayer: '0x0',
       relayerFee: 0n,
