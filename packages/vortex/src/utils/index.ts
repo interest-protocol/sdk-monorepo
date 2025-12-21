@@ -178,3 +178,4 @@ export const parseVortexPool = (data: SuiObjectData) => {
 export * from './events';
 export * from './prove';
 export * from './decrypt';
+export * from './validate';
