@@ -1,22 +1,21 @@
 import { getEnv } from '../utils.script';
-import {
-  withdraw,
-  getUnspentUtxosWithApi,
-} from '@interest-protocol/vortex-sdk';
+import { depositWithAccount } from '@interest-protocol/vortex-sdk';
 import { logSuccess, logError } from '@interest-protocol/logger';
-import { VortexKeypair } from '@interest-protocol/vortex-sdk';
+import { getUnspentUtxosAndMerkleTree } from '../events';
+import { SUI_TYPE_ARG, toHex } from '@mysten/sui/utils';
 import { Utxo } from '@interest-protocol/vortex-sdk';
-import { toHex } from '@mysten/sui/utils';
 
 (async () => {
   try {
     const {
       keypair,
-      suiClient,
       vortexSdk,
-      testUSDCPoolObjectId,
+      suiClient,
+      VortexKeypair,
+      suiVortexPoolObjectId,
+      account,
+      secret,
       api,
-      testUSDCType,
       apiKey,
     } = await getEnv();
 
@@ -25,27 +24,27 @@ import { toHex } from '@mysten/sui/utils';
       (message) => keypair.signPersonalMessage(message)
     );
 
-    const commitments = await api.getCommitments({
-      coinType: testUSDCType,
-      index: 0,
+    // @dev Should come from the indexer
+    const { unspentUtxos, merkleTree } = await getUnspentUtxosAndMerkleTree({
+      suiClient,
+      vortexSdk,
+      suiVortexPoolObjectId,
+      senderVortexKeypair,
     });
 
-    // @dev Should come from the indexer
-    const unspentUtxos = await getUnspentUtxosWithApi({
-      vortexSdk,
-      vortexPool: testUSDCPoolObjectId,
-      vortexKeypair: senderVortexKeypair,
-      commitments: commitments.data.items,
+    const coins = await suiClient.getCoins({
+      owner: account,
+      coinType: '0x2::sui::SUI',
     });
 
     const getMerklePathFn = async (utxo: Utxo | null) => {
       const response = await api.getMerklePath({
-        coinType: testUSDCType,
+        coinType: SUI_TYPE_ARG,
         index: Number(utxo?.index ?? 0),
         amount: utxo?.amount.toString() ?? '0',
         publicKey: senderVortexKeypair.publicKey,
         blinding: utxo?.blinding.toString() ?? '0',
-        vortexPool: testUSDCPoolObjectId,
+        vortexPool: suiVortexPoolObjectId,
       });
 
       return {
@@ -56,15 +55,17 @@ import { toHex } from '@mysten/sui/utils';
 
     const relayer = await api.getRelayer();
 
-    const { tx: transaction, coin } = await withdraw({
-      amount: 2n,
+    const { tx: transaction, coin } = await depositWithAccount({
+      coinStructs: coins.data,
       vortexSdk,
-      vortexPool: testUSDCPoolObjectId,
+      vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,
       getMerklePathFn,
-      relayer: relayer.data.address,
-      relayerFee: 1n,
       unspentUtxos,
+      account: account,
+      accountSecret: secret,
+      relayer: relayer.data.address,
+      relayerFee: 1000n,
     });
 
     transaction.transferObjects(
@@ -95,8 +96,8 @@ import { toHex } from '@mysten/sui/utils';
       },
     });
 
-    logSuccess('withdraw', result);
+    logSuccess('deposit', result);
   } catch (error) {
-    logError('withdraw', error);
+    logError('deposit', error);
   }
 })();

@@ -2,11 +2,11 @@ import { getEnv } from '../utils.script';
 import { getUnspentUtxosWithApi } from '@interest-protocol/vortex-sdk';
 import { VortexKeypair } from '@interest-protocol/vortex-sdk';
 import { logSuccess, logError } from '@interest-protocol/logger';
+import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 
 (async () => {
   try {
-    const { vortexSdk, testUSDCPoolObjectId, keypair, testUSDCType, api } =
-      await getEnv();
+    const { vortexSdk, suiVortexPoolObjectId, keypair, api } = await getEnv();
 
     const senderVortexKeypair = await VortexKeypair.fromSuiWallet(
       keypair.toSuiAddress(),
@@ -14,7 +14,7 @@ import { logSuccess, logError } from '@interest-protocol/logger';
     );
 
     const commitments = await api.getCommitments({
-      coinType: testUSDCType,
+      coinType: SUI_TYPE_ARG,
       index: 0,
     });
 
@@ -22,7 +22,7 @@ import { logSuccess, logError } from '@interest-protocol/logger';
       commitments: commitments.data.items,
       vortexKeypair: senderVortexKeypair,
       vortexSdk,
-      vortexPool: testUSDCPoolObjectId,
+      vortexPool: suiVortexPoolObjectId,
     });
 
     logSuccess(
