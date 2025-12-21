@@ -45,5 +45,6 @@ export const getEnv = async () => {
     testUSDCPoolObjectId:
       '0x91d6bb3b8178e6b2c0f639b3d00933a43e1068a4320933134170ad9fe931c164',
     api: new VortexAPI({ apiUrl: 'http://0.0.0.0:5005' }),
+    apiKey: process.env.API_KEY!,
   };
 };

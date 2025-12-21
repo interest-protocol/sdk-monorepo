@@ -111,6 +111,7 @@ export interface MerklePathResponse {
 
 export interface ExecuteTransactionRequest {
   txBytes: string;
+  apiKey: string;
 }
 
 export interface TransactionResponse {

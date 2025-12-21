@@ -134,7 +134,8 @@ export class VortexAPI {
       '/api/v1/transactions',
       {
         txBytes: args.txBytes,
-      }
+      },
+      args.apiKey
     );
 
     this.#assertSuccess(response);
@@ -163,12 +164,14 @@ export class VortexAPI {
 
   async #post<T>(
     path: string,
-    body: Record<string, unknown>
+    body: Record<string, unknown>,
+    apiKey?: string
   ): Promise<ApiResponse<T>> {
     const response = await fetch(`${this.#apiUrl}${path}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-api-key': apiKey ?? '',
       },
       body: JSON.stringify(body),
     });

@@ -15,9 +15,9 @@ import { toHex } from '@mysten/sui/utils';
       suiClient,
       vortexSdk,
       testUSDCPoolObjectId,
-      relayerKeypair,
       api,
       testUSDCType,
+      apiKey,
     } = await getEnv();
 
     const senderVortexKeypair = await VortexKeypair.fromSuiWallet(
@@ -57,13 +57,13 @@ import { toHex } from '@mysten/sui/utils';
     const relayer = await api.getRelayer();
 
     const { tx: transaction, coin } = await withdraw({
-      amount: 2000000n,
+      amount: 2n,
       vortexSdk,
       vortexPool: testUSDCPoolObjectId,
       vortexKeypair: senderVortexKeypair,
       getMerklePathFn,
       relayer: relayer.data.address,
-      relayerFee: 1000000n,
+      relayerFee: 1n,
       unspentUtxos,
     });
 
@@ -80,6 +80,7 @@ import { toHex } from '@mysten/sui/utils';
 
     const digest = await api.executeTransaction({
       txBytes: toHex(txBytes),
+      apiKey,
     });
 
     const result = await suiClient.getTransactionBlock({
