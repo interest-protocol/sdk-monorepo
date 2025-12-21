@@ -93,7 +93,7 @@ export const LSK_FETCH_OFFSET = 'fetch_offset';
 
 export const LSK_ENCRYPTED_OUTPUTS = 'encrypted_outputs';
 
-export const VORTEX_SIGNATURE_DOMAIN = 'VORTEXFI.XYZ';
+export const VORTEX_SIGNATURE_DOMAIN = 'https://kage.money/'.toUpperCase();
 
 export const TREASURY_ADDRESS =
   '0x894261575b948c035d002adc3ca4d73c683c01a1bfafac183870940bf9afef1a';
