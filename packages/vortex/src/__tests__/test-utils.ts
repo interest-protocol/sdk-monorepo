@@ -48,6 +48,9 @@ export const expectDevInspectTransactionBlock = async ({
   expect(result.effects.status.status).toBe(expectStatus);
 };
 
+const mockProve = (input: string, _provingKey: string) => input;
+const mockVerify = (_proof: string, _verifyingKey: string) => true;
+
 export const testVortex = new Vortex({
   registry: {
     objectId: TEST_REGISTRY_SHARED_OBJECT_ID,
@@ -55,6 +58,8 @@ export const testVortex = new Vortex({
   },
   packageId: TEST_VORTEX_PACKAGE_ID,
   swapPackageId: TEST_VORTEX_SWAP_PACKAGE_ID,
+  prove: mockProve,
+  verify: mockVerify,
 });
 
 interface AssertValueArgs {

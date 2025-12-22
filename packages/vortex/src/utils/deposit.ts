@@ -1,15 +1,13 @@
 import { Transaction } from '@mysten/sui/transactions';
-import { prove, verify } from '.';
 import invariant from 'tiny-invariant';
 import { VortexKeypair } from '../entities/keypair';
 import { Utxo } from '../entities/utxo';
 import { fromHex } from '@mysten/sui/utils';
 import { toProveInput } from '.';
-import { Proof, Action, GetMerklePathFn } from '../vortex.types';
+import { Proof, Action, GetMerklePathFn, VortexPool } from '../vortex.types';
 import { Vortex } from '../vortex';
 import { VortexKeypair as VortexKeypairType } from '../entities/keypair';
-
-import { VortexPool } from '../vortex.types';
+import { PROVING_KEY, VERIFYING_KEY } from '../keys';
 
 interface PrepareDepositProofArgs {
   tx: Transaction;
@@ -123,11 +121,11 @@ export const prepareDepositProof = async ({
     outputUtxo1,
   });
 
-  const proofJson: string = await prove(JSON.stringify(input));
+  const proofJson: string = vortexSdk.prove(JSON.stringify(input), PROVING_KEY);
 
   const proof: Proof = JSON.parse(proofJson);
 
-  invariant(await verify(proofJson), 'Proof verification failed');
+  invariant(vortexSdk.verify(proofJson, VERIFYING_KEY), 'Proof verification failed');
 
   const { extData, tx: tx2 } = vortexSdk.newExtData({
     tx,

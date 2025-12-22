@@ -21,11 +21,6 @@ import { SUI_TYPE_ARG } from '@mysten/sui/utils';
       order: 'ascending',
     });
 
-    commitmentEvents.data.forEach((event) => {
-      console.log('event', event.parsedJson);
-      console.log(typeof (event.parsedJson as any).encrypted_output);
-    });
-
     const unspentUtxos = await getUnspentUtxos({
       vortexSdk,
       vortexKeypair: senderVortexKeypair,

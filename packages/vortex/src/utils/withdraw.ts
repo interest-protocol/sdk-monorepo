@@ -3,14 +3,12 @@ import { Utxo } from '../entities/utxo';
 import { VortexKeypair } from '../entities/keypair';
 import invariant from 'tiny-invariant';
 import { BN } from 'bn.js';
-import { normalizeSuiAddress } from '@mysten/sui/utils';
-
-import { fromHex } from '@mysten/sui/utils';
+import { normalizeSuiAddress, fromHex } from '@mysten/sui/utils';
 import { toProveInput } from '../utils';
 import { BN254_FIELD_MODULUS } from '../constants';
-import { prove, verify } from '../utils';
 import { Proof, Action, GetMerklePathFn, VortexPool } from '../vortex.types';
 import { Vortex } from '../vortex';
+import { PROVING_KEY, VERIFYING_KEY } from '../keys';
 
 interface PrepareWithdrawArgs {
   tx?: Transaction;
@@ -131,11 +129,11 @@ export const prepareWithdraw = async ({
     outputUtxo1,
   });
 
-  const proofJson: string = await prove(JSON.stringify(input));
+  const proofJson: string = vortexSdk.prove(JSON.stringify(input), PROVING_KEY);
 
   const proof: Proof = JSON.parse(proofJson);
 
-  invariant(await verify(proofJson), 'Proof verification failed');
+  invariant(vortexSdk.verify(proofJson, VERIFYING_KEY), 'Proof verification failed');
 
   const { extData, tx: tx2 } = vortexSdk.newExtData({
     tx,

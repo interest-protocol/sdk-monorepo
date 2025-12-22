@@ -29,11 +29,16 @@ export interface SharedObjectData {
   initialSharedVersion: string;
 }
 
+export type ProveFn = (input: string, provingKey: string) => string;
+export type VerifyFn = (proof: string, verifyingKey: string) => boolean;
+
 export interface ConstructorArgs {
   registry: SharedObjectData;
   fullNodeUrl?: string;
   packageId: string;
   swapPackageId: string;
+  prove: ProveFn;
+  verify: VerifyFn;
 }
 
 export interface Proof {

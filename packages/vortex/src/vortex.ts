@@ -17,19 +17,15 @@ import {
   TransactWithAccountArgs,
   StartSwapArgs,
   FinishSwapArgs,
+  ProveFn,
+  VerifyFn,
 } from './vortex.types';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import { bcs } from '@mysten/sui/bcs';
 import invariant from 'tiny-invariant';
 import { normalizeSuiAddress, normalizeStructTag } from '@mysten/sui/utils';
 import { pathOr } from 'ramda';
-import {
-  BN254_FIELD_MODULUS,
-  VORTEX_PACKAGE_ID,
-  REGISTRY_OBJECT_ID,
-  INITIAL_SHARED_VERSION,
-  VORTEX_SWAP_PACKAGE_ID,
-} from './constants';
+import { BN254_FIELD_MODULUS } from './constants';
 import { parseVortexPool } from './utils';
 
 export class Vortex {
@@ -38,6 +34,8 @@ export class Vortex {
   packageId: string;
   swapPackageId: string;
   registry: SharedObjectData;
+  prove: ProveFn;
+  verify: VerifyFn;
 
   #newPoolEventType: string;
   #newAccountEventType: string;
@@ -49,7 +47,9 @@ export class Vortex {
     registry,
     packageId,
     swapPackageId,
-    fullNodeUrl = getFullnodeUrl('devnet'),
+    prove,
+    verify,
+    fullNodeUrl = getFullnodeUrl('testnet'),
   }: ConstructorArgs) {
     this.#suiClient = new SuiClient({
       url: fullNodeUrl,
@@ -64,6 +64,8 @@ export class Vortex {
     this.swapPackageId = swapPackageId;
     this.packageId = packageId;
     this.registry = registry;
+    this.prove = prove;
+    this.verify = verify;
   }
 
   newAccount({ tx = new Transaction(), hashedSecret }: NewAccountArgs) {
@@ -494,13 +496,3 @@ export class Vortex {
     return typeof vortex === 'string' ? this.getVortexPool(vortex) : vortex;
   }
 }
-
-export const vortexSDK = new Vortex({
-  packageId: VORTEX_PACKAGE_ID,
-  registry: {
-    objectId: REGISTRY_OBJECT_ID,
-    initialSharedVersion: INITIAL_SHARED_VERSION,
-  },
-  swapPackageId: VORTEX_SWAP_PACKAGE_ID,
-  fullNodeUrl: getFullnodeUrl('testnet'),
-});

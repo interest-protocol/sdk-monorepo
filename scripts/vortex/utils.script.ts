@@ -1,10 +1,16 @@
 import {
   VortexKeypair,
   Utxo,
-  vortexSDK,
+  Vortex,
   VORTEX_POOL_IDS,
   VortexAPI,
+  VORTEX_PACKAGE_ID,
+  VORTEX_SWAP_PACKAGE_ID,
+  REGISTRY_OBJECT_ID,
+  INITIAL_SHARED_VERSION,
 } from '@interest-protocol/vortex-sdk';
+import { prove, verify } from '../../packages/vortex-wasm/nodejs/vortex';
+import { getFullnodeUrl } from '@mysten/sui/client';
 
 import {
   executeTx,
@@ -35,7 +41,17 @@ export const getEnv = async () => {
     keypair,
     POW_10_9: 10n ** 9n,
     devInspectTransactionBlock,
-    vortexSdk: vortexSDK,
+    vortexSdk: new Vortex({
+      registry: {
+        objectId: REGISTRY_OBJECT_ID,
+        initialSharedVersion: INITIAL_SHARED_VERSION,
+      },
+      packageId: VORTEX_PACKAGE_ID,
+      swapPackageId: VORTEX_SWAP_PACKAGE_ID,
+      fullNodeUrl: getFullnodeUrl('testnet'),
+      prove,
+      verify,
+    }),
     suiVortexPoolObjectId: SUI_VORTEX_POOL_OBJECT_ID,
     account:
       '0x3e4604faf9363d4b5b85edd9e3ef3bbcc3391b79623f7656d2f5dac3d9c6d97b',
