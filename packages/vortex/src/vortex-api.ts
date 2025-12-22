@@ -8,6 +8,7 @@ import {
   AccountResponse,
   PoolsResponse,
   GetPoolsArgs,
+  Commitment,
   CommitmentsResponse,
   GetCommitmentsArgs,
   MerklePathRequest,
@@ -107,6 +108,23 @@ export class VortexAPI {
     this.#assertSuccess(response);
 
     return response;
+  }
+
+  async getAllCommitments(
+    args: Omit<GetCommitmentsArgs, 'page'>
+  ): Promise<Commitment[]> {
+    const allCommitments: Commitment[] = [];
+    let page = 1;
+    let hasNext = true;
+
+    while (hasNext) {
+      const response = await this.getCommitments({ ...args, page });
+      allCommitments.push(...response.data.items);
+      hasNext = response.data.pagination.hasNext;
+      page++;
+    }
+
+    return allCommitments;
   }
 
   async getMerklePath(args: MerklePathRequest): Promise<MerklePathResponse> {

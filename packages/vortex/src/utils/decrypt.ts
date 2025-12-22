@@ -4,7 +4,7 @@ import { Commitment } from '../vortex-api.types';
 import { UtxoPayload } from '../entities/keypair';
 import { VortexKeypair } from '../entities/keypair';
 import { Utxo } from '../entities/utxo';
-import { normalizeStructTag } from '@mysten/sui/utils';
+import { normalizeStructTag, toHex } from '@mysten/sui/utils';
 import { Vortex } from '../vortex';
 import { VortexPool } from '../vortex.types';
 import invariant from 'tiny-invariant';
@@ -81,7 +81,10 @@ export const getUnspentUtxosWithApi = async ({
       'Commitment coin type does not match vortex pool coin type'
     );
     try {
-      const utxo = vortexKeypair.decryptUtxo(commitment.encryptedOutput);
+      const encryptedOutputHex = toHex(
+        Uint8Array.from(commitment.encryptedOutput)
+      );
+      const utxo = vortexKeypair.decryptUtxo(encryptedOutputHex);
       allUtxos.push(utxo);
     } catch {
       // Do nothing

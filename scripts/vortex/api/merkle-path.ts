@@ -1,8 +1,5 @@
 import { getEnv } from '../utils.script';
-import {
-  withdraw,
-  getUnspentUtxosWithApi,
-} from '@interest-protocol/vortex-sdk';
+import { getUnspentUtxosWithApi } from '@interest-protocol/vortex-sdk';
 import { logSuccess, logError } from '@interest-protocol/logger';
 import { VortexKeypair } from '@interest-protocol/vortex-sdk';
 

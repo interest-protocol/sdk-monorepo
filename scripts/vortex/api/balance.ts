@@ -16,6 +16,7 @@ import { SUI_TYPE_ARG } from '@mysten/sui/utils';
     const commitments = await api.getCommitments({
       coinType: SUI_TYPE_ARG,
       index: 0,
+      limit: 100,
     });
 
     const unspentUtxos = await getUnspentUtxosWithApi({

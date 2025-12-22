@@ -6,10 +6,16 @@ export interface VortexAPIConstructorArgs {
   apiUrl?: string;
 }
 
+export type ServiceStatus = 'healthy' | 'unhealthy';
+
 export interface HealthStatus {
-  mongodb: boolean;
-  redis: boolean;
-  sui: boolean;
+  status: 'healthy' | 'degraded';
+  services: {
+    mongodb: ServiceStatus;
+    redis: ServiceStatus;
+    sui: ServiceStatus;
+  };
+  timestamp: string;
 }
 
 export interface HealthResponse {
@@ -18,8 +24,12 @@ export interface HealthResponse {
 }
 
 export interface Account {
-  owner: string;
+  id: string;
+  objectId: string;
   hashedSecret: string;
+  owner: string;
+  createdAt: string;
+  txDigest: string;
 }
 
 export interface AccountsResponse {
@@ -38,10 +48,13 @@ export interface AccountResponse {
 }
 
 export interface Pool {
+  id: string;
   objectId: string;
   coinType: string;
-  balance: string;
-  nextIndex: number;
+  digest: string;
+  sender: string;
+  checkpoint: number;
+  checkpointTimestampMs: number;
 }
 
 export interface Pagination {
@@ -68,10 +81,15 @@ export interface GetPoolsArgs {
 }
 
 export interface Commitment {
-  commitment: string;
+  id: string;
   index: number;
+  commitment: string;
   coinType: string;
-  encryptedOutput: string;
+  encryptedOutput: number[];
+  digest: string;
+  sender: string;
+  checkpoint: number;
+  checkpointTimestampMs: number;
 }
 
 export interface CommitmentsResponse {
