@@ -32,14 +32,18 @@ module.exports = {
   input: 'src/index.ts',
   output: [
     {
-      file: 'dist/index.js',
+      dir: 'dist',
       format: 'cjs',
       sourcemap: true,
+      entryFileNames: 'index.js',
+      chunkFileNames: '[name]-[hash].js',
     },
     {
-      file: 'dist/index.mjs',
+      dir: 'dist',
       format: 'esm',
       sourcemap: true,
+      entryFileNames: 'index.mjs',
+      chunkFileNames: '[name]-[hash].mjs',
     },
   ],
   external: allExternalDeps,

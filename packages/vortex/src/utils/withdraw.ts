@@ -131,11 +131,11 @@ export const prepareWithdraw = async ({
     outputUtxo1,
   });
 
-  const proofJson: string = prove(JSON.stringify(input));
+  const proofJson: string = await prove(JSON.stringify(input));
 
   const proof: Proof = JSON.parse(proofJson);
 
-  invariant(verify(proofJson), 'Proof verification failed');
+  invariant(await verify(proofJson), 'Proof verification failed');
 
   const { extData, tx: tx2 } = vortexSdk.newExtData({
     tx,
