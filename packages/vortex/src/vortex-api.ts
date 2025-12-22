@@ -60,15 +60,15 @@ export class VortexAPI {
   async getPools(args: GetPoolsArgs = {}): Promise<PoolsResponse> {
     const params = new URLSearchParams();
 
-    if (args.page !== undefined) {
+    if (args.page) {
       params.set('page', args.page.toString());
     }
 
-    if (args.limit !== undefined) {
+    if (args.limit) {
       params.set('limit', args.limit.toString());
     }
 
-    if (args.coinType !== undefined) {
+    if (args.coinType) {
       params.set('coin_type', args.coinType);
     }
 
@@ -88,15 +88,15 @@ export class VortexAPI {
       index: args.index.toString(),
     });
 
-    if (args.op !== undefined) {
+    if (args.op) {
       params.set('op', args.op);
     }
 
-    if (args.page !== undefined) {
+    if (args.page) {
       params.set('page', args.page.toString());
     }
 
-    if (args.limit !== undefined) {
+    if (args.limit) {
       params.set('limit', args.limit.toString());
     }
 
