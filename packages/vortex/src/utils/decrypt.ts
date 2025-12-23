@@ -64,6 +64,13 @@ interface GetUnspentUtxosWithApiArgs {
   vortexPool: string | VortexPool;
 }
 
+interface GetUnspentUtxosWithApiAndCommitmentsArgs {
+  commitments: Pick<Commitment, 'coinType' | 'encryptedOutput'>[];
+  vortexKeypair: VortexKeypair;
+  vortexSdk: Vortex;
+  vortexPool: string | VortexPool;
+}
+
 export const getUnspentUtxosWithApi = async ({
   commitments,
   vortexKeypair,
@@ -119,9 +126,12 @@ export const getUnspentUtxosWithApiAndCommitments = async ({
   vortexKeypair,
   vortexSdk,
   vortexPool,
-}: GetUnspentUtxosWithApiArgs) => {
+}: GetUnspentUtxosWithApiAndCommitmentsArgs) => {
   const allUtxos = [] as UtxoPayload[];
-  const userCommitments = [] as Commitment[];
+  const userCommitments = [] as Pick<
+    Commitment,
+    'coinType' | 'encryptedOutput'
+  >[];
 
   const vortexObject = await vortexSdk.resolveVortexPool(vortexPool);
 
@@ -136,7 +146,10 @@ export const getUnspentUtxosWithApiAndCommitments = async ({
         Uint8Array.from(commitment.encryptedOutput)
       );
       const utxo = vortexKeypair.decryptUtxo(encryptedOutputHex);
-      userCommitments.push(commitment);
+      userCommitments.push({
+        coinType: commitment.coinType,
+        encryptedOutput: commitment.encryptedOutput,
+      });
       allUtxos.push(utxo);
     } catch {
       // Do nothing
