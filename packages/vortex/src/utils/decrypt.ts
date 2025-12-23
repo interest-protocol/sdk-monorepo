@@ -113,3 +113,55 @@ export const getUnspentUtxosWithApi = async ({
 
   return unspentUtxos;
 };
+
+export const getUnspentUtxosWithApiAndCommitments = async ({
+  commitments,
+  vortexKeypair,
+  vortexSdk,
+  vortexPool,
+}: GetUnspentUtxosWithApiArgs) => {
+  const allUtxos = [] as UtxoPayload[];
+  const userCommitments = [] as Commitment[];
+
+  const vortexObject = await vortexSdk.resolveVortexPool(vortexPool);
+
+  commitments.forEach((commitment) => {
+    invariant(
+      normalizeStructTag(commitment.coinType) ===
+        normalizeStructTag(vortexObject.coinType),
+      'Commitment coin type does not match vortex pool coin type'
+    );
+    try {
+      const encryptedOutputHex = toHex(
+        Uint8Array.from(commitment.encryptedOutput)
+      );
+      const utxo = vortexKeypair.decryptUtxo(encryptedOutputHex);
+      userCommitments.push(commitment);
+      allUtxos.push(utxo);
+    } catch {
+      // Do nothing
+    }
+  });
+
+  const utxos = allUtxos.map(
+    (utxo) =>
+      new Utxo({
+        ...utxo,
+        keypair: vortexKeypair,
+        vortexPool: vortexObject.objectId,
+      })
+  );
+
+  const nullifiers = utxos.map((utxo) => utxo.nullifier());
+
+  const isNullifierSpentArray = await vortexSdk.areNullifiersSpent({
+    nullifiers,
+    vortexPool,
+  });
+
+  const unspentUtxos = utxos.filter(
+    (_, index) => !isNullifierSpentArray[index]
+  );
+
+  return { unspentUtxos, userCommitments };
+};
