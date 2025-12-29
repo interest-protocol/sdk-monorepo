@@ -18,12 +18,13 @@ import { getEnv } from '../utils.script';
 
   const twoWeeksInSeconds = 1209600;
   const oneWeekInSeconds = 604800;
+  const fourWeeksInSeconds = 2419200;
 
   const { tx: tx2 } = await farmsSdk.setEndTime({
     tx: tx as any,
     farm: farmId,
     rewardType: manifestType,
-    endTime: currenTimeInSeconds + oneWeekInSeconds,
+    endTime: currenTimeInSeconds + fourWeeksInSeconds,
     adminWitness: authWitness,
   });
 

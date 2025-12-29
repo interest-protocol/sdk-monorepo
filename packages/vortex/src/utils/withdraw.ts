@@ -133,7 +133,10 @@ export const prepareWithdraw = async ({
 
   const proof: Proof = JSON.parse(proofJson);
 
-  invariant(vortexSdk.verify(proofJson, VERIFYING_KEY), 'Proof verification failed');
+  invariant(
+    vortexSdk.verify(proofJson, VERIFYING_KEY),
+    'Proof verification failed'
+  );
 
   const { extData, tx: tx2 } = vortexSdk.newExtData({
     tx,

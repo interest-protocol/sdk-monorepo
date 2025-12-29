@@ -32,7 +32,7 @@ import { Utxo } from '@interest-protocol/vortex-sdk';
     });
 
     const { tx: transaction, coin } = await withdraw({
-      amount: 500n,
+      amount: 1_000_000_000n,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,

@@ -119,36 +119,38 @@ export const toProveInput = ({
   accountSecret,
 }: ToProveInputArgs) => {
   return {
-    vortex:
+    vortex: (
       BigInt(
         normalizeSuiAddress(vortexObjectId, !vortexObjectId.startsWith('0x'))
-      ) % BN254_FIELD_MODULUS,
-    root,
-    publicAmount,
-    inputNullifier0: nullifier0,
-    inputNullifier1: nullifier1,
-    outputCommitment0: commitment0,
-    outputCommitment1: commitment1,
-    hashedAccountSecret: accountSecret === 0n ? 0n : poseidon1(accountSecret),
+      ) % BN254_FIELD_MODULUS
+    ).toString(),
+    root: root.toString(),
+    publicAmount: publicAmount.toString(),
+    inputNullifier0: nullifier0.toString(),
+    inputNullifier1: nullifier1.toString(),
+    outputCommitment0: commitment0.toString(),
+    outputCommitment1: commitment1.toString(),
+    hashedAccountSecret:
+      accountSecret === 0n ? '0' : poseidon1(accountSecret).toString(),
 
-    accountSecret: accountSecret === 0n ? 12345n : accountSecret,
+    accountSecret: accountSecret === 0n ? '12345' : accountSecret.toString(),
     inPrivateKey0: vortexKeypair.privateKey,
     inPrivateKey1: vortexKeypair.privateKey,
-    inAmount0: inputUtxo0.amount,
-    inAmount1: inputUtxo1.amount,
-    inBlinding0: inputUtxo0.blinding,
-    inBlinding1: inputUtxo1.blinding,
-    inPathIndex0: inputUtxo0.index,
-    inPathIndex1: inputUtxo1.index,
+    inAmount0: inputUtxo0.amount.toString(),
+    inAmount1: inputUtxo1.amount.toString(),
+    inBlinding0: inputUtxo0.blinding.toString(),
+    inBlinding1: inputUtxo1.blinding.toString(),
+    inPathIndex0: inputUtxo0.index.toString(),
+    inPathIndex1: inputUtxo1.index.toString(),
     merklePath0,
     merklePath1,
 
     outPublicKey0: vortexKeypair.publicKey,
     outPublicKey1: vortexKeypair.publicKey,
-    outAmount0: outputUtxo0.amount,
-    outAmount1: outputUtxo1.amount,
-    outBlinding0: outputUtxo0.blinding,
-    outBlinding1: outputUtxo1.blinding,
+    outAmount0: outputUtxo0.amount.toString(),
+    outAmount1: outputUtxo1.amount.toString(),
+    outBlinding0: outputUtxo0.blinding.toString(),
+    outBlinding1: outputUtxo1.blinding.toString(),
   };
 };
 

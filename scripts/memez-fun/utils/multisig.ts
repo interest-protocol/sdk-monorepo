@@ -22,7 +22,7 @@ const POW_9 = 10n ** 9n;
 
   tx.setSender(MULTISIG_ADDRESS);
 
-  const suiCoin = tx.splitCoins(tx.gas, [tx.pure.u64(3_000n * 1_000_000_000n)]);
+  const suiCoin = tx.splitCoins(tx.gas, [tx.pure.u64(6_000n * 1_000_000_000n)]);
 
   tx.transferObjects([suiCoin], tx.pure.address(RECIPIENT));
 

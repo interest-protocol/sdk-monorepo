@@ -35,7 +35,7 @@ import { Utxo } from '@interest-protocol/vortex-sdk';
     });
 
     const { tx: transaction, coin } = await deposit({
-      amount: 2_000_000_000n,
+      amount: 1_000_000_000n,
       vortexSdk,
       vortexPool: suiVortexPoolObjectId,
       vortexKeypair: senderVortexKeypair,
