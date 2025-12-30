@@ -134,8 +134,8 @@ export const toProveInput = ({
       accountSecret === 0n ? '0' : poseidon1(accountSecret).toString(),
 
     accountSecret: accountSecret === 0n ? '12345' : accountSecret.toString(),
-    inPrivateKey0: vortexKeypair.privateKey,
-    inPrivateKey1: vortexKeypair.privateKey,
+    inPrivateKey0: vortexKeypair.privateKey.toString(),
+    inPrivateKey1: vortexKeypair.privateKey.toString(),
     inAmount0: inputUtxo0.amount.toString(),
     inAmount1: inputUtxo1.amount.toString(),
     inBlinding0: inputUtxo0.blinding.toString(),
