@@ -1,4 +1,4 @@
-import { Transaction } from '@mysten/sui/transactions';
+import { Transaction, coinWithBalance } from '@mysten/sui/transactions';
 import invariant from 'tiny-invariant';
 import { BN254_FIELD_MODULUS } from './constants';
 import { DepositArgs } from './vortex.types';
@@ -26,7 +26,7 @@ export const deposit = async ({
 
   const {
     extData,
-    tx: tx3,
+    tx: tx2,
     moveProof,
   } = await prepareDepositProof({
     tx,
@@ -41,13 +41,18 @@ export const deposit = async ({
     relayerFee,
   });
 
-  const suiCoinDeposit = tx3.splitCoins(tx3.gas, [tx3.pure.u64(amount)]);
+  const vortexPoolObject = await vortexSdk.resolveVortexPool(vortexPool);
+
+  const deposit = coinWithBalance({
+    balance: amount,
+    type: vortexPoolObject.coinType,
+  })(tx2);
 
   return vortexSdk.transact({
     vortexPool,
-    tx: tx3,
+    tx: tx2,
     proof: moveProof,
     extData: extData,
-    deposit: suiCoinDeposit,
+    deposit,
   });
 };

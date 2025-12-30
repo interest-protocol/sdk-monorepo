@@ -1,6 +1,6 @@
 {
   "name": "@interest-protocol/vortex-sdk",
-  "version": "8.4.0",
+  "version": "9.0.0",
   "description": "",
   "main": "index.js",
   "module": "./dist/index.mjs",
