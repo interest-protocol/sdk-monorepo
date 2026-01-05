@@ -9,7 +9,7 @@ import { getEnv } from '../utils.script';
 
   const { tx } = xPumpMigratorSdk.setTreasury({
     treasury:
-      '0xaab6feadd3236ecc1b4fa34d00356f0f826f5e3d225818cb738ccdf77dcac979',
+      '0x6aede69ad73e1876023f8e73196f24edb3e7c307ad4553a61600b14431e4ab0a',
   });
 
   await executeTx(tx);

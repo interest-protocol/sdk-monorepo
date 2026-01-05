@@ -9,7 +9,7 @@ const MULTISIG_ADDRESS =
   '0xbe222be876a0f09c953b6217fba8b64eb77853ce298513cb3efcfe19bfbaf0aa';
 
 const RECIPIENT =
-  '0xb0aa870a5dc5f318430a17b3fd26f7bd83b72ce08d86b8e52eba796681e46768';
+  '0xbbf31f4075625942aa967daebcafe0b1c90e6fa9305c9064983b5052ec442ef7';
 
 const COIN_TYPE = '0x2::sui::SUI';
 
@@ -22,9 +22,10 @@ const POW_9 = 10n ** 9n;
 
   tx.setSender(MULTISIG_ADDRESS);
 
-  const suiCoin = tx.splitCoins(tx.gas, [tx.pure.u64(6_000n * 1_000_000_000n)]);
-
-  tx.transferObjects([suiCoin], tx.pure.address(RECIPIENT));
+  tx.transferObjects(
+    ['0x60a3b91023eaec63301e4fd7011a3f8536f8f94e05895610e749dc189a704a33'],
+    tx.pure.address(RECIPIENT)
+  );
 
   const builtTx = await tx.build({
     client: suiClient,

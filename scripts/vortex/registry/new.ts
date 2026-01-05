@@ -1,12 +1,14 @@
 import { getEnv } from '../utils.script';
 import { logSuccess, logError } from '@interest-protocol/logger';
 
+import { TEST_SUI_TYPE, TEST_USDC_TYPE } from '../test-coins/constants';
+
 (async () => {
   try {
-    const { vortexSdk, suiClient, keypair, testUSDCType } = await getEnv();
+    const { vortexSdk, suiClient, keypair } = await getEnv();
 
     const { tx } = await vortexSdk.newPoolAndShare({
-      coinType: testUSDCType,
+      coinType: TEST_USDC_TYPE,
     });
 
     tx.setSender(keypair.toSuiAddress());
