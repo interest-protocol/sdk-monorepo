@@ -30,11 +30,17 @@ export interface Account {
   owner: string;
   createdAt: string;
   txDigest: string;
+  hidden: boolean;
 }
 
 export interface AccountsResponse {
   success: true;
   data: Account[];
+}
+
+export interface GetAccountsArgs {
+  hashedSecret: string;
+  excludeHidden?: boolean;
 }
 
 export interface CreateAccountRequest {
@@ -45,6 +51,19 @@ export interface CreateAccountRequest {
 export interface AccountResponse {
   success: true;
   data: Account;
+}
+
+export interface HideAccountsRequest {
+  accountObjectIds?: string[];
+  hashedSecret?: string;
+  apiKey: string;
+}
+
+export interface HideAccountsResponse {
+  success: true;
+  data: {
+    modifiedCount: number;
+  };
 }
 
 export interface Pool {

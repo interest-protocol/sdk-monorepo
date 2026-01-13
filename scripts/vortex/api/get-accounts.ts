@@ -7,7 +7,10 @@ import { poseidon1 } from '@interest-protocol/vortex-sdk';
 
   const secret = poseidon1(123456n);
 
-  const response = await api.getAccounts(secret.toString());
+  const response = await api.getAccounts({
+    hashedSecret: secret.toString(),
+    excludeHidden: true,
+  });
 
   logSuccess('get-accounts', response);
 })();

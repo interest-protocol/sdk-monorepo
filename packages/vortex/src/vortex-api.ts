@@ -4,8 +4,11 @@ import {
   VORTEX_API_URL,
   HealthResponse,
   AccountsResponse,
+  GetAccountsArgs,
   CreateAccountRequest,
   AccountResponse,
+  HideAccountsRequest,
+  HideAccountsResponse,
   PoolsResponse,
   GetPoolsArgs,
   Commitment,
@@ -35,8 +38,12 @@ export class VortexAPI {
     return response;
   }
 
-  async getAccounts(hashedSecret: string): Promise<AccountsResponse> {
-    const params = new URLSearchParams({ hashed_secret: hashedSecret });
+  async getAccounts(args: GetAccountsArgs): Promise<AccountsResponse> {
+    const params = new URLSearchParams({ hashed_secret: args.hashedSecret });
+
+    if (args.excludeHidden !== undefined) {
+      params.set('exclude_hidden', args.excludeHidden.toString());
+    }
 
     const response = await this.#get<AccountsResponse>(
       `/api/v1/accounts?${params.toString()}`
@@ -52,6 +59,28 @@ export class VortexAPI {
       owner: args.owner,
       hashedSecret: args.hashedSecret,
     });
+
+    this.#assertSuccess(response);
+
+    return response;
+  }
+
+  async hideAccounts(args: HideAccountsRequest): Promise<HideAccountsResponse> {
+    const body: Record<string, unknown> = {};
+
+    if (args.accountObjectIds) {
+      body.accountObjectIds = args.accountObjectIds;
+    }
+
+    if (args.hashedSecret) {
+      body.hashedSecret = args.hashedSecret;
+    }
+
+    const response = await this.#post<HideAccountsResponse>(
+      '/api/v1/accounts/hide',
+      body,
+      args.apiKey
+    );
 
     this.#assertSuccess(response);
 
