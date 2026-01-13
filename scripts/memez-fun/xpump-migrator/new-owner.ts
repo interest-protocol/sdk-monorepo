@@ -10,12 +10,12 @@ import { logSuccess } from '@interest-protocol/logger';
 
   const { tx, positionOwner } = await xPumpMigratorSdk.newPositionOwner({
     memeCoinType:
-      '0x2e3c97ca6659629897905ddf89fd451a0c8421f4e45345a9b74481ae421e7dac::poors::POORS',
+      '0xf2fafa80fe5fc4d65d03c6de90e743015f6be51990c17adfd0a39216719689d1::cope::COPE',
   });
 
   tx.transferObjects(
     [positionOwner],
-    '0xa4e774fae31ae1aa6d9b2b832e1ee664c4f7284a8ad877c05aa5d64d10f65eda'
+    '0xb3bace86a176648754aa72ade5cdf2a97de2ffc278119b55ca23cee7ca1b57cd'
   );
 
   await executeTx(tx);

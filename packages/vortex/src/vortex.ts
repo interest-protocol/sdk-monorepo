@@ -19,6 +19,8 @@ import {
   FinishSwapArgs,
   ProveFn,
   VerifyFn,
+  NewSecretAccountArgs,
+  DeleteSecretAccountArgs,
 } from './vortex.types';
 import { devInspectAndGetReturnValues } from '@polymedia/suitcase-core';
 import { bcs } from '@mysten/sui/bcs';
@@ -26,16 +28,19 @@ import invariant from 'tiny-invariant';
 import { normalizeSuiAddress, normalizeStructTag } from '@mysten/sui/utils';
 import { pathOr } from 'ramda';
 import { BN254_FIELD_MODULUS } from './constants';
-import { parseVortexPool } from './utils';
+import { parseVortexPool, parseSecretAccount } from './utils';
 
 export class Vortex {
   #suiClient: SuiClient;
 
   packageId: string;
   swapPackageId: string;
+  secretPackageId: string;
   registry: SharedObjectData;
   prove: ProveFn;
   verify: VerifyFn;
+
+  secretAccountType: string;
 
   #newPoolEventType: string;
   #newAccountEventType: string;
@@ -47,6 +52,7 @@ export class Vortex {
     registry,
     packageId,
     swapPackageId,
+    secretPackageId,
     prove,
     verify,
     fullNodeUrl = getFullnodeUrl('testnet'),
@@ -61,8 +67,11 @@ export class Vortex {
     this.#nullifierSpentEventType = `${packageId}::vortex_events::NullifierSpent`;
     this.#newEncryptionKeyEventType = `${packageId}::vortex_events::NewEncryptionKey`;
 
+    this.secretAccountType = `${secretPackageId}::secret::Secret`;
+
     this.swapPackageId = swapPackageId;
     this.packageId = packageId;
+    this.secretPackageId = secretPackageId;
     this.registry = registry;
     this.prove = prove;
     this.verify = verify;
@@ -135,6 +144,53 @@ export class Vortex {
     });
 
     return { tx };
+  }
+
+  newSecretAccount({
+    tx = new Transaction(),
+    encryptedSecret,
+  }: NewSecretAccountArgs) {
+    const secretAccount = tx.moveCall({
+      target: `${this.secretPackageId}::secret::new`,
+      arguments: [tx.pure.string(encryptedSecret)],
+    });
+
+    tx.moveCall({
+      target: `${this.secretPackageId}::secret::keep`,
+      arguments: [secretAccount],
+    });
+
+    return { tx };
+  }
+
+  deleteSecretAccount({
+    tx = new Transaction(),
+    secretAccountObjectId,
+  }: DeleteSecretAccountArgs) {
+    tx.moveCall({
+      target: `${this.secretPackageId}::secret::delete`,
+      arguments: [tx.object(secretAccountObjectId)],
+    });
+
+    return { tx };
+  }
+
+  async getAllSecretAccounts(account: string) {
+    const secretAccounts = await this.#suiClient.getOwnedObjects({
+      owner: account,
+      options: {
+        showContent: true,
+        showType: true,
+      },
+      filter: {
+        StructType: this.secretAccountType,
+      },
+    });
+
+    return secretAccounts.data.map((data) => {
+      invariant(data.data, 'Secret account data not found');
+      return parseSecretAccount(data.data);
+    });
   }
 
   async vortexAddress(coinType: string) {

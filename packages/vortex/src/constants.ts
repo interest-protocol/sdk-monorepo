@@ -87,6 +87,9 @@ export const VORTEX_SWAP_PACKAGE_ID =
 export const VORTEX_SWAP_UPGRADE_CAP =
   '0xec0beaf1453b0e09d92f8addf25abcfb4bc6ce43ead828914836cadc8df249a0';
 
+export const SECRET_PACKAGE_ID =
+  '0x2d57ed0dd0d5f44d91f865fee3bc33d13ef3ce97c7daf88ad5f5fbb32468ccd6';
+
 export const INITIAL_SHARED_VERSION = '692442863';
 
 export const LSK_FETCH_OFFSET = 'fetch_offset';

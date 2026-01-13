@@ -8,7 +8,7 @@ import { getEnv } from '../utils.script';
   invariant(network === 'mainnet', 'Only mainnet is supported');
 
   const { tx } = xPumpMigratorSdk.setTreasuryFee({
-    fee: 2_000,
+    fee: 5_000,
   });
 
   await executeTx(tx);

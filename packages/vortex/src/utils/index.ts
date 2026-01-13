@@ -177,6 +177,23 @@ export const parseVortexPool = (data: SuiObjectData) => {
   };
 };
 
+export const parseSecretAccount = (data: SuiObjectData) => {
+  invariant(
+    data.content?.dataType === 'moveObject',
+    'Secret account content type not found'
+  );
+
+  invariant(data.content?.type, 'Secret account content not found');
+
+  return {
+    objectId: data.objectId,
+    version: data.version,
+    digest: data.digest,
+    type: data.content.type,
+    encryptedSecret: pathOr('', ['fields', 'encrypted_secret'], data.content),
+  };
+};
+
 export * from './events';
 export * from './decrypt';
 export * from './validate';

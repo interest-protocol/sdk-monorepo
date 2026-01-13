@@ -8,6 +8,7 @@ import {
   VORTEX_SWAP_PACKAGE_ID,
   REGISTRY_OBJECT_ID,
   INITIAL_SHARED_VERSION,
+  SECRET_PACKAGE_ID,
 } from '@interest-protocol/vortex-sdk';
 import { prove, verify } from '../../packages/vortex-wasm/nodejs/vortex';
 import { getFullnodeUrl } from '@mysten/sui/client';
@@ -48,6 +49,7 @@ export const getEnv = async () => {
       },
       packageId: VORTEX_PACKAGE_ID,
       swapPackageId: VORTEX_SWAP_PACKAGE_ID,
+      secretPackageId: SECRET_PACKAGE_ID,
       fullNodeUrl: getFullnodeUrl('testnet'),
       prove,
       verify,

@@ -22,6 +22,9 @@ export const TEST_UPGRADE_CAP_ID =
 export const TEST_VORTEX_SWAP_PACKAGE_ID =
   '0x7efc1d6d42b8c6d6846172a3925f2f28cd5d71cff617ad81f8c3d45a842eabbb';
 
+export const TEST_SECRET_PACKAGE_ID =
+  '0x2d57ed0dd0d5f44d91f865fee3bc33d13ef3ce97c7daf88ad5f5fbb32468ccd6';
+
 export const TEST_REGISTRY_INITIAL_SHARED_VERSION = '8';
 
 export const TEST_VORTEX_INITIAL_SHARED_VERSION = '8';
@@ -58,6 +61,7 @@ export const testVortex = new Vortex({
   },
   packageId: TEST_VORTEX_PACKAGE_ID,
   swapPackageId: TEST_VORTEX_SWAP_PACKAGE_ID,
+  secretPackageId: TEST_SECRET_PACKAGE_ID,
   prove: mockProve,
   verify: mockVerify,
 });

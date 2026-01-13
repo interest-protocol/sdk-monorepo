@@ -37,6 +37,7 @@ export interface ConstructorArgs {
   fullNodeUrl?: string;
   packageId: string;
   swapPackageId: string;
+  secretPackageId: string;
   prove: ProveFn;
   verify: VerifyFn;
 }
@@ -225,4 +226,12 @@ export interface FinishSwapHelperArgs extends MaybeTx {
   coinOut: TransactionResult;
   receipt: TransactionResult | NestedResult;
   coinInType: string;
+}
+
+export interface NewSecretAccountArgs extends MaybeTx {
+  encryptedSecret: string;
+}
+
+export interface DeleteSecretAccountArgs extends MaybeTx {
+  secretAccountObjectId: string;
 }
