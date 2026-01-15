@@ -41,11 +41,13 @@ export interface AccountsResponse {
 export interface GetAccountsArgs {
   hashedSecret: string;
   excludeHidden?: boolean;
+  apiKey?: string;
 }
 
 export interface CreateAccountRequest {
   owner: string;
   hashedSecret: string;
+  apiKey?: string;
 }
 
 export interface AccountResponse {
@@ -56,7 +58,7 @@ export interface AccountResponse {
 export interface HideAccountsRequest {
   accountObjectIds?: string[];
   hashedSecret?: string;
-  apiKey: string;
+  apiKey?: string;
 }
 
 export interface HideAccountsResponse {
@@ -97,6 +99,7 @@ export interface GetPoolsArgs {
   page?: number;
   limit?: number;
   coinType?: string;
+  apiKey?: string;
 }
 
 export interface Commitment {
@@ -127,6 +130,7 @@ export interface GetCommitmentsArgs {
   op?: CommitmentsOperator;
   page?: number;
   limit?: number;
+  apiKey?: string;
 }
 
 export interface MerklePathRequest {
@@ -136,6 +140,7 @@ export interface MerklePathRequest {
   publicKey: string;
   blinding: string;
   vortexPool: string;
+  apiKey?: string;
 }
 
 export interface MerklePathResponse {
@@ -148,7 +153,7 @@ export interface MerklePathResponse {
 
 export interface ExecuteTransactionRequest {
   txBytes: string;
-  apiKey: string;
+  apiKey?: string;
 }
 
 export interface TransactionResponse {

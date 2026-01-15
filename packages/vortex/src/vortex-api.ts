@@ -46,7 +46,8 @@ export class VortexAPI {
     }
 
     const response = await this.#get<AccountsResponse>(
-      `/api/v1/accounts?${params.toString()}`
+      `/api/v1/accounts?${params.toString()}`,
+      args.apiKey
     );
 
     this.#assertSuccess(response);
@@ -55,10 +56,14 @@ export class VortexAPI {
   }
 
   async createAccount(args: CreateAccountRequest): Promise<AccountResponse> {
-    const response = await this.#post<AccountResponse>('/api/v1/accounts', {
-      owner: args.owner,
-      hashedSecret: args.hashedSecret,
-    });
+    const response = await this.#post<AccountResponse>(
+      '/api/v1/accounts',
+      {
+        owner: args.owner,
+        hashedSecret: args.hashedSecret,
+      },
+      args.apiKey
+    );
 
     this.#assertSuccess(response);
 
@@ -105,7 +110,7 @@ export class VortexAPI {
     const query = params.toString();
     const path = query ? `/api/v1/pools?${query}` : '/api/v1/pools';
 
-    const response = await this.#get<PoolsResponse>(path);
+    const response = await this.#get<PoolsResponse>(path, args.apiKey);
 
     this.#assertSuccess(response);
 
@@ -131,7 +136,8 @@ export class VortexAPI {
     }
 
     const response = await this.#get<CommitmentsResponse>(
-      `/api/v1/commitments?${params.toString()}`
+      `/api/v1/commitments?${params.toString()}`,
+      args.apiKey
     );
 
     this.#assertSuccess(response);
@@ -147,7 +153,7 @@ export class VortexAPI {
     let hasNext = true;
 
     while (hasNext) {
-      const response = await this.getCommitments({ ...args, page });
+      const response = await this.getCommitments({ ...args, page, apiKey: args.apiKey });
       allCommitments.push(...response.data.items);
       hasNext = response.data.pagination.hasNext;
       page++;
@@ -166,7 +172,8 @@ export class VortexAPI {
         public_key: args.publicKey,
         blinding: args.blinding,
         vortex_pool: args.vortexPool,
-      }
+      },
+      args.apiKey
     );
 
     this.#assertSuccess(response);
@@ -198,12 +205,18 @@ export class VortexAPI {
     return response;
   }
 
-  async #get<T>(path: string): Promise<ApiResponse<T>> {
+  async #get<T>(path: string, apiKey?: string): Promise<ApiResponse<T>> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (apiKey) {
+      headers['x-api-key'] = apiKey;
+    }
+
     const response = await fetch(`${this.#apiUrl}${path}`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
     });
 
     return response.json() as Promise<ApiResponse<T>>;
@@ -214,12 +227,17 @@ export class VortexAPI {
     body: Record<string, unknown>,
     apiKey?: string
   ): Promise<ApiResponse<T>> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (apiKey) {
+      headers['x-api-key'] = apiKey;
+    }
+
     const response = await fetch(`${this.#apiUrl}${path}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey ?? '',
-      },
+      headers,
       body: JSON.stringify(body),
     });
 
