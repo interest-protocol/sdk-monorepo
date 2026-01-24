@@ -24,7 +24,7 @@ import { getEnv } from '../utils.script';
     tx: tx as any,
     farm: farmId,
     rewardType: manifestType,
-    endTime: currenTimeInSeconds + fourWeeksInSeconds,
+    endTime: currenTimeInSeconds + twoWeeksInSeconds,
     adminWitness: authWitness,
   });
 

@@ -1,17 +1,16 @@
 import { getEnv } from '../utils.script';
-import { getUnspentUtxosWithApi } from '@interest-protocol/vortex-sdk';
-import { VortexKeypair } from '@interest-protocol/vortex-sdk';
+
 import { logSuccess, logError } from '@interest-protocol/logger';
-import { SUI_TYPE_ARG } from '@mysten/sui/utils';
+import { TEST_SUI_TYPE } from '../test-coins/constants';
 
 (async () => {
   try {
     const { api } = await getEnv();
 
     const commitments = await api.getAllCommitments({
-      coinType: SUI_TYPE_ARG,
+      coinType: TEST_SUI_TYPE,
       index: 0,
-      limit: 10,
+      limit: 1000,
       op: 'gte',
     });
 
