@@ -154,7 +154,11 @@ export class VortexAPI {
     let hasNext = true;
 
     while (hasNext) {
-      const response = await this.getCommitments({ ...args, page, apiKey: args.apiKey });
+      const response = await this.getCommitments({
+        ...args,
+        page,
+        apiKey: args.apiKey,
+      });
       allCommitments.push(...response.data.items);
       hasNext = response.data.pagination.hasNext;
       page++;
