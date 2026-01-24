@@ -1,8 +1,6 @@
 import { getEnv } from '../utils.script';
 import { logInfo } from '@interest-protocol/logger';
 import invariant from 'tiny-invariant';
-import { VORTEX_POOL_IDS } from '@interest-protocol/vortex-sdk';
-import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 
 (async () => {
   const { VortexKeypair, Utxo } = await getEnv();
@@ -15,7 +13,7 @@ import { SUI_TYPE_ARG } from '@mysten/sui/utils';
     amount: 123n,
     index: 7n,
     blinding: Utxo.blinding(),
-    vortexPool: VORTEX_POOL_IDS[SUI_TYPE_ARG],
+    vortexPool: '',
   };
 
   // Death needs to encrypt the UTXO for Jose using his public key
