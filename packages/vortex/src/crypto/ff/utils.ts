@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as Scalar from './scalar';
 import { fromBase64 } from '@mysten/sui/utils';
 export function unStringifyBigInts(o: unknown): unknown {

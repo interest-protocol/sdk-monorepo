@@ -1,6 +1,8 @@
 import { VortexKeypair } from './keypair';
 import { poseidon3, poseidon4 } from '../crypto';
-import { normalizeSuiAddress } from '@mysten/sui/utils';
+import { normalizeSuiAddress, toHex } from '@mysten/sui/utils';
+import { randomBytes } from '@noble/ciphers/utils.js';
+import { BN254_FIELD_MODULUS } from '../constants';
 
 interface UtxoConstructorArgs {
   amount: bigint;
@@ -53,7 +55,10 @@ export class Utxo {
   }
 
   static blinding() {
-    return BigInt(Math.floor(Math.random() * 1_000_000_000));
+    // Use cryptographically secure randomness (works on web + Node.js)
+    // 31 bytes = 248 bits, safely below BN254 field modulus (~254 bits)
+    const bytes = randomBytes(31);
+    return BigInt('0x' + toHex(bytes)) % BN254_FIELD_MODULUS;
   }
 
   commitment() {

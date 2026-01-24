@@ -1,5 +1,6 @@
+/* eslint-disable */
 import * as Scalar from './scalar';
-import { getRandomBytes } from './random';
+import { randomBytes } from '@noble/ciphers/utils.js';
 
 export class F1Field {
   type: string;
@@ -288,7 +289,7 @@ export class F1Field {
     const nBytes = (this.bitLength * 2) / 8;
     let res = this.zero;
     for (let i = 0; i < nBytes; i++) {
-      res = (res << BigInt(8)) + BigInt(getRandomBytes(1)[0]!);
+      res = (res << BigInt(8)) + BigInt(randomBytes(1)[0]!);
     }
     return res % this.p;
   }

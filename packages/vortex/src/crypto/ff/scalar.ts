@@ -1,3 +1,4 @@
+/* eslint-disable */
 const hexLen = [0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4];
 
 export const fromString = (s: string, radix?: number): bigint => {

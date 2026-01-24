@@ -213,10 +213,28 @@ export class VortexKeypair {
 
     invariant(parts.length === 4, 'Invalid UTXO format after decryption');
 
+    const amount = BigInt(parts[0]);
+    const blinding = BigInt(parts[1]);
+    const index = BigInt(parts[2]);
+
+    // Validate values are within BN254 field to prevent proof failures
+    invariant(
+      amount >= 0n && amount < BN254_FIELD_MODULUS,
+      'Amount exceeds field modulus'
+    );
+    invariant(
+      blinding >= 0n && blinding < BN254_FIELD_MODULUS,
+      'Blinding exceeds field modulus'
+    );
+    invariant(
+      index >= 0n && index < BN254_FIELD_MODULUS,
+      'Index exceeds field modulus'
+    );
+
     return {
-      amount: BigInt(parts[0]),
-      blinding: BigInt(parts[1]),
-      index: BigInt(parts[2]),
+      amount,
+      blinding,
+      index,
       vortexPool: normalizeSuiAddress(parts[3]),
     };
   }
