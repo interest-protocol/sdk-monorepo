@@ -24,23 +24,30 @@ export const getUnspentUtxos = async ({
 }: GetUnspentUtxosArgs) => {
   const commitments = parseNewCommitmentEvent(commitmentEvents);
 
-  const allUtxos = [] as UtxoPayload[];
-
   const vortexObjectId =
     typeof vortexPool === 'string' ? vortexPool : vortexPool.objectId;
+
+  const decryptedWithIndex: { utxo: UtxoPayload; chainIndex: bigint }[] = [];
 
   commitments.forEach((commitment) => {
     try {
       const utxo = vortexKeypair.decryptUtxo(commitment.encryptedOutput);
-      allUtxos.push(utxo);
+      // Use index from chain (commitment.index) instead of decrypted index
+      // to avoid concurrency/latency issues where encrypted index can be stale
+      decryptedWithIndex.push({ utxo, chainIndex: commitment.index });
     } catch {
       // HMAC verification failed - wrong keypair
     }
   });
 
-  const utxos = allUtxos.map(
-    (utxo) =>
-      new Utxo({ ...utxo, keypair: vortexKeypair, vortexPool: vortexObjectId })
+  const utxos = decryptedWithIndex.map(
+    ({ utxo, chainIndex }) =>
+      new Utxo({
+        ...utxo,
+        index: chainIndex, // Override with on-chain index
+        keypair: vortexKeypair,
+        vortexPool: vortexObjectId,
+      })
   );
 
   const nullifiers = utxos.map((utxo) => utxo.nullifier());
@@ -65,7 +72,7 @@ interface GetUnspentUtxosWithApiArgs {
 }
 
 interface GetUnspentUtxosWithApiAndCommitmentsArgs {
-  commitments: Pick<Commitment, 'coinType' | 'encryptedOutput'>[];
+  commitments: Pick<Commitment, 'coinType' | 'encryptedOutput' | 'index'>[];
   vortexKeypair: VortexKeypair;
   vortexSdk: Vortex;
   vortexPool: string | VortexPool;
@@ -77,7 +84,7 @@ export const getUnspentUtxosWithApi = async ({
   vortexSdk,
   vortexPool,
 }: GetUnspentUtxosWithApiArgs) => {
-  const allUtxos = [] as UtxoPayload[];
+  const decryptedWithIndex: { utxo: UtxoPayload; chainIndex: bigint }[] = [];
 
   const vortexObject = await vortexSdk.resolveVortexPool(vortexPool);
 
@@ -92,16 +99,19 @@ export const getUnspentUtxosWithApi = async ({
         Uint8Array.from(commitment.encryptedOutput)
       );
       const utxo = vortexKeypair.decryptUtxo(encryptedOutputHex);
-      allUtxos.push(utxo);
+      // Use index from chain (commitment.index) instead of decrypted index
+      // to avoid concurrency/latency issues where encrypted index can be stale
+      decryptedWithIndex.push({ utxo, chainIndex: BigInt(commitment.index) });
     } catch {
       // HMAC verification failed - wrong keypair
     }
   });
 
-  const utxos = allUtxos.map(
-    (utxo) =>
+  const utxos = decryptedWithIndex.map(
+    ({ utxo, chainIndex }) =>
       new Utxo({
         ...utxo,
+        index: chainIndex, // Override with on-chain index
         keypair: vortexKeypair,
         vortexPool: vortexObject.objectId,
       })
@@ -127,8 +137,8 @@ export const getUnspentUtxosWithApiAndCommitments = async ({
   vortexSdk,
   vortexPool,
 }: GetUnspentUtxosWithApiAndCommitmentsArgs) => {
-  const allUtxos = [] as UtxoPayload[];
-  const userCommitments = [] as Pick<Commitment, 'coinType' | 'encryptedOutput'>[];
+  const decryptedWithIndex: { utxo: UtxoPayload; chainIndex: bigint }[] = [];
+  const userCommitments = [] as Pick<Commitment, 'coinType' | 'encryptedOutput' | 'index'>[];
 
   const vortexObject = await vortexSdk.resolveVortexPool(vortexPool);
 
@@ -146,17 +156,21 @@ export const getUnspentUtxosWithApiAndCommitments = async ({
       userCommitments.push({
         coinType: commitment.coinType,
         encryptedOutput: commitment.encryptedOutput,
+        index: commitment.index,
       });
-      allUtxos.push(utxo);
+      // Use index from chain (commitment.index) instead of decrypted index
+      // to avoid concurrency/latency issues where encrypted index can be stale
+      decryptedWithIndex.push({ utxo, chainIndex: BigInt(commitment.index) });
     } catch {
       // HMAC verification failed - wrong keypair
     }
   });
 
-  const utxos = allUtxos.map(
-    (utxo) =>
+  const utxos = decryptedWithIndex.map(
+    ({ utxo, chainIndex }) =>
       new Utxo({
         ...utxo,
+        index: chainIndex, // Override with on-chain index
         keypair: vortexKeypair,
         vortexPool: vortexObject.objectId,
       })

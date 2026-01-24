@@ -270,6 +270,108 @@ describe(VortexKeypair.name, () => {
     });
   });
 
+  describe('BigInt encryption/decryption', () => {
+    it('should encrypt and decrypt a BigInt value', () => {
+      const keypair = VortexKeypair.generate();
+      const originalValue = 123456n;
+
+      const encrypted = VortexKeypair.encryptBigIntFor(
+        originalValue,
+        keypair.encryptionKey
+      );
+      const decrypted = keypair.decryptBigInt(encrypted);
+
+      expect(decrypted).toBe(originalValue);
+    });
+
+    it('should handle zero', () => {
+      const keypair = VortexKeypair.generate();
+      const originalValue = 0n;
+
+      const encrypted = VortexKeypair.encryptBigIntFor(
+        originalValue,
+        keypair.encryptionKey
+      );
+      const decrypted = keypair.decryptBigInt(encrypted);
+
+      expect(decrypted).toBe(originalValue);
+    });
+
+    it('should handle large BigInt values', () => {
+      const keypair = VortexKeypair.generate();
+      const originalValue = BigInt(
+        '21888242871839275222246405745257275088548364400416034343698204186575808495616'
+      );
+
+      const encrypted = VortexKeypair.encryptBigIntFor(
+        originalValue,
+        keypair.encryptionKey
+      );
+      const decrypted = keypair.decryptBigInt(encrypted);
+
+      expect(decrypted).toBe(originalValue);
+    });
+
+    it('should fail to decrypt with wrong keypair', () => {
+      const keypair1 = VortexKeypair.generate();
+      const keypair2 = VortexKeypair.generate();
+      const originalValue = 123456n;
+
+      const encrypted = VortexKeypair.encryptBigIntFor(
+        originalValue,
+        keypair1.encryptionKey
+      );
+
+      expect(() => keypair2.decryptBigInt(encrypted)).toThrow(
+        'Decryption failed: HMAC verification failed'
+      );
+    });
+
+    it('should produce different ciphertexts for same value (random nonce)', () => {
+      const keypair = VortexKeypair.generate();
+      const value = 999999n;
+
+      const encrypted1 = VortexKeypair.encryptBigIntFor(
+        value,
+        keypair.encryptionKey
+      );
+      const encrypted2 = VortexKeypair.encryptBigIntFor(
+        value,
+        keypair.encryptionKey
+      );
+
+      expect(encrypted1).not.toBe(encrypted2);
+
+      // But both decrypt to the same value
+      expect(keypair.decryptBigInt(encrypted1)).toBe(value);
+      expect(keypair.decryptBigInt(encrypted2)).toBe(value);
+    });
+
+    it('should ALWAYS fail with wrong keypair - 100 iterations', () => {
+      const correctKeypair = VortexKeypair.generate();
+      const value = BigInt('12345678901234567890');
+
+      const encrypted = VortexKeypair.encryptBigIntFor(
+        value,
+        correctKeypair.encryptionKey
+      );
+
+      let failureCount = 0;
+      const iterations = 100;
+
+      for (let i = 0; i < iterations; i++) {
+        const wrongKeypair = VortexKeypair.generate();
+        try {
+          wrongKeypair.decryptBigInt(encrypted);
+        } catch {
+          failureCount++;
+        }
+      }
+
+      expect(failureCount).toBe(iterations);
+    });
+  });
+
   describe('toString/address', () => {
     it('should produce consistent string representation', () => {
       const keypair = VortexKeypair.generate();

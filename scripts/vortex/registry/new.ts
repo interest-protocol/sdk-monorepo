@@ -8,7 +8,7 @@ import { TEST_SUI_TYPE, TEST_USDC_TYPE } from '../test-coins/constants';
     const { vortexSdk, suiClient, keypair } = await getEnv();
 
     const { tx } = await vortexSdk.newPoolAndShare({
-      coinType: TEST_USDC_TYPE,
+      coinType: TEST_SUI_TYPE,
     });
 
     tx.setSender(keypair.toSuiAddress());
