@@ -146,8 +146,9 @@ export class VortexAPI {
   }
 
   async getAllCommitments(
-    args: Omit<GetCommitmentsArgs, 'page'>
+    args: Omit<GetCommitmentsArgs, 'page'> & { sleepMs?: number }
   ): Promise<Commitment[]> {
+    const sleepMs = Math.max(args.sleepMs ?? 200, 200);
     const allCommitments: Commitment[] = [];
     let page = 1;
     let hasNext = true;
@@ -157,6 +158,10 @@ export class VortexAPI {
       allCommitments.push(...response.data.items);
       hasNext = response.data.pagination.hasNext;
       page++;
+
+      if (hasNext) {
+        await new Promise((resolve) => setTimeout(resolve, sleepMs));
+      }
     }
 
     return allCommitments;
