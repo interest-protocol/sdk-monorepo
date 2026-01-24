@@ -1,12 +1,12 @@
-import { PaginatedEvents } from '@mysten/sui/client';
+import type { PaginatedEvents } from '@mysten/sui/client';
+import type { Commitment } from '../vortex-api.types';
+import type { UtxoPayload, VortexKeypair } from '../entities/keypair';
+import type { Vortex } from '../vortex';
+import type { VortexPool } from '../vortex.types';
+
 import { parseNewCommitmentEvent } from './events';
-import { Commitment } from '../vortex-api.types';
-import { UtxoPayload } from '../entities/keypair';
-import { VortexKeypair } from '../entities/keypair';
 import { Utxo } from '../entities/utxo';
 import { normalizeStructTag, toHex } from '@mysten/sui/utils';
-import { Vortex } from '../vortex';
-import { VortexPool } from '../vortex.types';
 import invariant from 'tiny-invariant';
 
 interface GetUnspentUtxosArgs {
@@ -26,17 +26,17 @@ export const getUnspentUtxos = async ({
 
   const allUtxos = [] as UtxoPayload[];
 
+  const vortexObjectId =
+    typeof vortexPool === 'string' ? vortexPool : vortexPool.objectId;
+
   commitments.forEach((commitment) => {
     try {
       const utxo = vortexKeypair.decryptUtxo(commitment.encryptedOutput);
       allUtxos.push(utxo);
     } catch {
-      // Do nothing
+      // HMAC verification failed - wrong keypair
     }
   });
-
-  const vortexObjectId =
-    typeof vortexPool === 'string' ? vortexPool : vortexPool.objectId;
 
   const utxos = allUtxos.map(
     (utxo) =>
@@ -94,7 +94,7 @@ export const getUnspentUtxosWithApi = async ({
       const utxo = vortexKeypair.decryptUtxo(encryptedOutputHex);
       allUtxos.push(utxo);
     } catch {
-      // Do nothing
+      // HMAC verification failed - wrong keypair
     }
   });
 
@@ -128,10 +128,7 @@ export const getUnspentUtxosWithApiAndCommitments = async ({
   vortexPool,
 }: GetUnspentUtxosWithApiAndCommitmentsArgs) => {
   const allUtxos = [] as UtxoPayload[];
-  const userCommitments = [] as Pick<
-    Commitment,
-    'coinType' | 'encryptedOutput'
-  >[];
+  const userCommitments = [] as Pick<Commitment, 'coinType' | 'encryptedOutput'>[];
 
   const vortexObject = await vortexSdk.resolveVortexPool(vortexPool);
 
@@ -152,7 +149,7 @@ export const getUnspentUtxosWithApiAndCommitments = async ({
       });
       allUtxos.push(utxo);
     } catch {
-      // Do nothing
+      // HMAC verification failed - wrong keypair
     }
   });
 

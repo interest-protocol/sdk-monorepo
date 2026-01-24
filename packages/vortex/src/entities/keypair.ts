@@ -6,9 +6,21 @@ import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import invariant from 'tiny-invariant';
 import { randomBytes } from '@noble/ciphers/utils.js';
 import { x25519 } from '@noble/curves/ed25519.js';
-import { xsalsa20poly1305 } from '@noble/ciphers/salsa.js';
+import { xchacha20 } from '@noble/ciphers/chacha.js';
+import { hmac } from '@noble/hashes/hmac.js';
+import { sha256 } from '@noble/hashes/sha2.js';
 import { blake2b } from '@noble/hashes/blake2.js';
 import { normalizeSuiAddress } from '@mysten/sui/utils';
+
+// Constant-time comparison to prevent timing attacks
+function constantTimeEqual(a: Uint8Array, b: Uint8Array): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) {
+    diff |= a[i] ^ b[i];
+  }
+  return diff === 0;
+}
 
 export interface UtxoPayload {
   amount: bigint;
@@ -21,6 +33,7 @@ interface EncryptedMessage {
   version: string;
   nonce: string; // base64
   ephemPublicKey: string; // base64
+  hmacTag: string; // base64 - HMAC-SHA256 tag for key-committing authentication
   ciphertext: string; // base64
 }
 
@@ -30,12 +43,14 @@ type SignMessageFn = (message: Uint8Array) => Promise<{
   bytes: string;
 }>;
 
+// Message format: nonce (24) | ephemPublicKey (32) | hmacTag (32) | ciphertext (variable)
 function packEncryptedMessage(encryptedMessage: EncryptedMessage): string {
   const nonceBuf = Buffer.from(encryptedMessage.nonce, 'base64');
   const ephemPublicKeyBuf = Buffer.from(
     encryptedMessage.ephemPublicKey,
     'base64'
   );
+  const hmacTagBuf = Buffer.from(encryptedMessage.hmacTag, 'base64');
   const ciphertextBuf = Buffer.from(encryptedMessage.ciphertext, 'base64');
 
   const messageBuff = Buffer.concat([
@@ -43,6 +58,8 @@ function packEncryptedMessage(encryptedMessage: EncryptedMessage): string {
     nonceBuf,
     Buffer.alloc(32 - ephemPublicKeyBuf.length),
     ephemPublicKeyBuf,
+    Buffer.alloc(32 - hmacTagBuf.length),
+    hmacTagBuf,
     ciphertextBuf,
   ]);
 
@@ -58,12 +75,14 @@ function unpackEncryptedMessage(encryptedMessage: string): EncryptedMessage {
 
   const nonceBuf = messageBuff.subarray(0, 24);
   const ephemPublicKeyBuf = messageBuff.subarray(24, 56);
-  const ciphertextBuf = messageBuff.subarray(56);
+  const hmacTagBuf = messageBuff.subarray(56, 88);
+  const ciphertextBuf = messageBuff.subarray(88);
 
   return {
-    version: 'x25519-xsalsa20-poly1305',
+    version: 'x25519-xchacha20-hmac-sha256',
     nonce: nonceBuf.toString('base64'),
     ephemPublicKey: ephemPublicKeyBuf.toString('base64'),
+    hmacTag: hmacTagBuf.toString('base64'),
     ciphertext: ciphertextBuf.toString('base64'),
   };
 }
@@ -159,14 +178,19 @@ export class VortexKeypair {
       recipientPublicKey
     );
 
+    // Encrypt with XChaCha20
     const nonce = randomBytes(24);
-    const cipher = xsalsa20poly1305(sharedSecret, nonce);
-    const ciphertext = cipher.encrypt(bytes);
+    const ciphertext = xchacha20(sharedSecret, nonce, bytes);
+
+    // Compute HMAC-SHA256 over ciphertext (Encrypt-then-MAC)
+    // This provides key-committing authentication
+    const hmacTag = hmac(sha256, sharedSecret, ciphertext);
 
     const encryptedMessage: EncryptedMessage = {
-      version: 'x25519-xsalsa20-poly1305',
+      version: 'x25519-xchacha20-hmac-sha256',
       nonce: Buffer.from(nonce).toString('base64'),
       ephemPublicKey: Buffer.from(ephemeralPublicKey).toString('base64'),
+      hmacTag: Buffer.from(hmacTag).toString('base64'),
       ciphertext: Buffer.from(ciphertext).toString('base64'),
     };
 
@@ -254,12 +278,20 @@ export class VortexKeypair {
       ephemeralPublicKey
     );
 
-    // Decrypt using XSalsa20-Poly1305
-    const nonce = Buffer.from(encryptedMessage.nonce, 'base64');
     const ciphertext = Buffer.from(encryptedMessage.ciphertext, 'base64');
+    const receivedHmacTag = Buffer.from(encryptedMessage.hmacTag, 'base64');
 
-    const cipher = xsalsa20poly1305(sharedSecret, nonce);
-    const decrypted = cipher.decrypt(ciphertext);
+    // Verify HMAC-SHA256 first (Encrypt-then-MAC verification)
+    // This is key-committing: wrong key = wrong HMAC = guaranteed failure
+    const expectedHmacTag = hmac(sha256, sharedSecret, ciphertext);
+
+    if (!constantTimeEqual(receivedHmacTag, expectedHmacTag)) {
+      throw new Error('Decryption failed: HMAC verification failed');
+    }
+
+    // Decrypt using XChaCha20
+    const nonce = Buffer.from(encryptedMessage.nonce, 'base64');
+    const decrypted = xchacha20(sharedSecret, nonce, ciphertext);
 
     return Buffer.from(decrypted);
   }
