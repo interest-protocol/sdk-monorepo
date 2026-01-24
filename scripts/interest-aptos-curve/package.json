@@ -10,19 +10,19 @@
   "devDependencies": {
     "@interest-protocol/prettier-config": "workspace:*",
     "@interest-protocol/typescript-config": "workspace:*",
-    "@types/node": "^22.15.18",
+    "@types/node": "^22.19.7",
     "@types/ramda": "^0.30.2",
-    "rimraf": "^5.0.1",
-    "tsx": "^4.19.4",
-    "vitest": "^0.34.4"
+    "rimraf": "^5.0.10",
+    "tsx": "^4.21.0",
+    "vitest": "^0.34.6"
   },
   "dependencies": {
-    "@interest-protocol/logger": "workspace:*",
-    "@interest-protocol/movement-core-sdk": "workspace:*",
+    "@aptos-labs/ts-sdk": "^1.39.0",
     "@interest-protocol/interest-aptos-curve": "workspace:*",
     "@interest-protocol/lib": "workspace:*",
+    "@interest-protocol/logger": "workspace:*",
+    "@interest-protocol/movement-core-sdk": "workspace:*",
     "@interest-protocol/movement-utils": "workspace:*",
-    "@aptos-labs/ts-sdk": "^1.29.1",
     "ramda": "^0.30.1",
     "tiny-invariant": "^1.3.3"
   }

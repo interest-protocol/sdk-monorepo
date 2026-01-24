@@ -32,10 +32,10 @@
   "devDependencies": {
     "@interest-protocol/prettier-config": "workspace:*",
     "@interest-protocol/typescript-config": "workspace:*",
-    "rimraf": "^5.0.1",
+    "rimraf": "^5.0.10",
     "tsup": "^7.2.0"
   },
   "dependencies": {
-    "chalk": "^5.4.1"
+    "chalk": "^5.6.2"
   }
 }
