@@ -118,7 +118,7 @@ export interface CommitmentsResponse {
   success: true;
   data: {
     items: Commitment[];
-    pagination: Pagination;
+    hasNext: boolean;
   };
 }
 
@@ -128,7 +128,6 @@ export interface GetCommitmentsArgs {
   coinType: string;
   index: number;
   op?: CommitmentsOperator;
-  page?: number;
   limit?: number;
   apiKey?: string;
 }

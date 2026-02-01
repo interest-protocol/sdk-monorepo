@@ -127,10 +127,6 @@ export class VortexAPI {
       params.set('op', args.op);
     }
 
-    if (args.page) {
-      params.set('page', args.page.toString());
-    }
-
     if (args.limit) {
       params.set('limit', args.limit.toString());
     }
@@ -146,25 +142,27 @@ export class VortexAPI {
   }
 
   async getAllCommitments(
-    args: Omit<GetCommitmentsArgs, 'page'> & { sleepMs?: number }
+    args: GetCommitmentsArgs & { sleepMs?: number }
   ): Promise<Commitment[]> {
     const sleepMs = Math.max(args.sleepMs ?? 200, 200);
     const allCommitments: Commitment[] = [];
-    let page = 1;
+    let index = args.index;
     let hasNext = true;
 
     while (hasNext) {
       const response = await this.getCommitments({
         ...args,
-        page,
+        index,
         apiKey: args.apiKey,
       });
       allCommitments.push(...response.data.items);
-      hasNext = response.data.pagination.hasNext;
-      page++;
+      hasNext = response.data.hasNext;
 
-      if (hasNext) {
+      if (hasNext && response.data.items.length > 0) {
+        index = response.data.items[response.data.items.length - 1].index + 1;
         await new Promise((resolve) => setTimeout(resolve, sleepMs));
+      } else {
+        hasNext = false;
       }
     }
 
