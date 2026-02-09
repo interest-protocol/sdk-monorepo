@@ -8,12 +8,15 @@ export interface VortexAPIConstructorArgs {
 
 export type ServiceStatus = 'healthy' | 'unhealthy';
 
+export type IndexerStatus = 'synced' | 'behind' | 'unknown';
+
 export interface HealthStatus {
   status: 'healthy' | 'degraded';
   services: {
     mongodb: ServiceStatus;
     redis: ServiceStatus;
     sui: ServiceStatus;
+    indexer: IndexerStatus;
   };
   timestamp: string;
 }
